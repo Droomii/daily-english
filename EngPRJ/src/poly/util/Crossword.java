@@ -24,16 +24,40 @@ public class Crossword {
 		}
 	}
 
-	public List<String> getWordsList() {
-		return wordsList;
+	
+	// 행 추가
+	public void addCol() {
+		for(List<Character> row : matrix) {
+			row.add('-');
+		}
 	}
-
-
-	public void setWordsList(List<String> wordsList) {
-		this.wordsList = wordsList;
+	
+	public void addCol(int i) {
+		for (int j = 0; j < i; j++) {
+			addCol();
+		}
 	}
-
-
+	
+	
+	// 열 추가
+	public void addRow() {
+		List<Character> row = new ArrayList<>();
+		
+		for(int i = 0; i < matrix.get(0).size(); i++)
+			row.add('-');
+		this.matrix.add(row);
+	}
+	
+	public void addRow(int i) {
+		for (int j = 0; j < i; j++) {
+			addRow();
+		}
+	}
+	
+	public void addWordHorizontally(int row, int col, String word) {
+		
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -47,19 +71,7 @@ public class Crossword {
 		return sb.toString();
 	}
 	
-	public void addCol() {
-		for(List<Character> row : matrix) {
-			row.add('-');
-		}
-	}
 	
-	public void addRow() {
-		List<Character> row = new ArrayList<>();
-		
-		for(int i = 0; i < matrix.get(0).size(); i++)
-			row.add('-');
-		this.matrix.add(row);
-	}
 	
 	/**
 	 * 행, 열에 위치한 문자를 출력해줌
