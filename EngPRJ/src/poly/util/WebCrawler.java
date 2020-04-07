@@ -5,29 +5,8 @@ import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 public class WebCrawler {
-
-	public static void main(String[] args) throws IOException {
-		
-		String url = "http://www.koreaherald.com";
-		
-		Document doc = null;
-		
-		doc = Jsoup.connect(url).get();
-		
-		Element element = doc.select("a.main_c_art_main").first();
-		
-		String href = element.attr("href");
-		
-		doc = Jsoup.connect(url + href).get();
-		
-		element = doc.select("#articleText div.view_con_t").last();
-		
-		
-		System.out.println(element.text());
-	} 
 	
 	public static String crawlHerald() throws IOException{
 		
@@ -55,5 +34,6 @@ public class WebCrawler {
 		String article = element.text();
 		
 		return article;
+
 	}
 }
