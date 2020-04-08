@@ -34,4 +34,67 @@ public class MyRedisController {
 		
 		return "success!!";
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "myRedis/test02")
+	public String test02(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".test02 start");
+		
+		myRedisService.doSaveDataforList();
+		
+		log.info(this.getClass().getName() + ".test02 end");
+		
+		return "success!!";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "myRedis/test03")
+	public String test03(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".test03 start");
+		
+		myRedisService.doSaveDataforListJSON();
+		
+		log.info(this.getClass().getName() + ".test03 end");
+		
+		return "success!!";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "myRedis/test04")
+	public String test04(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".test04 start");
+		
+		myRedisService.doSaveDataforHashTable();
+		
+		log.info(this.getClass().getName() + ".test04 end");
+		
+		return "success!!";
+	}
+	@ResponseBody
+	@RequestMapping(value = "myRedis/test05")
+	public String test05(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".test05 start");
+		
+		myRedisService.doSaveDataforSet();
+		
+		log.info(this.getClass().getName() + ".test05 end");
+		
+		return "success!!";
+	}
+	@ResponseBody
+	@RequestMapping(value = "myRedis/test06")
+	public String test06(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".test06 start");
+		
+		myRedisService.doSaveDataforZSet();
+		
+		log.info(this.getClass().getName() + ".test06 end");
+		
+		return "success!!";
+	}
 }

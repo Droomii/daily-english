@@ -25,6 +25,58 @@ public class MyRedisService implements IMyRedisService{
 		
 		log.info(this.getClass().getName() + ".doSaveData End!!");
 	}
+
+	@Override
+	public void doSaveDataforList() throws Exception {
+		log.info(this.getClass().getName() + ".doSaveDataforList Start!!");
+		
+		myRedisMapper.doSaveDataforList();
+		
+		log.info(this.getClass().getName() + ".doSaveDataforList End!!");
+		
+	}
+
+	@Override
+	public void doSaveDataforListJSON() throws Exception {
+		
+		log.info(this.getClass().getName() + ".doSaveDataforListJSON Start!!");
+		
+		myRedisMapper.doSaveDataforListJSON();
+		
+		log.info(this.getClass().getName() + ".doSaveDataforListJSON End!!");
+		
+	}
+
+	@Override
+	public void doSaveDataforHashTable() throws Exception {
+		
+		log.info(this.getClass().getName() + ".doSaveDataforHashTable Start!!");
+		
+		myRedisMapper.doSaveDataforHashTable();
+		
+		log.info(this.getClass().getName() + ".doSaveDataforHashTable End!!");
+	}
+
+	@Override
+	public void doSaveDataforSet() throws Exception {
+		
+		log.info(this.getClass().getName() + ".doSaveDataforSet Start!!");
+		
+		myRedisMapper.doSaveDataforSet();
+		
+		log.info(this.getClass().getName() + ".doSaveDataforSet End!!");
+	}
+
+	@Override
+	public void doSaveDataforZSet() throws Exception {
+
+		log.info(this.getClass().getName() + ".doSaveDataforZSet Start!!");
+		
+		myRedisMapper.doSaveDataforZSet();
+		
+		log.info(this.getClass().getName() + ".doSaveDataforZSet End!!");
+		
+	}
 	
 	
 }
