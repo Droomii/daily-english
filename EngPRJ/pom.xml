@@ -115,11 +115,6 @@
 		</dependency>
 
 		<!-- Oracle -->
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3</version>
-		</dependency>
 
 		<!-- 오라클 DBCP 관리를 위한 c3p0 -->
 		<dependency>
