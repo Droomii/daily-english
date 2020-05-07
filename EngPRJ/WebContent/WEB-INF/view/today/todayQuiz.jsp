@@ -2,16 +2,47 @@
     pageEncoding="UTF-8"%>
 <%
 
-	String pageTitle = "pageTemplate";
+	String pageTitle = "오늘의 퀴즈";
 
 %>
 <!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr">
 <head>
   <%@ include file="/WEB-INF/view/header.jsp" %>
+  <style>
+  .choice{
+  	background-color:rgb(200,200,200);
+  	border-color:rgb(200,200,200);
+  	color:black;
+  }
+  .choice:focus{
+  	background-color:rgb(200,200,200);
+  	border-color:rgb(200,200,200);
+  	color:black;
+  }
+  
+  .choice:hover{
+  	background-color:rgb(180,180,180);
+  	border-color:rgb(180,180,180);
+  	color:black;
+  }
+  .choice:active{
+  	background-color:rgb(180,180,180) !important;
+  	border-color:rgb(180,180,180) !important;
+  	color:black !important;
+  }
+  
+  .chosen, .chosen:active{
+  	background-color:orange !important;
+  	border-color:orange !important;
+  	color:white !important;
+  }
+  
+  
+  
+  </style>
   </head>
   <body class="vertical-layout vertical-menu 2-columns   menu-expanded fixed-navbar" data-open="click" data-menu="vertical-menu" data-color="bg-chartbg" data-col="2-columns">
-
     <!-- fixed-top-->
     <nav class="header-navbar navbar-expand-md navbar navbar-with-menu navbar-without-dd-arrow fixed-top navbar-semi-light">
       <div class="navbar-wrapper">
@@ -50,42 +81,27 @@
 <!-- Header footer section start -->
 <section id="header-footer">
 	<div class="row match-height">
-		<div class="col-lg-12 col-md-12">
+		<div class="col-lg-4 offset-lg-4 col-md-12">
 			<div class="card">
-				<div class="card-header">
-					<h4 class="card-title mb-0" style="font-size:1.5rem">출석체크</h4>
+				<div class="card-header pb-0">
+					<h4 class="card-title mb-0" style="font-size:1.5rem">오늘의 퀴즈</h4>
 				</div>
-			</div>
-		</div>
-		
-		<div class="col-lg-12 col-md-12">
-			<div class="card">
 				<div class="card-body">
-					<h4 class="card-title text-center mb-0" style="font-size:1.5rem;"><i class="la la-book" style="font-size:2rem;vertical-align:center;"></i><span style="font-size:2rem">오늘의 뉴스</span></h4>
+				<p style="font-weight:bold">
+				빈 칸에 들어갈 알맞은 단어를 고르세요.
+				</p>
+				<p>
+				1. This is an _______.
+				</p>
+				</div>
+				<div class="card-body">
+				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">example</button>
+				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">hello</button>
+				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">world</button>
+				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">wrong</button>
 				</div>
 			</div>
 		</div>
-		<div class="col-6">
-			<div class="card">
-			<div class="card-body text-center pt-1 pb-0">
-			<i class="la la-check-circle" style="font-size:5rem"></i>
-			</div>
-				<div class="card-body pt-0">
-					<h4 class="card-title text-center mb-0" style="font-size:1.5rem">복습하기</h4>
-				</div>
-			</div>
-		</div>
-		<div class="col-6">
-			<div class="card">
-			<div class="card-body text-center pt-1 pb-0">
-			<i class="la la-sticky-note" style="font-size:5rem"></i>
-			</div>
-				<div class="card-body pt-0">
-					<h4 class="card-title text-center mb-0" style="font-size:1.5rem">단어장</h4>
-				</div>
-			</div>
-		</div>
-		
 	</div>
 </section>
 <!-- Header footer section End -->
@@ -102,7 +118,13 @@
       </div>
     </div>
     <!-- content end -->
-
+	<script type="text/javascript">
+	var choices = $(".choice")
+	choices.on("click", function(e){
+		$('.chosen').removeClass('chosen');
+		$(this).addClass('chosen')
+	})
+	</script>
     <%@ include file="/WEB-INF/view/footer.jsp" %>
     <!-- END PAGE LEVEL JS-->
   </body>
