@@ -45,6 +45,8 @@
 		</property>
 	</bean>
 		
+	<!-- css, js  -->
+	<mvc:resources mapping="/resources/**" location="/resources/" cache-period="0" />
 	<!-- 파일업로드 기능 -->		
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" 
 		p:maxUploadSize="104857600" p:maxInMemorySize="104857600" />

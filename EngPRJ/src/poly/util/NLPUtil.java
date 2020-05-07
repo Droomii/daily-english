@@ -1,14 +1,7 @@
 package poly.util;
 
-import java.util.List;
-import java.util.Properties;
-
-import edu.stanford.nlp.ie.util.RelationTriple;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-
 public class NLPUtil {
+	/*
 	public static String text = "Joe Smith was born in California. "
 			+ "In 2017, he went to Paris, France in the summer. " + "His flight left at 3:00pm on July 10th, 2017. "
 			+ "After eating some escargot for the first time, Joe said, \"That was delicious!\" "
@@ -49,4 +42,5 @@ public class NLPUtil {
 		System.out.println(relations);
 		System.out.println();
 	}
+	*/
 }
