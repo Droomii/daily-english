@@ -21,6 +21,6 @@ public class MainController {
 		log.info(this.getClass().getName() + ".index start");
 
 		log.info(this.getClass().getName() + ".index end");
-		return "/header";
+		return "/index";
 	}
 }
