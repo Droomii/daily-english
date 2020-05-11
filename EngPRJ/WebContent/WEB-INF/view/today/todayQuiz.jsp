@@ -15,6 +15,19 @@
   	border-color:rgb(200,200,200);
   	color:black;
   }
+  
+  .wrong{
+  	background-color:crimson !important;
+  	border-color:crimson !important;
+  	color:white !important;
+  }
+  
+  .correct{
+  	background-color:green !important;
+  	border-color:green !important;
+  	color:green !important;
+  }
+  
   .choice:focus{
   	background-color:rgb(200,200,200);
   	border-color:rgb(200,200,200);

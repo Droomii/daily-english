@@ -23,6 +23,7 @@
 	<context:component-scan base-package="poly.service" />
 	<context:component-scan base-package="poly.persistance.mapper" />
 	<context:component-scan base-package="poly.persistance.redis" />
+	<context:component-scan base-package="poly.persistance.mongo" />
  	
 	<!-- ViewResolver : 뷰 선택자 -->
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
