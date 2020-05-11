@@ -32,4 +32,16 @@ public class MongoTestController {
 		log.info(this.getClass().getName() + ".test end");
 		return "success";
 	}
+	
+	@RequestMapping(value = "insertWords")
+	@ResponseBody
+	public String insertWords(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".insertWords start");
+		
+		mongoTestService.insertWords();
+
+		log.info(this.getClass().getName() + ".insertWords end");
+		return "success";
+	}
 }

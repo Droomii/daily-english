@@ -8,4 +8,6 @@ public interface IMongoTestService {
 	 * @param colNm 생성하는 컬렉션 이름
 	 */
 	public boolean createCollection() throws Exception;
+
+	public void insertWords() throws Exception;
 }

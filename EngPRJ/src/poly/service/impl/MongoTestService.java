@@ -26,5 +26,12 @@ public class MongoTestService implements IMongoTestService{
 		return mongoTestMapper.createCollection(colNm);
 	}
 
+	@Override
+	public void insertWords() throws Exception {
+		
+		mongoTestMapper.insertWords();
+		
+	}
+
 	
 }

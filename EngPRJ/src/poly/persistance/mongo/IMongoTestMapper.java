@@ -4,4 +4,6 @@ public interface IMongoTestMapper {
 
 	
 	public boolean createCollection(String colNm) throws Exception;
+
+	public void insertWords() throws Exception;
 }

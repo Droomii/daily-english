@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%
 
-	String pageTitle = "오늘의 퀴즈";
+	String pageTitle = "실력 측정";
 
 %>
 <!DOCTYPE html>
