@@ -23,6 +23,8 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 
 	private static final String COL_NM = "testWords";
 	
+	private static final Random R = new Random();
+	
 	@Autowired
 	private RedisTemplate<String, Object> redisDB;
 	
@@ -72,12 +74,41 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		
 		redisDB.setKeySerializer(new StringRedisSerializer());
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestWordDTO.class));
-		Random r = new Random();
 		
-		int rand = r.nextInt(140);
+		int rand = R.nextInt(140);
 		TestWordDTO tDTO = (TestWordDTO) redisDB.opsForList().index(COL_NM, rand);
 		
 		return tDTO;
+	}
+
+	@Override
+	public TestWordDTO getRandomWord(String index, String answer) throws Exception {
+		
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestWordDTO.class));
+
+		// from 0 to 6
+		int lvl = Integer.parseInt(index) / 20;
+		log.info("lvl : " + lvl);
+		TestWordDTO tDTO = (TestWordDTO) redisDB.opsForList().index(COL_NM, Integer.parseInt(index)-1);
+		String correctAnswer = tDTO.getAnswer();
+		log.info("answer : " + answer);
+		log.info("correctAnswer : " + correctAnswer);
+		if(answer.equals(correctAnswer)) {
+			// capping level to 6
+			lvl = lvl + 1 < 7 ? lvl + 1 : 6;
+		}else {
+			lvl = lvl - 1 > -1 ? lvl - 1 : 0;
+		}
+		
+		tDTO = null;
+		
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestWordDTO.class));
+		int nextIndex = lvl * 20 + R.nextInt(20);
+		log.info("nextIndex : " + nextIndex);
+		TestWordDTO rDTO = (TestWordDTO) redisDB.opsForList().index(COL_NM, nextIndex);
+		return rDTO;
 	}
 	
 	

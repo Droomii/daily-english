@@ -108,7 +108,7 @@
 				빈 칸에 들어갈 알맞은 단어를 고르세요.
 				</p>
 				<p>
-				<span id="no">1</span>. <span id="sentence"> This is an <span class="stress">example.</span></span>
+				<span id="no">1</span>. <span id="word">word</span> : <span id="sentence"> This is an <span class="stress">example.</span></span>
 				</p>
 				</div>
 				<div class="card-body">
@@ -136,26 +136,52 @@
     </div>
     <!-- content end -->
 	<script type="text/javascript">
-	
 	// choices(a, b, c, d)
 	var choices = $(".choice")
-	var no = 1;
+	var no = 0;
+	var index = 0;
+	$(document).ready(function(){
+		$.ajax({
+	           type:"GET",
+	           url:"/submitTestAnswer.do",
+	           dataType:"JSON",
+	           success : function(json) {
+	        	   $('.chosen').removeClass('chosen');
+	        	   $("#no").html(++no);
+	        	   $("#word").html(json.word);
+	        	   $("#sentence").html(json.sentence);
+	        	   $("#a").html(json.a);
+	        	   $("#b").html(json.b);
+	        	   $("#c").html(json.c);
+	        	   $("#d").html(json.d);
+	        	   index = json.no * 1;
+	           },
+	           error : function(xhr, status, error) {
+	        	   console.log('error!!');
+	           }
+	     });
+		
+	})
+	
 	// when choices are clicked
 	choices.on("click", function(e){
 		if( $(this).hasClass('chosen') ){
-			jQuery.ajax({
+			$.ajax({
 		           type:"GET",
-		           url:"/randomWord.do",
+		           url:"/submitTestAnswer.do",
+		           data: {answer : $(this).attr("id"),
+		        	   index : index},
 		           dataType:"JSON",
 		           success : function(json) {
 		        	   $('.chosen').removeClass('chosen');
 		        	   $("#no").html(++no);
+		        	   $("#word").html(json.word);
 		        	   $("#sentence").html(json.sentence);
 		        	   $("#a").html(json.a);
 		        	   $("#b").html(json.b);
 		        	   $("#c").html(json.c);
 		        	   $("#d").html(json.d);
-		        	   
+		        	   index = json.no * 1;
 		           },
 		           error : function(xhr, status, error) {
 		        	   console.log('error!!');

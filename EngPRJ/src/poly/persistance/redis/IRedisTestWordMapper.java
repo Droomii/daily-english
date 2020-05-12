@@ -12,4 +12,6 @@ public interface IRedisTestWordMapper {
 
 	public TestWordDTO getRandomWord() throws Exception;
 
+	public TestWordDTO getRandomWord(String index, String answer) throws Exception;
+
 }

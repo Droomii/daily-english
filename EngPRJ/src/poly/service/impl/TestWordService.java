@@ -33,4 +33,10 @@ public class TestWordService implements ITestWordService {
 		return redisTestWordMapper.getRandomWord();
 	}
 
+	@Override
+	public TestWordDTO submitTestAnswer(String index, String answer) throws Exception {
+		
+		return redisTestWordMapper.getRandomWord(index, answer);
+	}
+
 }

@@ -8,4 +8,6 @@ public interface ITestWordService {
 
 	TestWordDTO getRandomWord() throws Exception;
 
+	TestWordDTO submitTestAnswer(String index, String answer) throws Exception;
+
 }

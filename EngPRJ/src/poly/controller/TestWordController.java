@@ -45,14 +45,24 @@ public class TestWordController {
 		return "/wordTest/todayQuiz";
 	}
 	
-	@RequestMapping(value = "randomWord")
+	@RequestMapping(value = "submitTestAnswer")
 	@ResponseBody
 	public TestWordDTO randomWord(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".randomWord start");
-
+		
+		String index = request.getParameter("index");
+		String answer = request.getParameter("answer");
+		
+		log.info("answer : " + answer);
+		log.info("index : " + index);
+		
 		TestWordDTO rDTO = null;
-		rDTO = testWordService.getRandomWord();
+		if(index==null) {
+			rDTO = testWordService.getRandomWord();			
+		}else {
+			rDTO = testWordService.submitTestAnswer(index, answer);
+		}
 		
 		log.info(this.getClass().getName() + ".randomWord end");
 		return rDTO;
