@@ -1,13 +1,5 @@
 package poly.persistance.mongo.impl;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -15,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.mongodb.BasicDBObject;
 
-import poly.dto.TestWordDTO;
 import poly.persistance.mongo.IMongoTestMapper;
 
 @Component("MongoTestMapper")
@@ -51,7 +42,7 @@ public class MongoTestMapper implements IMongoTestMapper{
 		// TODO Auto-generated method stub
 		
 	}
-	/*
+	/*  시험 단어 파싱하여 DB에 넣기 위한 메서드였음
 	@Override
 	public void insertWords() throws Exception {
 		log.info(this.getClass().getName() + ".insertWords start");

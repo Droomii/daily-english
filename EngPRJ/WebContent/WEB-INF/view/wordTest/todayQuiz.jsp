@@ -35,13 +35,13 @@
   }
   
   .choice:hover{
-  	background-color:rgb(180,180,180);
-  	border-color:rgb(180,180,180);
+  	background-color:rgb(200,200,200);
+  	border-color:rgb(200,200,200);
   	color:black;
   }
   .choice:active{
-  	background-color:rgb(180,180,180) !important;
-  	border-color:rgb(180,180,180) !important;
+  	background-color:rgb(200,200,200) !important;
+  	border-color:rgb(200,200,200) !important;
   	color:black !important;
   }
   
@@ -108,14 +108,14 @@
 				빈 칸에 들어갈 알맞은 단어를 고르세요.
 				</p>
 				<p>
-				1. This is an <span class="stress">example.</span>
+				<span id="no">1</span>. <span id="sentence"> This is an <span class="stress">example.</span></span>
 				</p>
 				</div>
 				<div class="card-body">
-				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">example</button>
-				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">hello</button>
-				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">world</button>
-				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">wrong</button>
+				<button type="button" id="a" class="btn mb-1 choice btn-secondary btn-sm btn-block">example</button>
+				<button type="button" id="b" class="btn mb-1 choice btn-secondary btn-sm btn-block">hello</button>
+				<button type="button" id="c" class="btn mb-1 choice btn-secondary btn-sm btn-block">world</button>
+				<button type="button" id="d" class="btn mb-1 choice btn-secondary btn-sm btn-block">wrong</button>
 				</div>
 			</div>
 		</div>
@@ -136,10 +136,35 @@
     </div>
     <!-- content end -->
 	<script type="text/javascript">
+	
+	// choices(a, b, c, d)
 	var choices = $(".choice")
+	var no = 1;
+	// when choices are clicked
 	choices.on("click", function(e){
-		$('.chosen').removeClass('chosen');
-		$(this).addClass('chosen')
+		if( $(this).hasClass('chosen') ){
+			jQuery.ajax({
+		           type:"GET",
+		           url:"/randomWord.do",
+		           dataType:"JSON",
+		           success : function(json) {
+		        	   $('.chosen').removeClass('chosen');
+		        	   $("#no").html(++no);
+		        	   $("#sentence").html(json.sentence);
+		        	   $("#a").html(json.a);
+		        	   $("#b").html(json.b);
+		        	   $("#c").html(json.c);
+		        	   $("#d").html(json.d);
+		        	   
+		           },
+		           error : function(xhr, status, error) {
+		        	   console.log('error!!');
+		           }
+		     });
+		}else{
+			$('.chosen').removeClass('chosen');
+			$(this).addClass('chosen')
+		}
 	})
 	</script>
     <%@ include file="/WEB-INF/view/footer.jsp" %>
