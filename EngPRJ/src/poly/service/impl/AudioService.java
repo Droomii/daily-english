@@ -1,6 +1,7 @@
 package poly.service.impl;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -49,7 +50,7 @@ public class AudioService implements IAudioService{
 
 	@Override
 	public Map<String, Object> analyzeAudio(String data, String sentenceAudioIdx) throws Exception {
-		String requestURL = "http://localhost:5000/score";
+		String requestURL = "http://192.168.11.128:5000/score";
 		
 		HttpClient httpClient = new DefaultHttpClient();
 		
@@ -94,6 +95,30 @@ public class AudioService implements IAudioService{
 		byte[] res =IOUtils.toByteArray(in);
 		
 		return res;
+	}
+
+	@Override
+	public byte[] getAnswerAudioFromOuter(String answer_temp_file) throws Exception {
+		String requestURL = "http://192.168.11.128:8080/audio/getAnswerAudio.do";
+		
+		HttpClient httpClient = new DefaultHttpClient();
+		
+		HttpPost httpPost = new HttpPost(requestURL);
+		
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		
+		params.add(new BasicNameValuePair("file", answer_temp_file));
+		httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+		
+		HttpResponse response = httpClient.execute(httpPost);
+		HttpEntity resEntity = response.getEntity();
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    resEntity.writeTo(baos);
+	    byte[] bytes = baos.toByteArray();
+	    
+	    return bytes;
+
 	}
 
 }
