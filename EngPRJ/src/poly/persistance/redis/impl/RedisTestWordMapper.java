@@ -103,8 +103,6 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		
 		tDTO = null;
 		
-		redisDB.setKeySerializer(new StringRedisSerializer());
-		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestWordDTO.class));
 		int nextIndex = lvl * 20 + R.nextInt(20);
 		log.info("nextIndex : " + nextIndex);
 		TestWordDTO rDTO = (TestWordDTO) redisDB.opsForList().index(COL_NM, nextIndex);
