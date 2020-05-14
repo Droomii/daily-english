@@ -108,7 +108,7 @@
 				빈 칸에 들어갈 알맞은 단어를 고르세요.
 				</p>
 				<p>
-				<span id="no">1</span>. <span id="word">word</span> : <span id="sentence"> This is an <span class="stress">example.</span></span>
+				<span id="no"></span>. <span id="word"></span> : <span id="sentence"></span>
 				</p>
 				</div>
 				<div class="card-body">
