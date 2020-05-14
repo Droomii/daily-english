@@ -67,4 +67,17 @@ public class TestWordController {
 		log.info(this.getClass().getName() + ".randomWord end");
 		return rDTO;
 	}
+	
+	@RequestMapping(value = "insertTestInfo")
+	@ResponseBody
+	public String insertTestInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".insertTestInfo start");
+
+		String userNo = "1";
+		testWordService.get(userNo);
+		
+		log.info(this.getClass().getName() + ".insertTestInfo end");
+		return null;
+	}
 }

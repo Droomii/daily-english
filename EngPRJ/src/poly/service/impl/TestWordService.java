@@ -39,4 +39,9 @@ public class TestWordService implements ITestWordService {
 		return redisTestWordMapper.getRandomWord(index, answer);
 	}
 
+	@Override
+	public void get(String userNo) throws Exception {
+		redisTestWordMapper.getTestInfo(userNo);
+	}
+
 }

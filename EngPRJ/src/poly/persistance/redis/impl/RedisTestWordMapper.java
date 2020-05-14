@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
+import poly.dto.TestInfoDTO;
 import poly.dto.TestWordDTO;
 import poly.persistance.redis.IRedisTestWordMapper;
 
@@ -84,6 +85,12 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 	@Override
 	public TestWordDTO getRandomWord(String index, String answer) throws Exception {
 		
+		log.info(this.getClass().getName() + ".getRandomWord start");
+		
+		// 사용자 번호
+		String userNo = "1";
+		
+		
 		redisDB.setKeySerializer(new StringRedisSerializer());
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestWordDTO.class));
 
@@ -106,7 +113,20 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		int nextIndex = lvl * 20 + R.nextInt(20);
 		log.info("nextIndex : " + nextIndex);
 		TestWordDTO rDTO = (TestWordDTO) redisDB.opsForList().index(COL_NM, nextIndex);
+		
+		log.info(this.getClass().getName() + ".getRandomWord end");
 		return rDTO;
+	}
+
+	@Override
+	public void getTestInfo(String userNo) throws Exception {
+		
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestInfoDTO.class));
+		
+		TestInfoDTO pDTO = new TestInfoDTO();
+
+		redisDB.opsForZSet().add("testInfo", pDTO, Integer.parseInt(userNo));
 	}
 	
 	

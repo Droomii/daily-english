@@ -10,4 +10,6 @@ public interface ITestWordService {
 
 	TestWordDTO submitTestAnswer(String index, String answer) throws Exception;
 
+	void get(String userNo) throws Exception;
+
 }
