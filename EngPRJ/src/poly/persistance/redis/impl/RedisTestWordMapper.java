@@ -1,9 +1,12 @@
 package poly.persistance.redis.impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,8 +108,6 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		// 레벨에 따른 정답률 정보
 		int[][] lvlCorrectInfo = tiDTO.getCorrectAnswers();
 		
-		
-		
 		TestWordDTO tDTO = (TestWordDTO) redisDB.opsForList().index(COL_NM, Integer.parseInt(index));
 		String correctAnswer = tDTO.getAnswer();
 		log.info("answer : " + answer);
@@ -115,24 +116,46 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		// increment answered questions by 1
 		lvlCorrectInfo[lvl][1]++;
 		if(answer.equals(correctAnswer)) {
-			// capping level to 6
-			lvl = lvl + 1 < 7 ? lvl + 1 : 6;
 			
 			// increment correct answer by 1
 			lvlCorrectInfo[lvl][0]++;
+			// capping level to 6
+			lvl = lvl + 1 < 7 ? lvl + 1 : 6;
 		}else {
 			lvl = lvl - 1 > -1 ? lvl - 1 : 0;
 		}
 		
 		tDTO = null;
 		
-		int nextIndex = lvl * 20 + R.nextInt(20);
 		
-		
-		while(tiDTO.getAnsweredQs().contains(nextIndex)) {
-			
-			nextIndex = lvl * 20 + R.nextInt(20);
+		// all answered questions
+		Set<Integer> answeredQs = new HashSet<>(tiDTO.getAnsweredQs());
+		log.info("answeredQs : " + answeredQs);
+		// Question numbers of corresponding level 
+		List<Integer> allQsofLvl = new ArrayList<>();
+		for(int i=0; i<20; i++) {
+			allQsofLvl.add(i+lvl*20);
 		}
+		
+		allQsofLvl.removeAll(answeredQs);
+		log.info("remaining Questions : " + allQsofLvl);
+		
+		if(allQsofLvl.isEmpty()) {
+			TestWordDTO emptyDTO = new TestWordDTO();
+			emptyDTO.setA("end");
+			emptyDTO.setB("end");
+			emptyDTO.setC("end");
+			emptyDTO.setD("end");
+			emptyDTO.setAnswer("end");
+			emptyDTO.setNo("end");
+			emptyDTO.setSentence("no more questions");
+			emptyDTO.setWord("no more question");
+			
+			return emptyDTO;
+		}
+		
+		int nextIndex = allQsofLvl.get(R.nextInt(allQsofLvl.size()));
+		
 		
 		log.info("nextIndex : " + nextIndex);
 		TestWordDTO rDTO = (TestWordDTO) redisDB.opsForList().index(COL_NM, nextIndex);
@@ -179,6 +202,7 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestInfoDTO.class));
 		
 		redisDB.opsForValue().set(redisKey, pDTO);
+		redisDB.expire(redisKey, 100, TimeUnit.SECONDS);
 		
 	}
 	
