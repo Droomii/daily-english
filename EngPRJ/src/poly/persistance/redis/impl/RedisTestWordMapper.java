@@ -91,22 +91,58 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		// 사용자 번호
 		String userNo = "1";
 		
+		
+		// get user test info
 		TestInfoDTO tiDTO = getTestInfo(userNo);
-		
-		
+		tiDTO.getAnsweredQs().add(Integer.parseInt(index));
 		redisDB.setKeySerializer(new StringRedisSerializer());
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestWordDTO.class));
 
 		// from 0 to 6
 		int lvl = Integer.parseInt(index) / 20;
 		log.info("lvl : " + lvl);
-		TestWordDTO tDTO = (TestWordDTO) redisDB.opsForList().index(COL_NM, Integer.parseInt(index)-1);
+		
+		// 레벨에 따른 정답률 정보 가져오기
+		int[] lvlCorrectInfo = null;
+		switch(lvl) {
+		case 0:
+			lvlCorrectInfo = tiDTO.getLvl1Correct();
+			break;
+		case 1:
+			lvlCorrectInfo = tiDTO.getLvl2Correct();
+			break;
+		case 2:
+			lvlCorrectInfo = tiDTO.getLvl3Correct();
+			break;
+		case 3:
+			lvlCorrectInfo = tiDTO.getLvl4Correct();
+			break;
+		case 4:
+			lvlCorrectInfo = tiDTO.getLvl5Correct();
+			break;
+		case 5:
+			lvlCorrectInfo = tiDTO.getLvl6Correct();
+			break;
+		case 6:
+			lvlCorrectInfo = tiDTO.getLvl7Correct();
+			break;
+		}
+		
+		
+		
+		TestWordDTO tDTO = (TestWordDTO) redisDB.opsForList().index(COL_NM, Integer.parseInt(index));
 		String correctAnswer = tDTO.getAnswer();
 		log.info("answer : " + answer);
 		log.info("correctAnswer : " + correctAnswer);
+		
+		// increment answered questions by 1
+		lvlCorrectInfo[1]++;
 		if(answer.equals(correctAnswer)) {
 			// capping level to 6
 			lvl = lvl + 1 < 7 ? lvl + 1 : 6;
+			
+			// increment correct answer by 1
+			lvlCorrectInfo[0]++;
 		}else {
 			lvl = lvl - 1 > -1 ? lvl - 1 : 0;
 		}
@@ -116,6 +152,8 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		int nextIndex = lvl * 20 + R.nextInt(20);
 		log.info("nextIndex : " + nextIndex);
 		TestWordDTO rDTO = (TestWordDTO) redisDB.opsForList().index(COL_NM, nextIndex);
+		
+		updateTestInfo(tiDTO);
 		
 		log.info(this.getClass().getName() + ".getRandomWord end");
 		return rDTO;
@@ -128,30 +166,34 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 	@Override
 	public TestInfoDTO getTestInfo(String userNo) throws Exception {
 		
+		log.info(this.getClass().getName() + ".getTestInfo start");
 		redisDB.setKeySerializer(new StringRedisSerializer());
-		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestInfoDTO.class));
+		redisDB.setHashKeySerializer(new StringRedisSerializer());
+		redisDB.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(TestInfoDTO.class));
 		
-		int userNoInt =Integer.parseInt(userNo); 
 		
-		Set rSet = (Set) redisDB.opsForZSet().range("testInfo", userNoInt, userNoInt+1);
+		TestInfoDTO rDTO = (TestInfoDTO) redisDB.opsForHash().get("testInfo", userNo);
 		
-		Iterator<Object> iter = rSet.iterator();
-		
-		TestInfoDTO rDTO = null;
-		if(iter.hasNext()) {
-			rDTO = (TestInfoDTO)iter.next();
-		}else {
+		if(rDTO==null) {
 			rDTO = new TestInfoDTO(userNo);
-			redisDB.opsForZSet().add("testInfo", rDTO, userNoInt);
+			redisDB.opsForHash().put("testInfo", userNo, rDTO);
 		}
 		
+		log.info(this.getClass().getName() + ".getTestInfo end");
 		return rDTO;
 		
 	}
 
 	@Override
 	public void updateTestInfo(TestInfoDTO pDTO) throws Exception {
-		// TODO Auto-generated method stub
+		
+		
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setHashKeySerializer(new StringRedisSerializer());
+		redisDB.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(TestInfoDTO.class));
+		
+		redisDB.opsForHash().put("testInfo", pDTO.getUserNo(), pDTO);
+		
 		
 	}
 	

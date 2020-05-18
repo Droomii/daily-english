@@ -1,5 +1,12 @@
 package poly.persistance.mongo.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -7,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.mongodb.BasicDBObject;
 
+import poly.dto.TestWordDTO;
 import poly.persistance.mongo.IMongoTestMapper;
 
 @Component("MongoTestMapper")
@@ -39,12 +47,6 @@ public class MongoTestMapper implements IMongoTestMapper{
 
 	@Override
 	public void insertWords() throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-	/*  시험 단어 파싱하여 DB에 넣기 위한 메서드였음
-	@Override
-	public void insertWords() throws Exception {
 		log.info(this.getClass().getName() + ".insertWords start");
 		String colNm = "testWords";
 		
@@ -62,7 +64,8 @@ public class MongoTestMapper implements IMongoTestMapper{
 		while((line = bf.readLine()) != null) {
 			tDTO = new TestWordDTO();
 			String[] wordInfo = line.split("\\|");
-			tDTO.setNo(wordInfo[0]);
+			int no = Integer.parseInt(wordInfo[0].trim().replaceAll("\\uFEFF", "")) -1 ;
+			tDTO.setNo(Integer.toString(no));
 			tDTO.setWord(wordInfo[1].split(":")[0].trim());
 			
 			Pattern p = Pattern.compile("(?i)" + tDTO.getWord()+"\\w*");
@@ -92,6 +95,6 @@ public class MongoTestMapper implements IMongoTestMapper{
 		
 	}
 	
-	*/
+
 
 }
