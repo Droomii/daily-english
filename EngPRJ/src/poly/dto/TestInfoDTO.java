@@ -1,8 +1,6 @@
 package poly.dto;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class TestInfoDTO {
@@ -13,7 +11,7 @@ public class TestInfoDTO {
 	// 답한 문제들 인덱스
 	private Set<Integer> answeredQs;
 	
-	// 첫 번째 숫자는 맞은 갯수, 두 번째 숫자는 푼 갯수임
+	// [correctCount, answeredCount]
 	private int[][] correctAnswers;
 	
 	public TestInfoDTO() {

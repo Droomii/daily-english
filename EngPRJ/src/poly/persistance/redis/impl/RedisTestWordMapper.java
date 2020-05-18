@@ -115,17 +115,128 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		
 		// increment answered questions by 1
 		lvlCorrectInfo[lvl][1]++;
+		int nextLvl = 0;
 		if(answer.equals(correctAnswer)) {
 			
 			// increment correct answer by 1
 			lvlCorrectInfo[lvl][0]++;
 			// capping level to 6
-			lvl = lvl + 1 < 7 ? lvl + 1 : 6;
+			nextLvl = lvl + 1 < 7 ? lvl + 1 : 6;
+			
+			boolean passedCurrLvl = lvlCorrectInfo[lvl][0] > 13; 
+			
+			// if passed lvl 6, return skill level as 7.
+			if(passedCurrLvl && lvl==6) {
+				TestWordDTO emptyDTO = new TestWordDTO();
+				emptyDTO.setA("end");
+				emptyDTO.setB("end");
+				emptyDTO.setC("end");
+				emptyDTO.setD("end");
+				emptyDTO.setAnswer("end");
+				emptyDTO.setNo("end");
+				emptyDTO.setSentence("User's level is 7.");
+				emptyDTO.setWord("no more question");
+				
+				return emptyDTO;
+				
+			}
+			
+			int nextLvlWrongCnt = lvlCorrectInfo[nextLvl][1] - lvlCorrectInfo[nextLvl][0];
+			boolean failedNextLvl = nextLvlWrongCnt > 5;
+			
+			
+			if(passedCurrLvl && failedNextLvl) {
+				TestWordDTO emptyDTO = new TestWordDTO();
+				emptyDTO.setA("end");
+				emptyDTO.setB("end");
+				emptyDTO.setC("end");
+				emptyDTO.setD("end");
+				emptyDTO.setAnswer("end");
+				emptyDTO.setNo("end");
+				emptyDTO.setSentence("User's level is " + Integer.toString(lvl));
+				emptyDTO.setWord("no more question");
+				
+				return emptyDTO;
+			}
+			
+			if(failedNextLvl) {
+				nextLvl--;
+			}
+
 		}else {
-			lvl = lvl - 1 > -1 ? lvl - 1 : 0;
+			nextLvl = lvl - 1 > -1 ? lvl - 1 : 0;
+			
+			int currLvlWrongCnt = lvlCorrectInfo[lvl][1] - lvlCorrectInfo[lvl][0];
+			boolean failedCurrLvl = currLvlWrongCnt > 5;
+			
+			
+			
+			if(failedCurrLvl && lvl==0) {
+				TestWordDTO emptyDTO = new TestWordDTO();
+				emptyDTO.setA("end");
+				emptyDTO.setB("end");
+				emptyDTO.setC("end");
+				emptyDTO.setD("end");
+				emptyDTO.setAnswer("end");
+				emptyDTO.setNo("end");
+				emptyDTO.setSentence("you no speak english?");
+				emptyDTO.setWord("no more question");
+				
+				return emptyDTO;
+				
+			}
+			
+			boolean passedNextLvl = lvlCorrectInfo[nextLvl][0] > 13; 
+			
+			if(failedCurrLvl && passedNextLvl) {
+				TestWordDTO emptyDTO = new TestWordDTO();
+				emptyDTO.setA("end");
+				emptyDTO.setB("end");
+				emptyDTO.setC("end");
+				emptyDTO.setD("end");
+				emptyDTO.setAnswer("end");
+				emptyDTO.setNo("end");
+				emptyDTO.setSentence("User's level is " + Integer.toString(nextLvl));
+				emptyDTO.setWord("no more question");
+				return emptyDTO;
+			}
+			
+			if(passedNextLvl) {
+				nextLvl++;
+			}
+			
 		}
 		
 		tDTO = null;
+		
+		if(lvlCorrectInfo[nextLvl][0] > 13) {
+			
+		}
+		
+		
+		// if n. of wrong answers exceed 5, decrement level by 1
+		if(lvlCorrectInfo[nextLvl][1] - lvlCorrectInfo[nextLvl][0] > 5) {
+			log.info("user's level capped at " + (nextLvl - 1));
+			nextLvl = lvl - 1 > -1 ? lvl - 1 : 0;
+			
+			if(nextLvl==0) {
+				TestWordDTO emptyDTO = new TestWordDTO();
+				emptyDTO.setA("end");
+				emptyDTO.setB("end");
+				emptyDTO.setC("end");
+				emptyDTO.setD("end");
+				emptyDTO.setAnswer("end");
+				emptyDTO.setNo("end");
+				emptyDTO.setSentence("User's level is 0.");
+				emptyDTO.setWord("no more question");
+				
+				return emptyDTO;
+			}
+			
+		}
+		
+		
+		
 		
 		
 		// all answered questions
@@ -134,7 +245,7 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		// Question numbers of corresponding level 
 		List<Integer> allQsofLvl = new ArrayList<>();
 		for(int i=0; i<20; i++) {
-			allQsofLvl.add(i+lvl*20);
+			allQsofLvl.add(i+nextLvl*20);
 		}
 		
 		allQsofLvl.removeAll(answeredQs);
@@ -202,7 +313,7 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestInfoDTO.class));
 		
 		redisDB.opsForValue().set(redisKey, pDTO);
-		redisDB.expire(redisKey, 100, TimeUnit.SECONDS);
+		redisDB.expire(redisKey, 10, TimeUnit.MINUTES);
 		
 	}
 	
