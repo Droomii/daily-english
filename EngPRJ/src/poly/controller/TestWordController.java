@@ -11,6 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import poly.dto.TestInfoDTO;
 import poly.dto.TestWordDTO;
 import poly.service.ITestWordService;
 
@@ -70,14 +71,18 @@ public class TestWordController {
 	
 	@RequestMapping(value = "insertTestInfo")
 	@ResponseBody
-	public String insertTestInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+	public TestInfoDTO insertTestInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".insertTestInfo start");
 
-		String userNo = "1";
-		testWordService.get(userNo);
+		String userNo = request.getParameter("userNo");
+		if(userNo==null) {
+			userNo = "1";
+		}
+		
+		TestInfoDTO tDTO = testWordService.getTestInfo(userNo);
 		
 		log.info(this.getClass().getName() + ".insertTestInfo end");
-		return null;
+		return tDTO;
 	}
 }

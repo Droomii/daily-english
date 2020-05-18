@@ -3,6 +3,7 @@ package poly.persistance.redis.impl;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,8 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		// 사용자 번호
 		String userNo = "1";
 		
+		TestInfoDTO tiDTO = getTestInfo(userNo);
+		
 		
 		redisDB.setKeySerializer(new StringRedisSerializer());
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestWordDTO.class));
@@ -118,17 +121,39 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		return rDTO;
 	}
 
+	/**returns user's test info
+	 * if not found, creates new test info and stores it in redis
+	 *
+	 */
 	@Override
-	public void getTestInfo(String userNo) throws Exception {
+	public TestInfoDTO getTestInfo(String userNo) throws Exception {
 		
 		redisDB.setKeySerializer(new StringRedisSerializer());
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(TestInfoDTO.class));
 		
-		TestInfoDTO pDTO = new TestInfoDTO();
-
-		redisDB.opsForZSet().add("testInfo", pDTO, Integer.parseInt(userNo));
+		int userNoInt =Integer.parseInt(userNo); 
+		
+		Set rSet = (Set) redisDB.opsForZSet().range("testInfo", userNoInt, userNoInt+1);
+		
+		Iterator<Object> iter = rSet.iterator();
+		
+		TestInfoDTO rDTO = null;
+		if(iter.hasNext()) {
+			rDTO = (TestInfoDTO)iter.next();
+		}else {
+			rDTO = new TestInfoDTO(userNo);
+			redisDB.opsForZSet().add("testInfo", rDTO, userNoInt);
+		}
+		
+		return rDTO;
+		
 	}
-	
+
+	@Override
+	public void updateTestInfo(TestInfoDTO pDTO) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

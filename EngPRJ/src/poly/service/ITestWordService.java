@@ -1,5 +1,6 @@
 package poly.service;
 
+import poly.dto.TestInfoDTO;
 import poly.dto.TestWordDTO;
 
 public interface ITestWordService {
@@ -10,6 +11,6 @@ public interface ITestWordService {
 
 	TestWordDTO submitTestAnswer(String index, String answer) throws Exception;
 
-	void get(String userNo) throws Exception;
+	TestInfoDTO getTestInfo(String userNo) throws Exception;
 
 }

@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import poly.dto.TestInfoDTO;
 import poly.dto.TestWordDTO;
 import poly.persistance.redis.IRedisTestWordMapper;
 import poly.service.ITestWordService;
@@ -40,8 +41,8 @@ public class TestWordService implements ITestWordService {
 	}
 
 	@Override
-	public void get(String userNo) throws Exception {
-		redisTestWordMapper.getTestInfo(userNo);
+	public TestInfoDTO getTestInfo(String userNo) throws Exception {
+		return redisTestWordMapper.getTestInfo(userNo);
 	}
 
 }

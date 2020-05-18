@@ -1,5 +1,6 @@
 package poly.persistance.redis;
 
+import poly.dto.TestInfoDTO;
 import poly.dto.TestWordDTO;
 
 public interface IRedisTestWordMapper {
@@ -14,6 +15,9 @@ public interface IRedisTestWordMapper {
 
 	public TestWordDTO getRandomWord(String index, String answer) throws Exception;
 
-	public void getTestInfo(String userNo) throws Exception;
+	public TestInfoDTO getTestInfo(String userNo) throws Exception;
+	
+	public void updateTestInfo(TestInfoDTO pDTO) throws Exception;
+	
 
 }
