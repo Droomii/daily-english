@@ -101,11 +101,11 @@
 		<div class="col-lg-4 offset-lg-4 col-md-12">
 			<div class="card">
 				<div class="card-header pb-0">
-					<h4 class="card-title mb-0" style="font-size:1.5rem">오늘의 퀴즈</h4>
+					<h4 class="card-title mb-0" style="font-size:1.5rem">실력 측정 테스트</h4>
 				</div>
 				<div class="card-body">
 				<p style="font-weight:bold">
-				빈 칸에 들어갈 알맞은 단어를 고르세요.
+				밑줄 친 단어의 알맞은 해석을 고르세요.
 				</p>
 				<p>
 				<span id="no"></span>. <span id="word"></span> : <span id="sentence"></span>
@@ -173,15 +173,21 @@
 		        	   index : index},
 		           dataType:"JSON",
 		           success : function(json) {
-		        	   $('.chosen').removeClass('chosen');
-		        	   $("#no").html(++no);
-		        	   $("#word").html(json.word);
-		        	   $("#sentence").html(json.sentence);
-		        	   $("#a").html(json.a);
-		        	   $("#b").html(json.b);
-		        	   $("#c").html(json.c);
-		        	   $("#d").html(json.d);
-		        	   index = json.no * 1;
+		        	   
+		        	   if(json.finalLevel!=null){
+		        		   alert("귀하의 영어 실력 레벨은 " + json.finalLevel + "입니다.");
+		        	   }else{
+		        		   $('.chosen').removeClass('chosen');
+			        	   $("#no").html(++no);
+			        	   $("#word").html(json.word);
+			        	   $("#sentence").html(json.sentence);
+			        	   $("#a").html(json.a);
+			        	   $("#b").html(json.b);
+			        	   $("#c").html(json.c);
+			        	   $("#d").html(json.d);
+			        	   index = json.no * 1;   
+		        	   }
+		        	   
 		           },
 		           error : function(xhr, status, error) {
 		        	   console.log('error!!');

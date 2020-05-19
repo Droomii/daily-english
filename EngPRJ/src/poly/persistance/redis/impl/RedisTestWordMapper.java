@@ -127,17 +127,10 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 			
 			// if passed lvl 6, return skill level as 7.
 			if(passedCurrLvl && lvl==6) {
-				TestWordDTO emptyDTO = new TestWordDTO();
-				emptyDTO.setA("end");
-				emptyDTO.setB("end");
-				emptyDTO.setC("end");
-				emptyDTO.setD("end");
-				emptyDTO.setAnswer("end");
-				emptyDTO.setNo("end");
-				emptyDTO.setSentence("User's level is 7.");
-				emptyDTO.setWord("no more question");
-				
-				return emptyDTO;
+				TestWordDTO finalDTO = new TestWordDTO();
+				finalDTO.setFinalLevel("8");
+				redisDB.delete("testInfo_"+userNo);
+				return finalDTO;
 				
 			}
 			
@@ -146,17 +139,10 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 			
 			
 			if(passedCurrLvl && failedNextLvl) {
-				TestWordDTO emptyDTO = new TestWordDTO();
-				emptyDTO.setA("end");
-				emptyDTO.setB("end");
-				emptyDTO.setC("end");
-				emptyDTO.setD("end");
-				emptyDTO.setAnswer("end");
-				emptyDTO.setNo("end");
-				emptyDTO.setSentence("User's level is " + Integer.toString(lvl));
-				emptyDTO.setWord("no more question");
-				
-				return emptyDTO;
+				TestWordDTO finalDTO = new TestWordDTO();
+				finalDTO.setFinalLevel(Integer.toString(lvl+1));
+				redisDB.delete("testInfo_"+userNo);
+				return finalDTO;
 			}
 			
 			if(failedNextLvl) {
@@ -170,35 +156,21 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 			boolean failedCurrLvl = currLvlWrongCnt > 2;
 			
 			
-			
+			// if failed level 0
 			if(failedCurrLvl && lvl==0) {
-				TestWordDTO emptyDTO = new TestWordDTO();
-				emptyDTO.setA("end");
-				emptyDTO.setB("end");
-				emptyDTO.setC("end");
-				emptyDTO.setD("end");
-				emptyDTO.setAnswer("end");
-				emptyDTO.setNo("end");
-				emptyDTO.setSentence("you no speak english?");
-				emptyDTO.setWord("no more question");
-				
-				return emptyDTO;
-				
+				TestWordDTO finalDTO = new TestWordDTO();
+				finalDTO.setFinalLevel("0");
+				redisDB.delete("testInfo_"+userNo);
+				return finalDTO;
 			}
 			
 			boolean passedNextLvl = lvlCorrectInfo[nextLvl][0] > 6; 
 			
 			if(failedCurrLvl && passedNextLvl) {
-				TestWordDTO emptyDTO = new TestWordDTO();
-				emptyDTO.setA("end");
-				emptyDTO.setB("end");
-				emptyDTO.setC("end");
-				emptyDTO.setD("end");
-				emptyDTO.setAnswer("end");
-				emptyDTO.setNo("end");
-				emptyDTO.setSentence("User's level is " + Integer.toString(nextLvl));
-				emptyDTO.setWord("no more question");
-				return emptyDTO;
+				TestWordDTO finalDTO = new TestWordDTO();
+				finalDTO.setFinalLevel(Integer.toString(nextLvl));
+				redisDB.delete("testInfo_"+userNo);
+				return finalDTO;
 			}
 			
 			if(passedNextLvl) {
@@ -208,36 +180,6 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		}
 		
 		tDTO = null;
-		
-		if(lvlCorrectInfo[nextLvl][0] > 6) {
-			
-		}
-		
-		
-		// if n. of wrong answers exceed 5, decrement level by 1
-		if(lvlCorrectInfo[nextLvl][1] - lvlCorrectInfo[nextLvl][0] > 2) {
-			log.info("user's level capped at " + (nextLvl - 1));
-			nextLvl = lvl - 1 > -1 ? lvl - 1 : 0;
-			
-			if(nextLvl==0) {
-				TestWordDTO emptyDTO = new TestWordDTO();
-				emptyDTO.setA("end");
-				emptyDTO.setB("end");
-				emptyDTO.setC("end");
-				emptyDTO.setD("end");
-				emptyDTO.setAnswer("end");
-				emptyDTO.setNo("end");
-				emptyDTO.setSentence("User's level is 0.");
-				emptyDTO.setWord("no more question");
-				
-				return emptyDTO;
-			}
-			
-		}
-		
-		
-		
-		
 		
 		// all answered questions
 		Set<Integer> answeredQs = new HashSet<>(tiDTO.getAnsweredQs());
@@ -250,20 +192,6 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		
 		allQsofLvl.removeAll(answeredQs);
 		log.info("remaining Questions : " + allQsofLvl);
-		
-		if(allQsofLvl.isEmpty()) {
-			TestWordDTO emptyDTO = new TestWordDTO();
-			emptyDTO.setA("end");
-			emptyDTO.setB("end");
-			emptyDTO.setC("end");
-			emptyDTO.setD("end");
-			emptyDTO.setAnswer("end");
-			emptyDTO.setNo("end");
-			emptyDTO.setSentence("no more questions");
-			emptyDTO.setWord("no more question");
-			
-			return emptyDTO;
-		}
 		
 		int nextIndex = allQsofLvl.get(R.nextInt(allQsofLvl.size()));
 		

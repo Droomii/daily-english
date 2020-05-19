@@ -19,6 +19,15 @@ public class TestWordDTO {
 	private String c;
 	private String d;
 	private String answer;
+	private String finalLevel;
+	
+	public String getFinalLevel() {
+		return finalLevel;
+	}
+
+	public void setFinalLevel(String finalLevel) {
+		this.finalLevel = finalLevel;
+	}
 
 	/**
 	 * @param rWord : MongoDB로부터 받은 단어 정보를 DBObject로 전달하면 알아서 속성에 넣어줌

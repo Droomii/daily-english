@@ -37,13 +37,13 @@ public class TestWordController {
 		return "success";
 	}
 	
-	@RequestMapping(value = "randomTest")
+	@RequestMapping(value = "wordTest/takeTest")
 	public String randomTest(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".randomTest start");
 		
 		log.info(this.getClass().getName() + ".randomTest end");
-		return "/wordTest/todayQuiz";
+		return "/wordTest/wordTest";
 	}
 	
 	@RequestMapping(value = "submitTestAnswer")
