@@ -175,7 +175,7 @@
 		           success : function(json) {
 		        	   
 		        	   if(json.finalLevel!=null){
-		        		   alert("귀하의 영어 실력 레벨은 " + json.finalLevel + "입니다.");
+		        		   alert("당신의 영어 실력 레벨은 " + json.finalLevel + "입니다.");
 		        	   }else{
 		        		   $('.chosen').removeClass('chosen');
 			        	   $("#no").html(++no);

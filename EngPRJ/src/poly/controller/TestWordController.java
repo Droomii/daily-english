@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.TestInfoDTO;
 import poly.dto.TestWordDTO;
+import poly.persistance.mapper.IUserMapper;
 import poly.service.ITestWordService;
 
 @Controller
@@ -22,6 +23,9 @@ public class TestWordController {
 	
 	@Resource(name = "TestWordService")
 	ITestWordService testWordService;
+	
+	@Resource(name = "UserMapper")
+	IUserMapper userMapper;
 	
 	
 	// 실력 측정용 단어 레디스에 저장하는 메서드
@@ -63,6 +67,10 @@ public class TestWordController {
 			rDTO = testWordService.getRandomWord();			
 		}else {
 			rDTO = testWordService.submitTestAnswer(index, answer);
+		}
+		
+		if(rDTO.getFinalLevel()!=null) {
+			
 		}
 		
 		log.info(this.getClass().getName() + ".randomWord end");
