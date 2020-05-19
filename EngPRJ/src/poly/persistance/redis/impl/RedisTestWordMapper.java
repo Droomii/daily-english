@@ -123,7 +123,7 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 			// capping level to 6
 			nextLvl = lvl + 1 < 7 ? lvl + 1 : 6;
 			
-			boolean passedCurrLvl = lvlCorrectInfo[lvl][0] > 13; 
+			boolean passedCurrLvl = lvlCorrectInfo[lvl][0] > 6; 
 			
 			// if passed lvl 6, return skill level as 7.
 			if(passedCurrLvl && lvl==6) {
@@ -142,7 +142,7 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 			}
 			
 			int nextLvlWrongCnt = lvlCorrectInfo[nextLvl][1] - lvlCorrectInfo[nextLvl][0];
-			boolean failedNextLvl = nextLvlWrongCnt > 5;
+			boolean failedNextLvl = nextLvlWrongCnt > 2;
 			
 			
 			if(passedCurrLvl && failedNextLvl) {
@@ -167,7 +167,7 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 			nextLvl = lvl - 1 > -1 ? lvl - 1 : 0;
 			
 			int currLvlWrongCnt = lvlCorrectInfo[lvl][1] - lvlCorrectInfo[lvl][0];
-			boolean failedCurrLvl = currLvlWrongCnt > 5;
+			boolean failedCurrLvl = currLvlWrongCnt > 2;
 			
 			
 			
@@ -186,7 +186,7 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 				
 			}
 			
-			boolean passedNextLvl = lvlCorrectInfo[nextLvl][0] > 13; 
+			boolean passedNextLvl = lvlCorrectInfo[nextLvl][0] > 6; 
 			
 			if(failedCurrLvl && passedNextLvl) {
 				TestWordDTO emptyDTO = new TestWordDTO();
@@ -209,13 +209,13 @@ public class RedisTestWordMapper implements IRedisTestWordMapper{
 		
 		tDTO = null;
 		
-		if(lvlCorrectInfo[nextLvl][0] > 13) {
+		if(lvlCorrectInfo[nextLvl][0] > 6) {
 			
 		}
 		
 		
 		// if n. of wrong answers exceed 5, decrement level by 1
-		if(lvlCorrectInfo[nextLvl][1] - lvlCorrectInfo[nextLvl][0] > 5) {
+		if(lvlCorrectInfo[nextLvl][1] - lvlCorrectInfo[nextLvl][0] > 2) {
 			log.info("user's level capped at " + (nextLvl - 1));
 			nextLvl = lvl - 1 > -1 ? lvl - 1 : 0;
 			
