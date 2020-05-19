@@ -4,10 +4,10 @@
 <mapper namespace="poly.persistance.mapper.IUserMapper">
 
 	<!-- 사용자 실력 레벨 수정-->
-	<update id="updateLevel" parameterType="String">
+	<update id="updateUserLvl" parameterType="String">
 		UPDATE USER_INFO SET
-			USER_LVL = #{finalLevel}
+			USER_LVL = #{1}
 		WHERE
-			USER_SEQ = #{userSeq}
+			USER_SEQ = #{0}
 	</update>
 </mapper>

@@ -15,6 +15,7 @@ import poly.dto.TestInfoDTO;
 import poly.dto.TestWordDTO;
 import poly.persistance.mapper.IUserMapper;
 import poly.service.ITestWordService;
+import poly.service.IUserService;
 
 @Controller
 public class TestWordController {
@@ -27,6 +28,8 @@ public class TestWordController {
 	@Resource(name = "UserMapper")
 	IUserMapper userMapper;
 	
+	@Resource(name = "UserService")
+	IUserService UserService;
 	
 	// 실력 측정용 단어 레디스에 저장하는 메서드
 	@RequestMapping(value = "saveWordToRedis")
@@ -56,6 +59,11 @@ public class TestWordController {
 			throws Exception {
 		log.info(this.getClass().getName() + ".randomWord start");
 		
+		String user_seq = request.getParameter("user_no");
+		if(user_seq==null) {
+			user_seq="1";
+		}
+		
 		String index = request.getParameter("index");
 		String answer = request.getParameter("answer");
 		
@@ -70,7 +78,7 @@ public class TestWordController {
 		}
 		
 		if(rDTO.getFinalLevel()!=null) {
-			
+			UserService.updateUserLvl(user_seq, rDTO.getFinalLevel());
 		}
 		
 		log.info(this.getClass().getName() + ".randomWord end");
