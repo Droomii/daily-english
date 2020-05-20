@@ -103,6 +103,7 @@
 				<div class="card-header pb-0">
 					<h4 class="card-title mb-0" style="font-size:1.5rem">실력 측정 테스트</h4>
 				</div>
+				<div id="card-content">
 				<div class="card-body">
 				<p style="font-weight:bold">
 				밑줄 친 단어의 알맞은 해석을 고르세요.
@@ -116,6 +117,7 @@
 				<button type="button" id="b" class="btn mb-1 choice btn-secondary btn-sm btn-block">hello</button>
 				<button type="button" id="c" class="btn mb-1 choice btn-secondary btn-sm btn-block">world</button>
 				<button type="button" id="d" class="btn mb-1 choice btn-secondary btn-sm btn-block">wrong</button>
+				</div>
 				</div>
 			</div>
 		</div>
@@ -175,7 +177,13 @@
 		           success : function(json) {
 		        	   
 		        	   if(json.finalLevel!=null){
-		        		   alert("당신의 영어 실력 레벨은 " + json.finalLevel + "입니다.");
+		        		   var resultContent = 
+		        			   "<div class='card-body'>"
+		        		   		+ "<h4 class='card-title mb-0 text-center' style='font-size:1.5rem'>"
+		        		   		+ "당신의 영어 실력은...</h4><h4 class='card-title mt-3 text-center' style='font-size:2rem'>"
+		        		   		+ "Level " + json.finalLevel + "</h4></div>";
+		        		   $("#card-content").html(resultContent);
+		        		   
 		        	   }else{
 		        		   $('.chosen').removeClass('chosen');
 			        	   $("#no").html(++no);
