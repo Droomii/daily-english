@@ -1,6 +1,7 @@
 package poly.dto;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class NLPDTO {
 	private List<List<String>> tokens;
 	private List<List<String>> lemmas;
 	private List<List<String>> pos;
+	private Date insertDate;
 	
 	
 	public NLPDTO() {}
@@ -53,6 +55,8 @@ public class NLPDTO {
 	    	pos.add(posBySent);
 	    	lemmas.add(lemma);
 	    }
+	    
+	    this.insertDate = new Date();
 	}
 
 	public List<List<String>> getLemmas() {
@@ -93,6 +97,14 @@ public class NLPDTO {
 
 	public void setNewsTitle(String newsTitle) {
 		this.newsTitle = newsTitle;
+	}
+
+	public Date getInsertDate() {
+		return insertDate;
+	}
+
+	public void setInsertDate(Date insertDate) {
+		this.insertDate = insertDate;
 	}
 	
 	
