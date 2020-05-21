@@ -1,6 +1,7 @@
 package poly.util;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,15 +30,21 @@ public class WebCrawler {
 		doc = Jsoup.connect(url + href).get();
 		
 		// 기사 내용 추출
-		element = doc.select("#articleText div.view_con_t").last();
+		StringBuilder articleSb = new StringBuilder();
 		
-		String article = element.text();
+		Iterator<Element> it = doc.select("#articleText div.view_con_t").iterator();
+		
+		while(it.hasNext()) {
+			articleSb.append(it.next().ownText());
+		}
+		
+		
 		
 		element = doc.selectFirst("h1.view_tit");
 		
 		String title = element.text();
 		
-		return new String[] {title,article};
+		return new String[] {title,articleSb.toString()};
 
 	}
 }
