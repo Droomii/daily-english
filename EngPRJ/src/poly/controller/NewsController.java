@@ -47,6 +47,7 @@ public class NewsController {
 			String[] crawlRes = WebCrawler.crawlHerald();
 			title = crawlRes[0];
 			inputText = crawlRes[1];
+			log.info("inputText : " + inputText);
 		}
 		
 		NLPDTO rDTO = newsService.nlpAndSaveNews(title, inputText);

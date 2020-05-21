@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 
 import config.Mapper;
 import poly.dto.NLPDTO;
@@ -26,7 +28,7 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 
 
 		if (!mongodb.collectionExists(COL_NM)) {
-			mongodb.createCollection(COL_NM).createIndex(new BasicDBObject("collect_time", 1).append("rank", 1), "rankIdx");
+			mongodb.createCollection(COL_NM).createIndex(new BasicDBObject("insertDate", -1), "dateIdx");
 		}
 
 		log.info(this.getClass().getName() + ".createCollection end");
@@ -37,7 +39,16 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 	public void insertNews(NLPDTO rDTO) throws Exception {
 
 		createCollection();
-		mongodb.insert(rDTO, COL_NM);
+		DBCollection col = mongodb.getCollection(COL_NM);
+		BasicDBObject query = new BasicDBObject();
+		query.put("newsTitle", rDTO.getNewsTitle());
+		DBCursor res = col.find(query);
+		if(res.hasNext()) {
+			log.info("news already crawled");
+		}else {
+			mongodb.insert(rDTO, COL_NM);
+		}
+		
 	}
 
 }
