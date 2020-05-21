@@ -35,8 +35,7 @@ public class NLPUtil {
 	    // 10th token of the document
 	    List<CoreLabel> token = document.tokens();
 	    System.out.println("Example: token");
-	    System.out.println("index: "  + token.get(6).index());
-	    System.out.println("beginposition: "  + token.get(6).lemma());
+	    System.out.println("index: "  + token.get(1).originalText());
 	    System.out.println();
 
 	    // text of the first sentence
@@ -61,23 +60,5 @@ public class NLPUtil {
 	    System.out.println();
 
 	  }
-	
-	public static NLPDTO getNLP(String article) {
-		
-		// set up pipeline properties
-	    Properties props = new Properties();
-	    // set the list of annotators to run
-	    props.setProperty("annotators", "tokenize,ssplit,pos,lemma");
-	    // set a property for an annotator, in this case the coref annotator is being set to use the neural algorithm
-	    props.setProperty("coref.algorithm", "neural");
-	    // build pipeline
-	    StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-	    // create a document object
-	    CoreDocument document = new CoreDocument(text);
-	    // annnotate the document
-	    pipeline.annotate(document);
-	    
-	    return null;
-	}
 	
 }

@@ -13,23 +13,41 @@ public class NLPDTO {
 	private List<List<String>> lemmas;
 	private List<String> originalSentence;
 	private List<List<String>> pos;
-	private List<List<CoreLabel>> tokens;
+	private List<List<String>> tokens;
 	
 	public NLPDTO() {}
 	
 	public NLPDTO(CoreDocument doc) {
 		
 		// attributes initialization
-		tokens = new ArrayList<List<CoreLabel>>();
+		tokens = new ArrayList<List<String>>();
 		pos = new ArrayList<List<String>>();
 		originalSentence = new ArrayList<String>();
 		lemmas = new ArrayList<List<String>>();
 		
 		
+		// iterating through sentence
 	    for(Iterator<CoreSentence> it = doc.sentences().iterator(); it.hasNext();) {
 	    	CoreSentence sentence = it.next();
 	    	originalSentence.add(sentence.text());
 	    	
+	    	// adding tokens, lemmas by sentence
+	    	List<String> token = new ArrayList<String>();
+	    	List<String> lemma = new ArrayList<String>();
+	    	List<String> posBySent = new ArrayList<String>();
+	    	for(Iterator<CoreLabel> tokenIt = sentence.tokens().iterator();tokenIt.hasNext();) {
+	    		CoreLabel tempToken = tokenIt.next();
+	    		token.add(tempToken.originalText());
+	    		lemma.add(tempToken.lemma());
+	    	}
+	    	
+	    	// adding pos tags by sentence
+	    	posBySent.addAll(sentence.posTags());
+	    	
+	    	// adding nlp data split by sentence
+	    	tokens.add(token);
+	    	pos.add(posBySent);
+	    	lemmas.add(lemma);
 	    }
 	}
 
@@ -57,11 +75,11 @@ public class NLPDTO {
 		this.pos = pos;
 	}
 
-	public List<List<CoreLabel>> getTokens() {
+	public List<List<String>> getTokens() {
 		return tokens;
 	}
 
-	public void setTokens(List<List<CoreLabel>> tokens) {
+	public void setTokens(List<List<String>> tokens) {
 		this.tokens = tokens;
 	}
 	
