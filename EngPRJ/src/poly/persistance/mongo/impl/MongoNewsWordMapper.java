@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import com.mongodb.BasicDBObject;
 
 import config.Mapper;
+import poly.dto.WordDTO;
 import poly.persistance.mongo.IMongoNewsWordMapper;
 
 @Mapper("MongoNewsWordMapper")
@@ -22,8 +23,10 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 	private MongoTemplate mongodb;
 
 	@Override
-	public void insertWords(List<String> words) throws Exception {
+	public void insertWords(List<WordDTO> words) throws Exception {
 		
+		createCollection();
+		mongodb.insert(words, COL_NM);
 		
 		
 	}
@@ -34,7 +37,7 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 
 
 		if (!mongodb.collectionExists(COL_NM)) {
-			mongodb.createCollection(COL_NM).createIndex(new BasicDBObject("collect_time", 1).append("rank", 1), "rankIdx");
+			mongodb.createCollection(COL_NM).createIndex(new BasicDBObject("word", 1), "wordIdx");
 		}
 
 		log.info(this.getClass().getName() + ".createCollection end");

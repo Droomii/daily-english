@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import poly.dto.WordDTO;
 import poly.persistance.mongo.IMongoNewsWordMapper;
 import poly.service.INewsWordService;
 
@@ -16,7 +17,7 @@ public class NewsWordService implements INewsWordService{
 	IMongoNewsWordMapper MongoNewsWordMapper;
 
 	@Override
-	public void insertWords(List<String> words) throws Exception {
+	public void insertWords(List<WordDTO> words) throws Exception {
 		
 		MongoNewsWordMapper.insertWords(words);
 		
