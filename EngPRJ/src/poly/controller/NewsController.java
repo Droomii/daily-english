@@ -12,16 +12,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.NLPDTO;
-import poly.service.INLPService;
+import poly.service.INewsService;
 import poly.util.WebCrawler;
 
 @Controller
-public class NLPController {
+public class NewsController {
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
-	@Resource(name = "NLPService")
-	INLPService nlpService;
+	@Resource(name = "NewsService")
+	INewsService newsService;
+	
+	
 	
 	@RequestMapping(value = "nlpForm")
 	public String nlpForm(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
@@ -32,7 +34,7 @@ public class NLPController {
 		return "/nlpForm";
 	}
 	
-	@RequestMapping(value = "doNLP")
+	@RequestMapping(value = "saveNews")
 	@ResponseBody
 	public NLPDTO doNLP(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
@@ -47,7 +49,8 @@ public class NLPController {
 			inputText = crawlRes[1];
 		}
 		
-		NLPDTO rDTO = nlpService.process(title, inputText);
+		NLPDTO rDTO = newsService.nlpAndSaveNews(title, inputText);
+		
 
 		log.info(this.getClass().getName() + ".lemmatize end");
 		return rDTO;

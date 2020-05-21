@@ -86,6 +86,14 @@ public class NLPDTO {
 	public void setTokens(List<List<String>> tokens) {
 		this.tokens = tokens;
 	}
+
+	public String getNewsTitle() {
+		return newsTitle;
+	}
+
+	public void setNewsTitle(String newsTitle) {
+		this.newsTitle = newsTitle;
+	}
 	
 	
 	

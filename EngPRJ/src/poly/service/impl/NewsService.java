@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import poly.dto.NLPDTO;
-import poly.service.INLPService;
+import poly.service.INewsService;
 
-@Service("NLPService")
-public class NLPService implements INLPService{
-
+@Service("NewsService")
+public class NewsService implements INewsService{
+	
 	@Override
-	public NLPDTO process(String newsTitle, String inputText) throws Exception {
+	public NLPDTO nlpAndSaveNews(String newsTitle, String inputText) throws Exception {
 		
 		// set up pipeline properties
 	    Properties props = new Properties();
@@ -29,6 +29,8 @@ public class NLPService implements INLPService{
 	    pipeline.annotate(document);
 	    
 	    NLPDTO rDTO = new NLPDTO(newsTitle, document);
+	    
+	    
 	    
 	    return rDTO;
 		
