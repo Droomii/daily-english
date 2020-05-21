@@ -4,6 +4,6 @@ import poly.dto.NLPDTO;
 
 public interface INLPService {
 
-	NLPDTO process(String inputText) throws Exception;
+	NLPDTO process(String newsTitle, String inputText) throws Exception;
 
 }

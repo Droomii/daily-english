@@ -13,7 +13,7 @@ import poly.service.INLPService;
 public class NLPService implements INLPService{
 
 	@Override
-	public NLPDTO process(String inputText) throws Exception {
+	public NLPDTO process(String newsTitle, String inputText) throws Exception {
 		
 		// set up pipeline properties
 	    Properties props = new Properties();
@@ -28,7 +28,7 @@ public class NLPService implements INLPService{
 	    // annnotate the document
 	    pipeline.annotate(document);
 	    
-	    NLPDTO rDTO = new NLPDTO(document);
+	    NLPDTO rDTO = new NLPDTO(newsTitle, document);
 	    
 	    return rDTO;
 		

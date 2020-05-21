@@ -8,7 +8,7 @@ import org.jsoup.nodes.Element;
 
 public class WebCrawler {
 	
-	public static String crawlHerald() throws IOException{
+	public static String[] crawlHerald() throws IOException{
 		
 		// 코리아헤럴드 주소
 		String url = "http://www.koreaherald.com";
@@ -33,7 +33,11 @@ public class WebCrawler {
 		
 		String article = element.text();
 		
-		return article;
+		element = doc.selectFirst("h1.view_tit");
+		
+		String title = element.text();
+		
+		return new String[] {title,article};
 
 	}
 }

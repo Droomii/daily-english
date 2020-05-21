@@ -10,6 +10,7 @@ import edu.stanford.nlp.pipeline.CoreSentence;
 
 public class NLPDTO {
 
+	private String newsTitle;
 	private List<String> originalSentence;
 	private List<List<String>> tokens;
 	private List<List<String>> lemmas;
@@ -18,13 +19,15 @@ public class NLPDTO {
 	
 	public NLPDTO() {}
 	
-	public NLPDTO(CoreDocument doc) {
+	public NLPDTO(String newsTitle, CoreDocument doc) {
+		
+		this.newsTitle = newsTitle;
 		
 		// attributes initialization
-		tokens = new ArrayList<List<String>>();
-		pos = new ArrayList<List<String>>();
-		originalSentence = new ArrayList<String>();
-		lemmas = new ArrayList<List<String>>();
+		this.tokens = new ArrayList<List<String>>();
+		this.pos = new ArrayList<List<String>>();
+		this.originalSentence = new ArrayList<String>();
+		this.lemmas = new ArrayList<List<String>>();
 		
 		
 		// iterating through sentence

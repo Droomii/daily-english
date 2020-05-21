@@ -39,13 +39,15 @@ public class NLPController {
 		log.info(this.getClass().getName() + ".lemmatize start");
 		
 		
-		
+		String title = null;
 		String inputText = request.getParameter("inputText");
 		if(inputText==null) {
-			inputText = WebCrawler.crawlHerald();
+			String[] crawlRes = WebCrawler.crawlHerald();
+			title = crawlRes[0];
+			inputText = crawlRes[1];
 		}
 		
-		NLPDTO rDTO = nlpService.process(inputText);
+		NLPDTO rDTO = nlpService.process(title, inputText);
 
 		log.info(this.getClass().getName() + ".lemmatize end");
 		return rDTO;
