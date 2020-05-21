@@ -22,9 +22,18 @@ public class NLPController {
 	@Resource(name = "NLPService")
 	INLPService nlpService;
 	
-	@RequestMapping(value = "lemmatize")
+	@RequestMapping(value = "nlpForm")
+	public String nlpForm(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".nlpForm start");
+
+		log.info(this.getClass().getName() + ".nlpForm end");
+		return "/nlpForm";
+	}
+	
+	@RequestMapping(value = "doNLP")
 	@ResponseBody
-	public NLPDTO lemmatize(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+	public NLPDTO doNLP(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".lemmatize start");
 		
@@ -33,7 +42,7 @@ public class NLPController {
 		NLPDTO rDTO = nlpService.process(inputText);
 
 		log.info(this.getClass().getName() + ".lemmatize end");
-		return null;
+		return rDTO;
 	}
 	
 	
