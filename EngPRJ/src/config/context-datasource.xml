@@ -8,7 +8,11 @@
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
         destroy-method="close">
 	    <property name="driverClass" value="com.mysql.cj.jdbc.Driver" />
+	    <!-- 랩실--> 
+	    <property name="jdbcUrl" value="jdbc:mysql://192.168.88.129:3306/eng_prj?useSSL=false&amp;allowMultiQueries=true&amp;serverTimezone=Asia/Seoul" />
+	    <!-- 실습실
 	    <property name="jdbcUrl" value="jdbc:mysql://192.168.136.128:3306/eng_prj?useSSL=false&amp;allowMultiQueries=true&amp;serverTimezone=Asia/Seoul" />
+	     -->
 	    <property name="user" value="droomii" /> <!-- 오라클 계정 : 아이디 -->
 	    <property name="password" value="Data19!@" /> <!-- 오라클 계정 : 비밀번호 -->
 	    <property name="initialPoolSize" value="5" />

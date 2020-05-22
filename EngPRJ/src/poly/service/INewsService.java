@@ -1,9 +1,13 @@
 package poly.service;
 
-import poly.dto.NLPDTO;
+import java.util.List;
+
+import poly.dto.NewsDTO;
 
 public interface INewsService {
 
-	NLPDTO nlpAndSaveNews(String newsTitle, String inputText) throws Exception;
+	NewsDTO nlpAndSaveNews(String newsTitle, String inputText, String newsUrl) throws Exception;
+
+	NewsDTO getNews() throws Exception;
 
 }

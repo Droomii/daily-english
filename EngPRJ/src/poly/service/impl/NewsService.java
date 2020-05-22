@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import poly.dto.NLPDTO;
+import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
 import poly.service.INewsService;
 
@@ -19,7 +19,7 @@ public class NewsService implements INewsService{
 	IMongoNewsMapper mongoNewsMapper;
 	
 	@Override
-	public NLPDTO nlpAndSaveNews(String newsTitle, String inputText) throws Exception {
+	public NewsDTO nlpAndSaveNews(String newsTitle, String inputText, String newsUrl) throws Exception {
 		
 		// set up pipeline properties
 	    Properties props = new Properties();
@@ -34,12 +34,19 @@ public class NewsService implements INewsService{
 	    // annnotate the document
 	    pipeline.annotate(document);
 	    
-	    NLPDTO rDTO = new NLPDTO(newsTitle, document);
+	    NewsDTO rDTO = new NewsDTO(newsTitle, document, newsUrl);
 	    
 	    mongoNewsMapper.insertNews(rDTO);
 	    
 	    return rDTO;
 		
+	}
+
+	@Override
+	public NewsDTO getNews() throws Exception {
+		
+		NewsDTO rDTO = mongoNewsMapper.getNews();
+		return rDTO;
 	}
 
 	

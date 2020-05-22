@@ -1,5 +1,7 @@
 package poly.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,8 +13,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import poly.dto.NLPDTO;
+import poly.dto.NewsDTO;
 import poly.service.INewsService;
+import poly.util.TranslateUtil;
 import poly.util.WebCrawler;
 
 @Controller
@@ -36,26 +39,54 @@ public class NewsController {
 	
 	@RequestMapping(value = "saveNews")
 	@ResponseBody
-	public NLPDTO doNLP(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+	public NewsDTO doNLP(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".lemmatize start");
 		
 		
 		String title = null;
 		String inputText = request.getParameter("inputText");
+		String newsUrl = null;
 		if(inputText==null) {
 			String[] crawlRes = WebCrawler.crawlHerald();
 			title = crawlRes[0];
 			inputText = crawlRes[1];
+			newsUrl = crawlRes[2];
 			log.info("inputText : " + inputText);
 		}
 		
-		NLPDTO rDTO = newsService.nlpAndSaveNews(title, inputText);
+		NewsDTO rDTO = newsService.nlpAndSaveNews(title, inputText, newsUrl);
 		
 
 		log.info(this.getClass().getName() + ".lemmatize end");
 		return rDTO;
 	}
 	
+	@RequestMapping(value = "getNews")
+	@ResponseBody
+	public NewsDTO getNews(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".getNews start");
+		
+		NewsDTO news = newsService.getNews();
+
+		model.addAttribute("news", news);
+		
+		log.info(this.getClass().getName() + ".getNews end");
+		return news;
+	}
+	
+	@RequestMapping(value = "translateNews")
+	@ResponseBody
+	public List<String> translateNews(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".translateNews start");
+
+		NewsDTO news = newsService.getNews();
+		List<String> res = TranslateUtil.translateNews(news);
+		
+		log.info(this.getClass().getName() + ".translateNews end");
+		return res;
+	}
 	
 }

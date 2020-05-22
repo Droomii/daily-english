@@ -7,9 +7,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 import config.Mapper;
-import poly.dto.NLPDTO;
+import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
 
 @Mapper("MongoNewsMapper")
@@ -36,12 +37,12 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 	}
 
 	@Override
-	public void insertNews(NLPDTO rDTO) throws Exception {
+	public void insertNews(NewsDTO rDTO) throws Exception {
 
 		createCollection();
 		DBCollection col = mongodb.getCollection(COL_NM);
 		BasicDBObject query = new BasicDBObject();
-		query.put("newsTitle", rDTO.getNewsTitle());
+		query.put("newsUrl", rDTO.getNewsUrl());
 		DBCursor res = col.find(query);
 		if(res.hasNext()) {
 			log.info("news already crawled");
@@ -49,6 +50,15 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 			mongodb.insert(rDTO, COL_NM);
 		}
 		
+	}
+
+	@Override
+	public NewsDTO getNews() throws Exception {
+		
+		DBObject firstNews = mongodb.getCollection(COL_NM).find().next();
+		NewsDTO rDTO = new NewsDTO(firstNews);
+		log.info("rDTO.getNewsTitle : " + rDTO.getNewsTitle());
+		return rDTO;
 	}
 
 }

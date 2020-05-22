@@ -1,11 +1,13 @@
 package poly.persistance.mongo;
 
-import poly.dto.NLPDTO;
+import poly.dto.NewsDTO;
 
 public interface IMongoNewsMapper {
 
-	void insertNews(NLPDTO rDTO) throws Exception;
+	void insertNews(NewsDTO rDTO) throws Exception;
 	
 	void createCollection() throws Exception;
+
+	NewsDTO getNews() throws Exception;
 
 }

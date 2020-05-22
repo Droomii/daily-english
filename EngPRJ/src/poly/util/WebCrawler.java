@@ -44,7 +44,7 @@ public class WebCrawler {
 		
 		String title = element.text();
 		
-		return new String[] {title,articleSb.toString()};
+		return new String[] {title,articleSb.toString(), url+href};
 
 	}
 }
