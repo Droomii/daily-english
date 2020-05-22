@@ -53,14 +53,43 @@ public class NewsWordController {
 		// nawl
 		addWords("c:/nawl.txt", "Academic", wordMap);
 		
+		// stop words
+		removeStopWords("c:/stop_words.txt", wordMap);
+		
 		List<WordDTO> wordList = new ArrayList<WordDTO>(wordMap.values());
 		
 		newsWordService.insertWords(wordList);
+		
+		wordList = null;
 		
 		log.info(this.getClass().getName() + ".insertWords end");
 		return "success";
 	}
 	
+
+	private void removeStopWords(String path, Map<String, WordDTO> wordMap) throws IOException {
+		
+		File f = new File(path);
+		BufferedReader bf = new BufferedReader(new FileReader(f));
+		
+		String line;
+		while((line = bf.readLine()) != null) {
+			String[] words = line.split("\\t");
+			for(String word : words) {
+				if(!word.trim().replaceAll("\\t", "").matches("^[a-zA-Z0-9]+$"))
+					continue;
+				
+				if(wordMap.containsKey(line)) {
+					wordMap.remove(line);
+				}
+			}
+			
+			
+		}
+		bf.close();
+	}
+
+
 	private void addWords(String path, String pool, Map<String, WordDTO> words) throws IOException {
 		
 		File f = new File(path);
@@ -77,6 +106,8 @@ public class NewsWordController {
 				rDTO.addPool(pool);
 			}
 		}
+		
+		pDTO = null;
 		bf.close();
 	}
 	
