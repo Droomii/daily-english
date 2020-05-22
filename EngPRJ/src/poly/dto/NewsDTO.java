@@ -11,21 +11,22 @@ import com.mongodb.DBObject;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreSentence;
+import poly.util.TranslateUtil;
 
 public class NewsDTO {
 
 	private String newsTitle;
 	private List<String> originalSentence;
+	private List<String> translation;
 	private List<List<String>> tokens;
 	private List<List<String>> lemmas;
 	private List<List<String>> pos;
 	private Date insertDate;
 	private String newsUrl;
-	
-	
+
 	public NewsDTO() {}
 	
-	public NewsDTO(String newsTitle, CoreDocument doc, String newsUrl) {
+	public NewsDTO(String newsTitle, CoreDocument doc, String newsUrl) throws Exception {
 		
 		this.newsTitle = newsTitle;
 		this.newsUrl = newsUrl;
@@ -60,7 +61,8 @@ public class NewsDTO {
 	    	pos.add(posBySent);
 	    	lemmas.add(lemma);
 	    }
-	    
+
+	    this.translation = TranslateUtil.translateNews(this);
 	    this.insertDate = new Date();
 	}
 
@@ -90,6 +92,16 @@ public class NewsDTO {
 
 	public void setOriginalSentence(List<String> originalSentence) {
 		this.originalSentence = originalSentence;
+	}
+	
+	
+
+	public List<String> getTranslation() {
+		return translation;
+	}
+
+	public void setTranslation(List<String> translation) {
+		this.translation = translation;
 	}
 
 	public List<List<String>> getPos() {
