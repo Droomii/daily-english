@@ -12,6 +12,7 @@ import com.mongodb.DBObject;
 import config.Mapper;
 import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
+import poly.util.TranslateUtil;
 
 @Mapper("MongoNewsMapper")
 public class MongoNewsMapper implements IMongoNewsMapper {
@@ -47,6 +48,7 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		if(res.hasNext()) {
 			log.info("news already crawled");
 		}else {
+			TranslateUtil.translateNews(rDTO);
 			mongodb.insert(rDTO, COL_NM);
 		}
 		

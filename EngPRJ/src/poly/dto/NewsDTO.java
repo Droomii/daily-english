@@ -61,8 +61,6 @@ public class NewsDTO {
 	    	pos.add(posBySent);
 	    	lemmas.add(lemma);
 	    }
-
-	    this.translation = TranslateUtil.translateNews(this);
 	    this.insertDate = new Date();
 	}
 
