@@ -63,6 +63,10 @@ public class NewsDTO {
 	    }
 	    this.insertDate = new Date();
 	}
+	
+	public void translate() throws Exception {
+		this.translation = TranslateUtil.translateNews(this.originalSentence);
+	}
 
 	@SuppressWarnings("unchecked")
 	public NewsDTO(DBObject firstNews) {
