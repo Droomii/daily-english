@@ -14,7 +14,7 @@
   <style type="text/css">
   .hl{
   	background-color: #FFFF00;
-  	font-weight:bold;
+  	font-weight:700;
   }
   
   </style>
