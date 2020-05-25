@@ -62,18 +62,19 @@ public class NewsController {
 		return rDTO;
 	}
 	
-	@RequestMapping(value = "getNews")
-	@ResponseBody
-	public NewsDTO getNews(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+	@RequestMapping(value = "getLatestNews")
+	public String getLatestNews(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".getNews start");
 		
 		NewsDTO news = newsService.getNews();
+		log.info("title : " + news.getNewsTitle());
+		log.info("news.getTranslation() : " + news.getTranslation());
 
 		model.addAttribute("news", news);
 		
 		log.info(this.getClass().getName() + ".getNews end");
-		return news;
+		return "/news/latestNews";
 	}
 	
 	@RequestMapping(value = "translateNews")
