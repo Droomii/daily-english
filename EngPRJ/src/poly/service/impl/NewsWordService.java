@@ -15,7 +15,6 @@ import poly.dto.NewsDTO;
 import poly.dto.WordDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
 import poly.persistance.mongo.IMongoNewsWordMapper;
-import poly.persistance.redis.IRedisNewsWordMapper;
 import poly.service.INewsWordService;
 
 @Service("NewsWordService")
@@ -27,7 +26,7 @@ public class NewsWordService implements INewsWordService{
 	@Resource(name = "MongoNewsMapper")
 	IMongoNewsMapper mongoNewsMapper;
 
-	private List<String> WORD_POOL = new ArrayList<>();
+	private Map<String, List<String>> WORD_POOL = new HashMap<>();
 	
 	Logger log = Logger.getLogger(this.getClass());
 
@@ -67,9 +66,10 @@ public class NewsWordService implements INewsWordService{
 		for(List<String> wordsBySentence : pDTO.getLemmas()) {
 			int wordIdx = 0;
 			for(String word : wordsBySentence) {
-				if(WORD_POOL.contains(word.toLowerCase())) {
+				if(WORD_POOL.containsKey(word.toLowerCase())) {
 					pMap = new HashMap<String, Object>();
 					pMap.put("word", word);
+					pMap.put("pool", WORD_POOL.get(word.toLowerCase()));
 					pMap.put("sntncIdx", sntncIdx);
 					pMap.put("wordIdx", wordIdx);
 					rList.add(pMap);

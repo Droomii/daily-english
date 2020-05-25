@@ -1,8 +1,8 @@
 package poly.persistance.mongo;
 
 import java.util.List;
+import java.util.Map;
 
-import poly.dto.NewsDTO;
 import poly.dto.WordDTO;
 
 public interface IMongoNewsWordMapper {
@@ -11,7 +11,7 @@ public interface IMongoNewsWordMapper {
 	
 	void createCollection() throws Exception;
 
-	List<String> getWordPool() throws Exception;
+	Map<String, List<String>> getWordPool() throws Exception;
 
 
 }

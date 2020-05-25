@@ -2,20 +2,19 @@ package poly.persistance.mongo.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 import config.Mapper;
-import poly.dto.NewsDTO;
 import poly.dto.WordDTO;
 import poly.persistance.mongo.IMongoNewsWordMapper;
 
@@ -51,22 +50,22 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<String> getWordPool() throws Exception {
+	public Map<String, List<String>> getWordPool() throws Exception {
 		log.info(this.getClass().getName() + ".getWordPool start");
 		
 		DBObject query = new BasicDBObject("pool", new BasicDBObject("$in", Arrays.asList("TOEIC", "Academic", "Business")));
 		DBCursor cursor = mongodb.getCollection(COL_NM).find(query);
 		
-		List<String> pList = new ArrayList<String>();
-		
+		Map<String, List<String>> rMap = new HashMap<>();
 		while(cursor.hasNext()) {
 			DBObject obj = cursor.next();
-			pList.add((String)obj.get("word"));
+			rMap.put((String)obj.get("word"), (List<String>)obj.get("pool"));
 		}
 		
 		log.info(this.getClass().getName() + ".getWordPool end");
-		return pList;
+		return rMap;
 	}
 	
 }
