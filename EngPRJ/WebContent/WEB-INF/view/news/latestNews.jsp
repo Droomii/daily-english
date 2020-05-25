@@ -11,6 +11,13 @@
 <html class="loading" lang="en" data-textdirection="ltr">
 <head>
   <%@ include file="/WEB-INF/view/header.jsp" %>
+  <style type="text/css">
+  .hl{
+  	background-color: #FFFF00;
+  	font-weight:bold;
+  }
+  
+  </style>
   </head>
   <body class="vertical-layout vertical-menu 2-columns   menu-expanded fixed-navbar" data-open="click" data-menu="vertical-menu" data-color="bg-chartbg" data-col="2-columns">
 
@@ -66,7 +73,7 @@
 				<div class="card-text">
 				<%
 				int i = 0;
-				for(String stc : rDTO.getOriginalSentence()){ %>
+				for(String stc : rDTO.getOriginalSentences()){ %>
 				<p>
 				<%=stc %>
 				</p>

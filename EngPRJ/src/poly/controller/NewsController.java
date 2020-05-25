@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.NewsDTO;
 import poly.service.INewsService;
+import poly.service.INewsWordService;
 import poly.util.TranslateUtil;
 import poly.util.WebCrawler;
 
@@ -26,6 +27,8 @@ public class NewsController {
 	@Resource(name = "NewsService")
 	INewsService newsService;
 	
+	@Resource(name = "NewsWordService")
+	INewsWordService newsWordService;
 	
 	
 	@RequestMapping(value = "nlpForm")
@@ -67,9 +70,8 @@ public class NewsController {
 			throws Exception {
 		log.info(this.getClass().getName() + ".getNews start");
 		
-		NewsDTO news = newsService.getNews();
-		log.info("title : " + news.getNewsTitle());
-		log.info("news.getTranslation() : " + news.getTranslation());
+		NewsDTO news = newsService.getLatestNews();
+		newsWordService.highlightWords(news);
 
 		model.addAttribute("news", news);
 		
@@ -83,7 +85,7 @@ public class NewsController {
 			throws Exception {
 		log.info(this.getClass().getName() + ".translateNews start");
 
-		NewsDTO news = newsService.getNews();
+		NewsDTO news = newsService.getLatestNews();
 		List<String> res = TranslateUtil.translateNews(news);
 		
 		log.info(this.getClass().getName() + ".translateNews end");

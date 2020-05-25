@@ -36,7 +36,7 @@ public class TranslateUtil extends Thread{
 		String clientSecret = "kFXNB8i0F8";
 		
 		
-		List<String> originalSentences = pDTO.getOriginalSentence();
+		List<String> originalSentences = pDTO.getOriginalSentences();
 		List<String> translatedSentences = new ArrayList<String>();
 		
 		String apiURL = "https://openapi.naver.com/v1/papago/n2mt";
@@ -121,7 +121,7 @@ public class TranslateUtil extends Thread{
     
     public static List<String> translateNews(List<String> sentences) throws Exception{
     	NewsDTO pDTO = new NewsDTO();
-    	pDTO.setOriginalSentence(sentences);
+    	pDTO.setOriginalSentences(sentences);
     	return translateNews(pDTO);
     }
 	public static String translateTitle(String newsTitle) throws Exception {

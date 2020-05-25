@@ -1,10 +1,14 @@
 package poly.dto;
 
-import java.util.ArrayList;
 import static poly.util.CmmUtil.nvl;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 import com.mongodb.DBObject;
 
@@ -17,7 +21,7 @@ public class NewsDTO {
 
 	private String newsTitle;
 	private String translatedTitle;
-	private List<String> originalSentence;
+	private List<String> originalSentences;
 	private List<String> translation;
 	private List<List<String>> tokens;
 	private List<List<String>> lemmas;
@@ -25,6 +29,9 @@ public class NewsDTO {
 	private Date insertDate;
 	private String newsUrl;
 
+	
+	Logger log = Logger.getLogger(this.getClass());
+	
 	public NewsDTO() {
 	}
 
@@ -36,13 +43,13 @@ public class NewsDTO {
 		// attributes initialization
 		this.tokens = new ArrayList<List<String>>();
 		this.pos = new ArrayList<List<String>>();
-		this.originalSentence = new ArrayList<String>();
+		this.originalSentences = new ArrayList<String>();
 		this.lemmas = new ArrayList<List<String>>();
 
 		// iterating through sentence
 		for (Iterator<CoreSentence> it = doc.sentences().iterator(); it.hasNext();) {
 			CoreSentence sentence = it.next();
-			originalSentence.add(sentence.text());
+			originalSentences.add(sentence.text());
 
 			// adding tokens, lemmas by sentence
 			List<String> token = new ArrayList<String>();
@@ -66,7 +73,7 @@ public class NewsDTO {
 	}
 
 	public void translate() throws Exception {
-		this.translation = TranslateUtil.translateNews(this.originalSentence);
+		this.translation = TranslateUtil.translateNews(this.originalSentences);
 		this.translatedTitle = TranslateUtil.translateTitle(this.newsTitle);
 	}
 
@@ -75,7 +82,7 @@ public class NewsDTO {
 
 		this.newsTitle = nvl((String) firstNews.get("newsTitle"));
 		this.translatedTitle = nvl((String) firstNews.get("translatedTitle"));
-		this.originalSentence = (List<String>) firstNews.get("originalSentence");
+		this.originalSentences = (List<String>) firstNews.get("originalSentence");
 		this.translation = (List<String>) firstNews.get("translation");
 		this.tokens = (List<List<String>>) firstNews.get("tokens");
 		this.lemmas = (List<List<String>>) firstNews.get("lemmas");
@@ -92,12 +99,12 @@ public class NewsDTO {
 		this.lemmas = lemmas;
 	}
 
-	public List<String> getOriginalSentence() {
-		return originalSentence;
+	public List<String> getOriginalSentences() {
+		return originalSentences;
 	}
 
-	public void setOriginalSentence(List<String> originalSentence) {
-		this.originalSentence = originalSentence;
+	public void setOriginalSentences(List<String> originalSentence) {
+		this.originalSentences = originalSentence;
 	}
 
 	public List<String> getTranslation() {
@@ -154,6 +161,26 @@ public class NewsDTO {
 
 	public void setTranslatedTitle(String translatedTitle) {
 		this.translatedTitle = translatedTitle;
+	}
+	
+	/**
+	 * highlights essential words of sentences
+	 * @param extractedWords : extracted essential words
+	 */
+	public void highlightWords(List<Map<String, Object>> extractedWords) {
+		
+		for(Map<String, Object> extractedWord : extractedWords) {
+			
+			// get index of sentence and token
+			int sntncIdx = (Integer)extractedWord.get("sntncIdx");
+			int wordIdx = (Integer)extractedWord.get("wordIdx");
+			String originalWord = this.tokens.get(sntncIdx).get(wordIdx);
+			String originalSentence = this.originalSentences.get(sntncIdx);
+			String highlightedSentence = originalSentence.replace(originalWord, "<span class='hl'>" + originalWord + "</span>");
+			this.originalSentences.set(sntncIdx, highlightedSentence);
+			
+		}
+		
 	}
 
 	

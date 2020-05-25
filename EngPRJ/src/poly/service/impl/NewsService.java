@@ -43,7 +43,7 @@ public class NewsService implements INewsService{
 	}
 
 	@Override
-	public NewsDTO getNews() throws Exception {
+	public NewsDTO getLatestNews() throws Exception {
 		
 		NewsDTO rDTO = mongoNewsMapper.getLatestNews();
 		return rDTO;

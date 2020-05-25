@@ -21,8 +21,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import poly.dto.NewsDTO;
 import poly.dto.WordDTO;
+import poly.service.INewsService;
 import poly.service.INewsWordService;
+import poly.service.impl.NewsService;
 
 @Controller
 public class NewsWordController {
@@ -31,6 +34,9 @@ public class NewsWordController {
 	
 	@Resource(name = "NewsWordService")
 	INewsWordService newsWordService;
+	
+	@Resource(name = "NewsService")
+	INewsService newsService;
 	
 	@RequestMapping(value = "newsWord/insertWords")
 	@ResponseBody
@@ -72,7 +78,8 @@ public class NewsWordController {
 			throws Exception {
 		log.info(this.getClass().getName() + ".extractWords start");
 
-		List<Map<String, Object>> rList = newsWordService.extractWords();
+		NewsDTO pDTO = newsService.getLatestNews();
+		List<Map<String, Object>> rList = newsWordService.extractWords(pDTO);
 		
 		log.info(this.getClass().getName() + ".extractWords end");
 		return rList;

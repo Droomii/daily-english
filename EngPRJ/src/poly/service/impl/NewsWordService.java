@@ -53,11 +53,13 @@ public class NewsWordService implements INewsWordService{
 		
 	}
 
+	/** @return : [{word : (String)"단어", pool : (List of String)"속한 풀", sntncIdx : (Integer)"문장 인덱스", wordIdx : (Integer)"단어 인덱스"}]
+	 *
+	 */
 	@Override
-	public List<Map<String, Object>> extractWords() throws Exception {
+	public List<Map<String, Object>> extractWords(NewsDTO pDTO) throws Exception {
 		
 		log.info(this.getClass().getName() + ".extractWords start");
-		NewsDTO pDTO = mongoNewsMapper.getLatestNews();
 		
 		List<Map<String, Object>> rList = new ArrayList<>();
 		Map<String, Object> pMap = null;
@@ -82,6 +84,16 @@ public class NewsWordService implements INewsWordService{
 		
 		log.info(this.getClass().getName() + ".extractWords end");
 		return rList;
+	}
+
+
+	@Override
+	public void highlightWords(NewsDTO news) throws Exception {
+		
+		List<Map<String, Object>> extractedWords = extractWords(news);
+		
+		news.highlightWords(extractedWords);
+		
 	}
 
 	
