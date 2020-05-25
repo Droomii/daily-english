@@ -124,5 +124,10 @@ public class TranslateUtil extends Thread{
     	pDTO.setOriginalSentence(sentences);
     	return translateNews(pDTO);
     }
+	public static String translateTitle(String newsTitle) throws Exception {
+		List<String> pList = new ArrayList<String>();
+		pList.add(newsTitle);
+		return translateNews(pList).get(0);
+	}
 	
 }

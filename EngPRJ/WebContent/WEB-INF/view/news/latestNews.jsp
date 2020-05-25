@@ -60,6 +60,8 @@
 				<div class="card-body">
 				<div class="card-text">
 				<h4><%=rDTO.getNewsTitle() %></h4>
+				<h4><%="("+rDTO.getTranslatedTitle() + ")"%></h4>
+				<br>
 				</div>
 				<div class="card-text">
 				<%
@@ -68,8 +70,11 @@
 				<p>
 				<%=stc %>
 				</p>
-				<%=rDTO.getTranslation().get(i) %>
-				<p></p>
+				
+				<p>
+				<%="("+rDTO.getTranslation().get(i)+")" %>
+				</p>
+				<br>
 				<%i++;} %>
 				</div>
 				</div>

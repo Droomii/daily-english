@@ -55,7 +55,7 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 	}
 
 	@Override
-	public NewsDTO getNews() throws Exception {
+	public NewsDTO getLatestNews() throws Exception {
 		
 		DBObject firstNews = mongodb.getCollection(COL_NM).find().sort(new BasicDBObject("insertDate", -1)).next();
 		NewsDTO rDTO = new NewsDTO(firstNews);

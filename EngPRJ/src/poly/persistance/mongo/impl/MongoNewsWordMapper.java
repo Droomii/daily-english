@@ -1,5 +1,8 @@
 package poly.persistance.mongo.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -7,8 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 import config.Mapper;
+import poly.dto.NewsDTO;
 import poly.dto.WordDTO;
 import poly.persistance.mongo.IMongoNewsWordMapper;
 
@@ -42,6 +49,24 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 
 		log.info(this.getClass().getName() + ".createCollection end");
 
+	}
+
+	@Override
+	public List<String> getWordPool() throws Exception {
+		log.info(this.getClass().getName() + ".getWordPool start");
+		
+		DBObject query = new BasicDBObject("pool", new BasicDBObject("$in", Arrays.asList("TOEIC", "Academic", "Business")));
+		DBCursor cursor = mongodb.getCollection(COL_NM).find(query);
+		
+		List<String> pList = new ArrayList<String>();
+		
+		while(cursor.hasNext()) {
+			DBObject obj = cursor.next();
+			pList.add((String)obj.get("word"));
+		}
+		
+		log.info(this.getClass().getName() + ".getWordPool end");
+		return pList;
 	}
 	
 }

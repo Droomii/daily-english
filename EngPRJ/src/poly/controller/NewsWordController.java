@@ -66,6 +66,18 @@ public class NewsWordController {
 		return "success";
 	}
 	
+	@RequestMapping(value = "extractWords")
+	@ResponseBody
+	public List<Map<String, Object>> extractWords(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".extractWords start");
+
+		List<Map<String, Object>> rList = newsWordService.extractWords();
+		
+		log.info(this.getClass().getName() + ".extractWords end");
+		return rList;
+	}
+	
 
 	private void removeStopWords(String path, Map<String, WordDTO> wordMap) throws IOException {
 		

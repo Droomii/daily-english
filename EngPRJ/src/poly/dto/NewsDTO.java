@@ -16,6 +16,7 @@ import poly.util.TranslateUtil;
 public class NewsDTO {
 
 	private String newsTitle;
+	private String translatedTitle;
 	private List<String> originalSentence;
 	private List<String> translation;
 	private List<List<String>> tokens;
@@ -66,12 +67,14 @@ public class NewsDTO {
 
 	public void translate() throws Exception {
 		this.translation = TranslateUtil.translateNews(this.originalSentence);
+		this.translatedTitle = TranslateUtil.translateTitle(this.newsTitle);
 	}
 
 	@SuppressWarnings("unchecked")
 	public NewsDTO(DBObject firstNews) {
 
 		this.newsTitle = nvl((String) firstNews.get("newsTitle"));
+		this.translatedTitle = nvl((String) firstNews.get("translatedTitle"));
 		this.originalSentence = (List<String>) firstNews.get("originalSentence");
 		this.translation = (List<String>) firstNews.get("translation");
 		this.tokens = (List<List<String>>) firstNews.get("tokens");
@@ -145,4 +148,13 @@ public class NewsDTO {
 		this.newsUrl = newsUrl;
 	}
 
+	public String getTranslatedTitle() {
+		return translatedTitle;
+	}
+
+	public void setTranslatedTitle(String translatedTitle) {
+		this.translatedTitle = translatedTitle;
+	}
+
+	
 }

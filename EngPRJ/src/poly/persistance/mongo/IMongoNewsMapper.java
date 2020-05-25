@@ -8,6 +8,7 @@ public interface IMongoNewsMapper {
 	
 	void createCollection() throws Exception;
 
-	NewsDTO getNews() throws Exception;
+	NewsDTO getLatestNews() throws Exception;
+
 
 }
