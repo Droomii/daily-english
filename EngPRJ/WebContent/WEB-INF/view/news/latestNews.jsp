@@ -66,7 +66,7 @@
 				</div>
 				<div class="card-body">
 				<div class="card-text">
-				<h4><%=rDTO.getNewsTitle() %></h4>
+				<h4 style="font-weight:700"><%=rDTO.getNewsTitle() %></h4>
 				<h4><%="("+rDTO.getTranslatedTitle() + ")"%></h4>
 				<br>
 				</div>

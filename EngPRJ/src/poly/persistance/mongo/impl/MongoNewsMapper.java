@@ -49,7 +49,7 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 			log.info("news already crawled");
 		}else {
 			rDTO.translate();
-			mongodb.insert(rDTO, COL_NM);
+			mongodb.insert(rDTO.toMap(), COL_NM);
 		}
 		
 	}

@@ -4,6 +4,7 @@ import static poly.util.CmmUtil.nvl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -181,6 +182,22 @@ public class NewsDTO {
 			
 		}
 		
+	}
+	
+	public Map<String, Object> toMap(){
+		Map<String, Object> rMap = new HashMap<>();
+		
+		rMap.put("newsTitle", newsTitle);
+		rMap.put("translatedTitle", translatedTitle);
+		rMap.put("originalSentences",originalSentences);
+		rMap.put("translation",translation);
+		rMap.put("tokens", tokens);
+		rMap.put("lemmas",lemmas);
+		rMap.put("pos",pos);
+		rMap.put("insertDate",insertDate);
+		rMap.put("newsUrl",newsUrl);
+		
+		return rMap;
 	}
 
 	
