@@ -5,9 +5,11 @@ import static poly.util.CmmUtil.nvl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -230,25 +232,31 @@ public class NewsDTO {
 		List<WordQuizDTO> rList = new ArrayList<WordQuizDTO>();
 		
 		WordQuizDTO pDTO = null;
+		Set<String> wordSet = new HashSet<String>(); 
 		
 		for(Map<String, Object> extractedWord : extractedWords) {
 			pDTO = new WordQuizDTO();
 			// get index of sentence and token
 			int sntncIdx = (Integer)extractedWord.get("sntncIdx");
 			int wordIdx = (Integer)extractedWord.get("wordIdx");
-			String originalWord = this.tokens.get(sntncIdx).get(wordIdx);
-			String lemma = this.lemmas.get(sntncIdx).get(wordIdx);
-			String originalSentence = this.originalSentences.get(sntncIdx);
-			String translation = this.translation.get(sntncIdx);
-			String sentence = originalSentence.replace(originalWord, originalWord.substring(0, 2)+"_____");
-			String answerSentence = originalSentence.replace(originalWord, "<span class='hl'>" + originalWord + "</span>");
-			pDTO.setAnswer(originalWord);
-			pDTO.setSentence(sentence);
-			pDTO.setAnswerSentence(answerSentence);
-			pDTO.setLemma(lemma);
-			pDTO.setTranslation(translation);
-			rList.add(pDTO);
-			pDTO = null;
+			String lemma = this.lemmas.get(sntncIdx).get(wordIdx).toLowerCase();
+			
+			if(!wordSet.contains(lemma)) {
+			
+				String originalWord = this.tokens.get(sntncIdx).get(wordIdx);
+				String originalSentence = this.originalSentences.get(sntncIdx);
+				String translation = this.translation.get(sntncIdx);
+				String sentence = originalSentence.replace(originalWord, originalWord.substring(0, 2)+"_____");
+				String answerSentence = originalSentence.replace(originalWord, "<span class='hl'>" + originalWord + "</span>");
+				pDTO.setAnswer(originalWord);
+				pDTO.setSentence(sentence);
+				pDTO.setAnswerSentence(answerSentence);
+				pDTO.setLemma(lemma);
+				pDTO.setTranslation(translation);
+				rList.add(pDTO);
+				wordSet.add(lemma);
+				pDTO = null;
+			}
 		}
 	
 		return rList;
