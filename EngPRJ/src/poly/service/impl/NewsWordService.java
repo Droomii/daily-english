@@ -116,7 +116,7 @@ public class NewsWordService implements INewsWordService{
 
 
 	@Override
-	public WordQuizDTO getTodayQuiz() throws Exception {
+	public WordQuizDTO getRandomTodayQuiz() throws Exception {
 		log.info(this.getClass().getName() + ".getTodayQuiz start");
 		
 		return redisNewsWordMapper.getTodayQuiz();

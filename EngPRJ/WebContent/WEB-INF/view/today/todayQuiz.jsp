@@ -114,6 +114,12 @@
 				<p>
 				(<span id="translation"></span>)
 				</p>
+				<div class="card-body">
+                      <fieldset class="form-group">
+                          <input type="text" class="form-control" id="basicInput" placeholder="빈 칸에 들어갈 단어를 입력하세요">
+                      </fieldset>
+                      <button type="button" class="btn mb-1 btn-success btn-lg btn-block">제출</button>
+                  </div>
 				</div>
 				</div>
 			</div>

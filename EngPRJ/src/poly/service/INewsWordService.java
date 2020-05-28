@@ -19,7 +19,7 @@ public interface INewsWordService {
 	
 	void saveTodayWordToRedis(NewsDTO news) throws Exception;
 
-	WordQuizDTO getTodayQuiz() throws Exception;
+	WordQuizDTO getRandomTodayQuiz() throws Exception;
 	
 
 }

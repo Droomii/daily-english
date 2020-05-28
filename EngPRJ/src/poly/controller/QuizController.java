@@ -41,10 +41,21 @@ public class QuizController {
 			throws Exception {
 		log.info(this.getClass().getName() + ".submitTodayQuizAnswer start");
 
-		WordQuizDTO qDTO = newsWordService.getTodayQuiz(); 
+		WordQuizDTO qDTO = newsWordService.getRandomTodayQuiz(); 
 		log.info("qDTO : " + qDTO);
 		
 		log.info(this.getClass().getName() + ".submitTodayQuizAnswer end");
+		return qDTO;
+	}
+	
+	@RequestMapping(value = "getRandomTodayQuiz")
+	@ResponseBody
+	public WordQuizDTO getRandomTodayQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".getRandomTodayQuiz start");
+		WordQuizDTO qDTO = newsWordService.getRandomTodayQuiz(); 
+		log.info("qDTO : " + qDTO);
+		log.info(this.getClass().getName() + ".getRandomTodayQuiz end");
 		return qDTO;
 	}
 }
