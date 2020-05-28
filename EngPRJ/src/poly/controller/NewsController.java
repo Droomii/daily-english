@@ -79,18 +79,6 @@ public class NewsController {
 		return "/news/latestNews";
 	}
 	
-	@RequestMapping(value = "saveLatestQuiz")
-	@ResponseBody
-	public String saveLatestQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
-			throws Exception {
-		log.info(this.getClass().getName() + ".saveLatestQuiz start");
-
-		NewsDTO news = newsService.getLatestNews();
-		newsWordService.saveTodayWordToRedis(news);
-		
-		log.info(this.getClass().getName() + ".saveLatestQuiz end");
-		return "success";
-	}
 	
 	@RequestMapping(value = "translateNews")
 	@ResponseBody
