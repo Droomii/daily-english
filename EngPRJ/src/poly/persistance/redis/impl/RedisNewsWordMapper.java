@@ -106,7 +106,9 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		
 		// returns null if all questions answered
 		if(leftIndex.isEmpty()) {
-			return null;
+			WordQuizDTO rDTO = new WordQuizDTO();
+			rDTO.setIdx(-1);
+			return rDTO;
 		}
 		
 		int randomIdxOfIdx = r.nextInt(leftIndex.size());
