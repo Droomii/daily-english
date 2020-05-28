@@ -109,14 +109,11 @@
 				빈 칸에 알맞은 단어를 입력하세요
 				</p>
 				<p>
-				<span id="no"></span>. <span id="word"></span> : <span id="sentence"></span>
+				<span id="no"></span>. <span id="sentence"></span>
 				</p>
-				</div>
-				<div class="card-body">
-				<button type="button" id="a" class="btn mb-1 choice btn-secondary btn-sm btn-block">example</button>
-				<button type="button" id="b" class="btn mb-1 choice btn-secondary btn-sm btn-block">hello</button>
-				<button type="button" id="c" class="btn mb-1 choice btn-secondary btn-sm btn-block">world</button>
-				<button type="button" id="d" class="btn mb-1 choice btn-secondary btn-sm btn-block">wrong</button>
+				<p>
+				(<span id="translation"></span>)
+				</p>
 				</div>
 				</div>
 			</div>
@@ -139,7 +136,6 @@
     <!-- content end -->
 	<script type="text/javascript">
 	// choices(a, b, c, d)
-	var choices = $(".choice")
 	var no = 0;
 	var index = 0;
 	$(document).ready(function(){
@@ -150,6 +146,7 @@
 	           success : function(json) {
 	        	   $("#no").html(++no);
 	        	   $("#sentence").html(json.sentence);
+	        	   $("#translation").html(json.translation);
 	        	   index = json.no * 1;
 	           },
 	           error : function(xhr, status, error) {
@@ -160,29 +157,29 @@
 	})
 	
 	// when choices are clicked
-	choices.on("click", function(e){
-		if( $(this).hasClass('chosen') ){
+
+		$("#submit").on("click", function(e) {
 			$.ajax({
-		           type:"GET",
-		           url:"/submitTodayQuizAnswer.do",
-		           data: {answer : $(this).attr("id"),
-		        	   index : index},
-		           dataType:"JSON",
-		           success : function(json) {
-		        	   $("#no").html(++no);
-		        	   $("#sentence").html(json.sentence);
-		        	   index = json.no * 1;  
-		        	   
-		           },
-		           error : function(xhr, status, error) {
-		        	   console.log('error!!');
-		           }
-		     });
-		}else{
-			$('.chosen').removeClass('chosen');
-			$(this).addClass('chosen')
-		}
-	})
+				type : "GET",
+				url : "/submitTodayQuizAnswer.do",
+				data : {
+					answer : $(this).attr("id"),
+					index : index
+				},
+				dataType : "JSON",
+				success : function(json) {
+					$("#no").html(++no);
+					$("#sentence").html(json.sentence);
+					$("#translation").html(json.translation);
+					index = json.no * 1;
+
+				},
+				error : function(xhr, status, error) {
+					console.log('error!!');
+				}
+			});
+
+		})
 	</script>
     <%@ include file="/WEB-INF/view/footer.jsp" %>
     <!-- END PAGE LEVEL JS-->

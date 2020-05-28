@@ -38,7 +38,7 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 	}
 
 	@Override
-	public void insertNews(NewsDTO rDTO) throws Exception {
+	public boolean insertNews(NewsDTO rDTO) throws Exception {
 
 		createCollection();
 		DBCollection col = mongodb.getCollection(COL_NM);
@@ -47,9 +47,11 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		DBCursor res = col.find(query);
 		if(res.hasNext()) {
 			log.info("news already crawled");
+			return false;
 		}else {
 			rDTO.translate();
 			mongodb.insert(rDTO.toMap(), COL_NM);
+			return true;
 		}
 		
 	}

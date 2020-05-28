@@ -237,7 +237,6 @@ public class NewsDTO {
 			int sntncIdx = (Integer)extractedWord.get("sntncIdx");
 			int wordIdx = (Integer)extractedWord.get("wordIdx");
 			String originalWord = this.tokens.get(sntncIdx).get(wordIdx);
-			log.info("originalWord : " + originalWord);
 			String lemma = this.lemmas.get(sntncIdx).get(wordIdx);
 			String originalSentence = this.originalSentences.get(sntncIdx);
 			String translation = this.translation.get(sntncIdx);

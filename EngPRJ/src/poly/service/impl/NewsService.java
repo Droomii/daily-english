@@ -44,8 +44,12 @@ public class NewsService implements INewsService{
 	    pipeline.annotate(document);
 	    
 	    NewsDTO rDTO = new NewsDTO(newsTitle, document, newsUrl);
-	    newsWordService.saveTodayWordToRedis(rDTO);
-	    mongoNewsMapper.insertNews(rDTO);
+	    boolean saved = mongoNewsMapper.insertNews(rDTO);
+	    if(saved) {
+	    	newsWordService.saveTodayWordToRedis(rDTO);
+	    }
+	    
+	    
 	    
 	    
 	    return rDTO;
