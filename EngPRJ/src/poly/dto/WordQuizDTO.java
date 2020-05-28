@@ -6,13 +6,13 @@ public class WordQuizDTO {
 	private String answerSentence;
 	private String answer;
 	private String lemma;
-	private String tranlation;
+	private String translation;
 	
-	public String getTranlation() {
-		return tranlation;
+	public String getTranslation() {
+		return translation;
 	}
 	public void setTranslation(String tranlation) {
-		this.tranlation = tranlation;
+		this.translation = tranlation;
 	}
 	public String getAnswerSentence() {
 		return answerSentence;
@@ -37,6 +37,11 @@ public class WordQuizDTO {
 	}
 	public void setLemma(String lemma) {
 		this.lemma = lemma;
+	}
+	@Override
+	public String toString() {
+		return "WordQuizDTO [sentence=" + sentence + ", answerSentence=" + answerSentence + ", answer=" + answer
+				+ ", lemma=" + lemma + ", tranlation=" + translation + "]";
 	}
 	
 	
