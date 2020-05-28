@@ -114,6 +114,14 @@ public class NewsWordService implements INewsWordService{
 		redisNewsWordMapper.saveTodayWordToRedis(rList);
 	}
 
+
+	@Override
+	public WordQuizDTO getTodayQuiz() throws Exception {
+		log.info(this.getClass().getName() + ".getTodayQuiz start");
+		
+		return redisNewsWordMapper.getTodayQuiz();
+	}
+
 	
 	
 	

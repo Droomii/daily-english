@@ -5,6 +5,7 @@ import java.util.Map;
 
 import poly.dto.NewsDTO;
 import poly.dto.WordDTO;
+import poly.dto.WordQuizDTO;
 
 public interface INewsWordService {
 
@@ -17,6 +18,8 @@ public interface INewsWordService {
 	void highlightWords(NewsDTO news) throws Exception;
 	
 	void saveTodayWordToRedis(NewsDTO news) throws Exception;
+
+	WordQuizDTO getTodayQuiz() throws Exception;
 	
 
 }

@@ -11,6 +11,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
+import poly.dto.TestWordDTO;
 import poly.dto.WordQuizDTO;
 import poly.persistance.redis.IRedisNewsWordMapper;
 
@@ -27,7 +28,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 	@Override
 	public void saveTodayWordToRedis(List<WordQuizDTO> pList) throws Exception {
 
-		log.info(this.getClass().getName() + ".saveTodayWordToRedis start");
+
 		
 		redisDB.setKeySerializer(new StringRedisSerializer());
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
@@ -60,6 +61,16 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		
 		redisDB.expireAt(COL_NM, c.getTime());
 		
+	}
+
+	@Override
+	public WordQuizDTO getTodayQuiz() throws Exception {
+		
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
+		
+		
+		return (WordQuizDTO)redisDB.opsForList().index(COL_NM, 0);
 	}
 	
 	

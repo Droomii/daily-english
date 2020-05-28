@@ -8,4 +8,6 @@ public interface IRedisNewsWordMapper {
 
 	void saveTodayWordToRedis(List<WordQuizDTO> rList) throws Exception;
 
+	WordQuizDTO getTodayQuiz() throws Exception;
+
 }

@@ -141,7 +141,7 @@
 	$(document).ready(function(){
 		$.ajax({
 	           type:"GET",
-	           url:"/submitTodayQuizAnswer.do",
+	           url:"submitTodayQuizAnswer.do",
 	           dataType:"JSON",
 	           success : function(json) {
 	        	   $("#no").html(++no);
@@ -161,7 +161,7 @@
 		$("#submit").on("click", function(e) {
 			$.ajax({
 				type : "GET",
-				url : "/submitTodayQuizAnswer.do",
+				url : "submitTodayQuizAnswer.do",
 				data : {
 					answer : $(this).attr("id"),
 					index : index
