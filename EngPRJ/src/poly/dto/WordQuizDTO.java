@@ -50,7 +50,7 @@ public class WordQuizDTO {
 	@Override
 	public String toString() {
 		return "WordQuizDTO [sentence=" + sentence + ", answerSentence=" + answerSentence + ", answer=" + answer
-				+ ", lemma=" + lemma + ", tranlation=" + translation + "]";
+				+ ", lemma=" + lemma + ", translation=" + translation + "]";
 	}
 	
 	

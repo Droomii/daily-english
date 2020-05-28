@@ -125,7 +125,7 @@
                       </fieldset>
                       <input type="submit" id="submit" class="btn mb-1 btn-success btn-lg btn-block" value="제출" disabled="disabled">
                       </form>
-                 <button type="button" id="next" class="btn mb-1 btn-info btn-lg btn-block" hidden="hidden">다음 &gt;</button>
+                 <button type="button" id="next" class="btn mb-1 btn-info btn-lg btn-block" hidden="hidden" disabled="disabled">다음(Enter)&gt;</button>
                  </div>
                   
                   
@@ -168,7 +168,8 @@
 					$("#sentence").html(json.sentence);
 					$("#translation").html(json.translation);
 					idx = json.idx * 1;
-					console.log("idx : " + json.idx);
+					$("#wordInput").val(json.answer.substr(0, 2));
+					$("#wordInput").focus();
 				},
 				error : function(xhr, status, error) {
 					console.log('error!!');
@@ -176,6 +177,17 @@
 			});
 
 		})
+		
+
+		$(document).keypress(function(event) {
+			var keycode = (event.keyCode ? event.keyCode : event.which);
+			if (keycode == '13') {
+				if($("#next").prop("disabled")==false){
+					if(!$("#next").is(":focus"))
+						nextQuestion();
+				}
+			}
+		});
 
 		// enabling submit button
 		$("#wordInput").on("change paste keyup", function(e) {
@@ -207,6 +219,8 @@
 					$("#sentence").html(json.answerSentence);
 					$("#answerForm").attr("hidden", "hidden");
 					$("#next").removeAttr("hidden");
+					$("#next").removeAttr("disabled");
+					$("#result").removeAttr("hidden");
 				},
 				error : function(xhr, status, error) {
 					console.log('error!!');
@@ -214,9 +228,13 @@
 			});
 
 		})
-		
+
 		// getting next question
-		$("#next").on("click", function(e){
+		$("#next").on("click", function(e) {
+			nextQuestion();
+		});
+		
+		function nextQuestion(){
 			$.ajax({
 				type : "POST",
 				url : "getRandomTodayQuiz.do",
@@ -226,16 +244,22 @@
 					$("#sentence").html(json.sentence);
 					$("#translation").html(json.translation);
 					idx = json.idx * 1;
-					
+					$("#wordInput").val(json.answer.substr(0, 2));
+					$("#result").attr("hidden", "hidden");
 					$("#next").attr("hidden", "hidden");
+					$("#next").attr("disabled", "disabled");
 					$("#answerForm").removeAttr("hidden");
+					$("#wordInput").focus();
+					$("#submit").attr("disabled", "disabled");
 					
+					
+
 				},
 				error : function(xhr, status, error) {
 					console.log('error!!');
 				}
 			});
-		});
+		}
 	</script>
     <%@ include file="/WEB-INF/view/footer.jsp" %>
     <!-- END PAGE LEVEL JS-->
