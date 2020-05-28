@@ -13,6 +13,7 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
 import poly.service.INewsService;
+import poly.service.INewsWordService;
 import poly.util.WebCrawler;
 
 @Service("NewsService")
@@ -20,6 +21,9 @@ public class NewsService implements INewsService{
 	
 	@Resource(name = "MongoNewsMapper")
 	IMongoNewsMapper mongoNewsMapper;
+	
+	@Resource(name = "NewsWordService")
+	INewsWordService newsWordService;
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
@@ -40,8 +44,9 @@ public class NewsService implements INewsService{
 	    pipeline.annotate(document);
 	    
 	    NewsDTO rDTO = new NewsDTO(newsTitle, document, newsUrl);
-	    
+	    newsWordService.saveTodayWordToRedis(rDTO);
 	    mongoNewsMapper.insertNews(rDTO);
+	    
 	    
 	    return rDTO;
 		
