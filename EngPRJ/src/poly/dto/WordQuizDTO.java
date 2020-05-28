@@ -2,12 +2,21 @@ package poly.dto;
 
 public class WordQuizDTO {
 
+	private int idx;
 	private String sentence;
 	private String answerSentence;
 	private String answer;
 	private String lemma;
 	private String translation;
 	
+	
+	
+	public int getIdx() {
+		return idx;
+	}
+	public void setIdx(int idx) {
+		this.idx = idx;
+	}
 	public String getTranslation() {
 		return translation;
 	}

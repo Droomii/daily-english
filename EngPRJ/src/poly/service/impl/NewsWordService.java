@@ -122,6 +122,14 @@ public class NewsWordService implements INewsWordService{
 		return redisNewsWordMapper.getTodayQuiz();
 	}
 
+
+	@Override
+	public boolean submitTodayQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception {
+
+		boolean res = redisNewsWordMapper.submitTodayQuizAnswer(user_seq, quizIdx, answer);
+		return res;
+	}
+
 	
 	
 	

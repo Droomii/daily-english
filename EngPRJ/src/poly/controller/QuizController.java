@@ -37,15 +37,25 @@ public class QuizController {
 	
 	@RequestMapping(value = "submitTodayQuizAnswer")
 	@ResponseBody
-	public WordQuizDTO submitTodayQuizAnswer(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+	public int submitTodayQuizAnswer(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".submitTodayQuizAnswer start");
 
-		WordQuizDTO qDTO = newsWordService.getRandomTodayQuiz(); 
-		log.info("qDTO : " + qDTO);
+		String user_seq = (String) session.getAttribute("user_seq");
+		if(user_seq==null) {
+			user_seq="1";
+		}
+		
+		String quizIdx = request.getParameter("quizIdx");
+		String answer = request.getParameter("answer");
+		log.info("quizIdx : " + quizIdx);
+		log.info("answer : " + answer);
+		boolean res = newsWordService.submitTodayQuizAnswer(user_seq, quizIdx, answer);
+		
+		log.info("answer : " + (res ? "right" : "wrong"));
 		
 		log.info(this.getClass().getName() + ".submitTodayQuizAnswer end");
-		return qDTO;
+		return res ? 1 : 0;
 	}
 	
 	@RequestMapping(value = "getRandomTodayQuiz")
@@ -53,6 +63,7 @@ public class QuizController {
 	public WordQuizDTO getRandomTodayQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".getRandomTodayQuiz start");
+		
 		WordQuizDTO qDTO = newsWordService.getRandomTodayQuiz(); 
 		log.info("qDTO : " + qDTO);
 		log.info(this.getClass().getName() + ".getRandomTodayQuiz end");

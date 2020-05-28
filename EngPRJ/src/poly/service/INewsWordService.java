@@ -20,6 +20,8 @@ public interface INewsWordService {
 	void saveTodayWordToRedis(NewsDTO news) throws Exception;
 
 	WordQuizDTO getRandomTodayQuiz() throws Exception;
+
+	boolean submitTodayQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception;
 	
 
 }

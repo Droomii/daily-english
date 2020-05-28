@@ -50,9 +50,9 @@
   	border-color:orange !important;
   	color:white !important;
   }
-  .stress{
+  .hl{
   	text-decoration:underline;
-  	font-weight:bold;
+  	font-weight:700;
   }
   
   
@@ -115,11 +115,17 @@
 				(<span id="translation"></span>)
 				</p>
 				<div class="card-body">
+				<h4 class="card-title mb-0" id="result" style="font-size:1.5rem"></h4>
+				</div>
+				<div class="card-body">
+				<form id="answerForm" autocomplete="off">
                       <fieldset class="form-group">
-                          <input type="text" class="form-control" id="basicInput" placeholder="빈 칸에 들어갈 단어를 입력하세요">
+                          <input type="text" class="form-control" id="wordInput" placeholder="빈 칸에 들어갈 단어를 입력하세요">
                       </fieldset>
-                      <button type="button" class="btn mb-1 btn-success btn-lg btn-block">제출</button>
+                      <button type="button" id="submit" class="btn mb-1 btn-success btn-lg btn-block" disabled="disabled">제출</button>
+                      </form>
                   </div>
+                  
 				</div>
 				</div>
 			</div>
@@ -143,17 +149,17 @@
 	<script type="text/javascript">
 	// choices(a, b, c, d)
 	var no = 0;
-	var index = 0;
+	var idx = 0;
 	$(document).ready(function(){
 		$.ajax({
 	           type:"GET",
-	           url:"submitTodayQuizAnswer.do",
+	           url:"getRandomTodayQuiz.do",
 	           dataType:"JSON",
 	           success : function(json) {
 	        	   $("#no").html(++no);
 	        	   $("#sentence").html(json.sentence);
 	        	   $("#translation").html(json.translation);
-	        	   index = json.no * 1;
+	        	   idx = json.idx * 1;
 	           },
 	           error : function(xhr, status, error) {
 	        	   console.log('error!!');
@@ -162,23 +168,32 @@
 		
 	})
 	
+	$("#wordInput").on("change paste keyup", function(e){
+		
+		if($("#wordInput").val()){
+			$("#submit").removeAttr("disabled", "disabled");
+		}else{
+			$("#submit").attr("disabled", "disabled");
+		}
+	});
+	
 	// when choices are clicked
 
-		$("#submit").on("click", function(e) {
+		$("#answerForm").on("submit", function(e) {
+			e.preventDefault();
 			$.ajax({
 				type : "GET",
 				url : "submitTodayQuizAnswer.do",
 				data : {
-					answer : $(this).attr("id"),
-					index : index
+					answer : $("#wordInput").val(),
+					quizIdx : idx
 				},
-				dataType : "JSON",
-				success : function(json) {
-					$("#no").html(++no);
-					$("#sentence").html(json.sentence);
-					$("#translation").html(json.translation);
-					index = json.no * 1;
-
+				success : function(res) {
+					if(res==1){
+						$("#result").html("정답입니다!!")
+					}else{
+						$("#result").html("틀렸습니다!!")
+					}
 				},
 				error : function(xhr, status, error) {
 					console.log('error!!');
@@ -186,6 +201,7 @@
 			});
 
 		})
+		
 	</script>
     <%@ include file="/WEB-INF/view/footer.jsp" %>
     <!-- END PAGE LEVEL JS-->

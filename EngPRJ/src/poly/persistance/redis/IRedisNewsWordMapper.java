@@ -10,4 +10,6 @@ public interface IRedisNewsWordMapper {
 
 	WordQuizDTO getTodayQuiz() throws Exception;
 
+	boolean submitTodayQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception;
+
 }
