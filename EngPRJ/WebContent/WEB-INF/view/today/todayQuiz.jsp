@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%
 
-	String pageTitle = "실력 측정";
+	String pageTitle = "오늘의 퀴즈";
 
 %>
 <!DOCTYPE html>
@@ -101,12 +101,12 @@
 		<div class="col-lg-4 offset-lg-4 col-md-12">
 			<div class="card">
 				<div class="card-header pb-0">
-					<h4 class="card-title mb-0" style="font-size:1.5rem">실력 측정 테스트</h4>
+					<h4 class="card-title mb-0" style="font-size:1.5rem">오늘의 퀴즈</h4>
 				</div>
 				<div id="card-content">
 				<div class="card-body">
 				<p style="font-weight:bold">
-				밑줄 친 단어의 알맞은 해석을 고르세요.
+				빈 칸에 알맞은 단어를 입력하세요
 				</p>
 				<p>
 				<span id="no"></span>. <span id="word"></span> : <span id="sentence"></span>
@@ -145,17 +145,11 @@
 	$(document).ready(function(){
 		$.ajax({
 	           type:"GET",
-	           url:"/submitTestAnswer.do",
+	           url:"/submitTodayQuizAnswer.do",
 	           dataType:"JSON",
 	           success : function(json) {
-	        	   $('.chosen').removeClass('chosen');
 	        	   $("#no").html(++no);
-	        	   $("#word").html(json.word);
 	        	   $("#sentence").html(json.sentence);
-	        	   $("#a").html(json.a);
-	        	   $("#b").html(json.b);
-	        	   $("#c").html(json.c);
-	        	   $("#d").html(json.d);
 	        	   index = json.no * 1;
 	           },
 	           error : function(xhr, status, error) {
@@ -170,31 +164,14 @@
 		if( $(this).hasClass('chosen') ){
 			$.ajax({
 		           type:"GET",
-		           url:"/submitTestAnswer.do",
+		           url:"/submitTodayQuizAnswer.do",
 		           data: {answer : $(this).attr("id"),
 		        	   index : index},
 		           dataType:"JSON",
 		           success : function(json) {
-		        	   
-		        	   if(json.finalLevel!=null){
-		        		   var resultContent = 
-		        			   "<div class='card-body'>"
-		        		   		+ "<h4 class='card-title mb-0 text-center' style='font-size:1.5rem'>"
-		        		   		+ "당신의 영어 실력은...</h4><h4 class='card-title mt-3 text-center' style='font-size:2rem'>"
-		        		   		+ "Level " + json.finalLevel + "</h4></div>";
-		        		   $("#card-content").html(resultContent);
-		        		   
-		        	   }else{
-		        		   $('.chosen').removeClass('chosen');
-			        	   $("#no").html(++no);
-			        	   $("#word").html(json.word);
-			        	   $("#sentence").html(json.sentence);
-			        	   $("#a").html(json.a);
-			        	   $("#b").html(json.b);
-			        	   $("#c").html(json.c);
-			        	   $("#d").html(json.d);
-			        	   index = json.no * 1;   
-		        	   }
+		        	   $("#no").html(++no);
+		        	   $("#sentence").html(json.sentence);
+		        	   index = json.no * 1;  
 		        	   
 		           },
 		           error : function(xhr, status, error) {

@@ -240,12 +240,14 @@ public class NewsDTO {
 			log.info("originalWord : " + originalWord);
 			String lemma = this.lemmas.get(sntncIdx).get(wordIdx);
 			String originalSentence = this.originalSentences.get(sntncIdx);
+			String translation = this.translation.get(sntncIdx);
 			String sentence = originalSentence.replace(originalWord, originalWord.substring(0, 2)+"_____");
 			String answerSentence = originalSentence.replace(originalWord, "<span class='hl'>" + originalWord + "</span>");
 			pDTO.setAnswer(originalWord);
 			pDTO.setSentence(sentence);
 			pDTO.setAnswerSentence(answerSentence);
 			pDTO.setLemma(lemma);
+			pDTO.setTranslation(translation);
 			rList.add(pDTO);
 			pDTO = null;
 		}

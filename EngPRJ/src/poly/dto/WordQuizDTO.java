@@ -6,7 +6,14 @@ public class WordQuizDTO {
 	private String answerSentence;
 	private String answer;
 	private String lemma;
+	private String tranlation;
 	
+	public String getTranlation() {
+		return tranlation;
+	}
+	public void setTranslation(String tranlation) {
+		this.tranlation = tranlation;
+	}
 	public String getAnswerSentence() {
 		return answerSentence;
 	}
