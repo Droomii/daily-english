@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.TestInfoDTO;
@@ -53,7 +54,7 @@ public class TestWordController {
 		return "/wordTest/wordTest";
 	}
 	
-	@RequestMapping(value = "submitTestAnswer")
+	@RequestMapping(value = "submitTestAnswer", method = RequestMethod.POST)
 	@ResponseBody
 	public TestWordDTO randomWord(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
@@ -85,7 +86,7 @@ public class TestWordController {
 		return rDTO;
 	}
 	
-	@RequestMapping(value = "insertTestInfo")
+	@RequestMapping(value = "insertTestInfo", method = RequestMethod.POST)
 	@ResponseBody
 	public TestInfoDTO insertTestInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {

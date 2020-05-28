@@ -53,6 +53,7 @@
   .hl{
   	text-decoration:underline;
   	font-weight:700;
+  	color:blue;
   }
   
   
@@ -115,16 +116,18 @@
 				(<span id="translation"></span>)
 				</p>
 				<div class="card-body">
-				<h4 class="card-title mb-0" id="result" style="font-size:1.5rem"></h4>
+				<h4 class="card-title mb-0 text-center" id="result" style="font-size:2rem"></h4>
 				</div>
 				<div class="card-body">
 				<form id="answerForm" autocomplete="off">
                       <fieldset class="form-group">
                           <input type="text" class="form-control" id="wordInput" placeholder="빈 칸에 들어갈 단어를 입력하세요">
                       </fieldset>
-                      <button type="button" id="submit" class="btn mb-1 btn-success btn-lg btn-block" disabled="disabled">제출</button>
+                      <input type="submit" id="submit" class="btn mb-1 btn-success btn-lg btn-block" value="제출" disabled="disabled">
                       </form>
-                  </div>
+                 <button type="button" id="next" class="btn mb-1 btn-info btn-lg btn-block" hidden="hidden">다음 &gt;</button>
+                 </div>
+                  
                   
 				</div>
 				</div>
@@ -147,53 +150,63 @@
     </div>
     <!-- content end -->
 	<script type="text/javascript">
-	// choices(a, b, c, d)
-	var no = 0;
-	var idx = 0;
-	$(document).ready(function(){
-		$.ajax({
-	           type:"GET",
-	           url:"getRandomTodayQuiz.do",
-	           dataType:"JSON",
-	           success : function(json) {
-	        	   $("#no").html(++no);
-	        	   $("#sentence").html(json.sentence);
-	        	   $("#translation").html(json.translation);
-	        	   idx = json.idx * 1;
-	           },
-	           error : function(xhr, status, error) {
-	        	   console.log('error!!');
-	           }
-	     });
-		
-	})
-	
-	$("#wordInput").on("change paste keyup", function(e){
-		
-		if($("#wordInput").val()){
-			$("#submit").removeAttr("disabled", "disabled");
-		}else{
-			$("#submit").attr("disabled", "disabled");
-		}
-	});
-	
-	// when choices are clicked
 
+		// pseudo problem number
+		var no = 0;
+		
+		// real problem index
+		var idx = 0;
+		
+		// get random today quiz
+		$(document).ready(function() {
+			$.ajax({
+				type : "POST",
+				url : "getRandomTodayQuiz.do",
+				dataType : "JSON",
+				success : function(json) {
+					$("#no").html(++no);
+					$("#sentence").html(json.sentence);
+					$("#translation").html(json.translation);
+					idx = json.idx * 1;
+					console.log("idx : " + json.idx);
+				},
+				error : function(xhr, status, error) {
+					console.log('error!!');
+				}
+			});
+
+		})
+
+		// enabling submit button
+		$("#wordInput").on("change paste keyup", function(e) {
+
+			if ($("#wordInput").val()) {
+				$("#submit").removeAttr("disabled", "disabled");
+			} else {
+				$("#submit").attr("disabled", "disabled");
+			}
+		});
+
+		// submitting answer and displaying result
 		$("#answerForm").on("submit", function(e) {
 			e.preventDefault();
 			$.ajax({
-				type : "GET",
+				type : "POST",
 				url : "submitTodayQuizAnswer.do",
 				data : {
 					answer : $("#wordInput").val(),
 					quizIdx : idx
 				},
-				success : function(res) {
-					if(res==1){
+				dataType : "JSON",
+				success : function(json) {
+					if (json.result == "1") {
 						$("#result").html("정답입니다!!")
-					}else{
+					} else {
 						$("#result").html("틀렸습니다!!")
 					}
+					$("#sentence").html(json.answerSentence);
+					$("#answerForm").attr("hidden", "hidden");
+					$("#next").removeAttr("hidden");
 				},
 				error : function(xhr, status, error) {
 					console.log('error!!');
@@ -202,6 +215,27 @@
 
 		})
 		
+		// getting next question
+		$("#next").on("click", function(e){
+			$.ajax({
+				type : "POST",
+				url : "getRandomTodayQuiz.do",
+				dataType : "JSON",
+				success : function(json) {
+					$("#no").html(++no);
+					$("#sentence").html(json.sentence);
+					$("#translation").html(json.translation);
+					idx = json.idx * 1;
+					
+					$("#next").attr("hidden", "hidden");
+					$("#answerForm").removeAttr("hidden");
+					
+				},
+				error : function(xhr, status, error) {
+					console.log('error!!');
+				}
+			});
+		});
 	</script>
     <%@ include file="/WEB-INF/view/footer.jsp" %>
     <!-- END PAGE LEVEL JS-->

@@ -1,5 +1,8 @@
 package poly.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.WordQuizDTO;
@@ -35,9 +39,9 @@ public class QuizController {
 		return "/today/todayQuiz";
 	}
 	
-	@RequestMapping(value = "submitTodayQuizAnswer")
+	@RequestMapping(value = "submitTodayQuizAnswer", method = RequestMethod.POST)
 	@ResponseBody
-	public int submitTodayQuizAnswer(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+	public Map<String, String> submitTodayQuizAnswer(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".submitTodayQuizAnswer start");
 
@@ -50,21 +54,27 @@ public class QuizController {
 		String answer = request.getParameter("answer");
 		log.info("quizIdx : " + quizIdx);
 		log.info("answer : " + answer);
-		boolean res = newsWordService.submitTodayQuizAnswer(user_seq, quizIdx, answer);
+		Map<String, String> rMap = newsWordService.submitTodayQuizAnswer(user_seq, quizIdx, answer);
 		
-		log.info("answer : " + (res ? "right" : "wrong"));
+		log.info("answer : " + (rMap.get("result").equals("1") ? "right" : "wrong"));
+		rMap.put("originalSentence", rMap.get("answerSentence"));
 		
 		log.info(this.getClass().getName() + ".submitTodayQuizAnswer end");
-		return res ? 1 : 0;
+		return rMap;
 	}
 	
-	@RequestMapping(value = "getRandomTodayQuiz")
+	@RequestMapping(value = "getRandomTodayQuiz", method = RequestMethod.POST)
 	@ResponseBody
 	public WordQuizDTO getRandomTodayQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".getRandomTodayQuiz start");
 		
-		WordQuizDTO qDTO = newsWordService.getRandomTodayQuiz(); 
+		String user_seq = (String) session.getAttribute("user_seq");
+		if(user_seq==null) {
+			user_seq = "1";
+		}
+		
+		WordQuizDTO qDTO = newsWordService.getRandomTodayQuiz(user_seq); 
 		log.info("qDTO : " + qDTO);
 		log.info(this.getClass().getName() + ".getRandomTodayQuiz end");
 		return qDTO;

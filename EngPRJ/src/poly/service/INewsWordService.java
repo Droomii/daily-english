@@ -19,9 +19,9 @@ public interface INewsWordService {
 	
 	void saveTodayWordToRedis(NewsDTO news) throws Exception;
 
-	WordQuizDTO getRandomTodayQuiz() throws Exception;
+	WordQuizDTO getRandomTodayQuiz(String user_seq) throws Exception;
 
-	boolean submitTodayQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception;
+	Map<String, String> submitTodayQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception;
 	
 
 }

@@ -144,7 +144,7 @@
 	var index = 0;
 	$(document).ready(function(){
 		$.ajax({
-	           type:"GET",
+	           type:"POST",
 	           url:"/submitTestAnswer.do",
 	           dataType:"JSON",
 	           success : function(json) {
@@ -169,7 +169,7 @@
 	choices.on("click", function(e){
 		if( $(this).hasClass('chosen') ){
 			$.ajax({
-		           type:"GET",
+		           type:"POST",
 		           url:"/submitTestAnswer.do",
 		           data: {answer : $(this).attr("id"),
 		        	   index : index},

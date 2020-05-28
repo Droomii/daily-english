@@ -116,18 +116,18 @@ public class NewsWordService implements INewsWordService{
 
 
 	@Override
-	public WordQuizDTO getRandomTodayQuiz() throws Exception {
+	public WordQuizDTO getRandomTodayQuiz(String user_seq) throws Exception {
 		log.info(this.getClass().getName() + ".getTodayQuiz start");
 		
-		return redisNewsWordMapper.getTodayQuiz();
+		return redisNewsWordMapper.getTodayQuiz(user_seq);
 	}
 
 
 	@Override
-	public boolean submitTodayQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception {
+	public Map<String, String> submitTodayQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception {
 
-		boolean res = redisNewsWordMapper.submitTodayQuizAnswer(user_seq, quizIdx, answer);
-		return res;
+		return redisNewsWordMapper.submitTodayQuizAnswer(user_seq, quizIdx, answer);
+		
 	}
 
 	
