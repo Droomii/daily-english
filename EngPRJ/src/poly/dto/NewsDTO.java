@@ -83,13 +83,20 @@ public class NewsDTO {
 
 		this.newsTitle = nvl((String) firstNews.get("newsTitle"));
 		this.translatedTitle = nvl((String) firstNews.get("translatedTitle"));
-		this.originalSentences = (List<String>) firstNews.get("originalSentence");
+		this.originalSentences = (List<String>) firstNews.get("originalSentences");
 		this.translation = (List<String>) firstNews.get("translation");
 		this.tokens = (List<List<String>>) firstNews.get("tokens");
 		this.lemmas = (List<List<String>>) firstNews.get("lemmas");
 		this.pos = (List<List<String>>) firstNews.get("pos");
 		this.insertDate = (Date) firstNews.get("insertDate");
 		this.newsUrl = nvl((String) firstNews.get("newsUrl"));
+	}
+
+	@Override
+	public String toString() {
+		return "NewsDTO [newsTitle=" + newsTitle + ", translatedTitle=" + translatedTitle + ", originalSentences="
+				+ originalSentences + ", translation=" + translation + ", tokens=" + tokens + ", lemmas=" + lemmas
+				+ ", pos=" + pos + ", insertDate=" + insertDate + ", newsUrl=" + newsUrl + "]";
 	}
 
 	public List<List<String>> getLemmas() {
@@ -168,7 +175,7 @@ public class NewsDTO {
 	 * highlights essential words of sentences
 	 * @param extractedWords : extracted essential words
 	 */
-	public void highlightWords(List<Map<String, Object>> extractedWords) {
+	public void highlightAllWords(List<Map<String, Object>> extractedWords) {
 		
 		for(Map<String, Object> extractedWord : extractedWords) {
 			
@@ -182,6 +189,68 @@ public class NewsDTO {
 			
 		}
 		
+	}
+	
+	
+	
+	public void hideAllWords(List<Map<String, Object>> extractedWords) {
+		
+		for(Map<String, Object> extractedWord : extractedWords) {
+			
+			// get index of sentence and token
+			int sntncIdx = (Integer)extractedWord.get("sntncIdx");
+			int wordIdx = (Integer)extractedWord.get("wordIdx");
+			String originalWord = this.tokens.get(sntncIdx).get(wordIdx);
+			String originalSentence = this.originalSentences.get(sntncIdx);
+			String highlightedSentence = originalSentence.replace(originalWord, "_______");
+			this.originalSentences.set(sntncIdx, highlightedSentence);
+			
+		}
+		
+	}
+	
+	public void showOnlyFirstLetterAll(List<Map<String, Object>> extractedWords) {
+		
+		for(Map<String, Object> extractedWord : extractedWords) {
+			
+			// get index of sentence and token
+			int sntncIdx = (Integer)extractedWord.get("sntncIdx");
+			int wordIdx = (Integer)extractedWord.get("wordIdx");
+			String originalWord = this.tokens.get(sntncIdx).get(wordIdx);
+			String originalSentence = this.originalSentences.get(sntncIdx);
+			String highlightedSentence = originalSentence.replace(originalWord, originalWord.substring(0, 2)+"_______");
+			this.originalSentences.set(sntncIdx, highlightedSentence);
+			
+		}
+		
+	}
+	
+	public List<WordQuizDTO> generateProblems(List<Map<String, Object>> extractedWords){
+		
+		List<WordQuizDTO> rList = new ArrayList<WordQuizDTO>();
+		
+		WordQuizDTO pDTO = null;
+		
+		for(Map<String, Object> extractedWord : extractedWords) {
+			pDTO = new WordQuizDTO();
+			// get index of sentence and token
+			int sntncIdx = (Integer)extractedWord.get("sntncIdx");
+			int wordIdx = (Integer)extractedWord.get("wordIdx");
+			String originalWord = this.tokens.get(sntncIdx).get(wordIdx);
+			log.info("originalWord : " + originalWord);
+			String lemma = this.lemmas.get(sntncIdx).get(wordIdx);
+			String originalSentence = this.originalSentences.get(sntncIdx);
+			String sentence = originalSentence.replace(originalWord, originalWord.substring(0, 2)+"_____");
+			String answerSentence = originalSentence.replace(originalWord, "<span class='hl'>" + originalWord + "</span>");
+			pDTO.setAnswer(originalWord);
+			pDTO.setSentence(sentence);
+			pDTO.setAnswerSentence(answerSentence);
+			pDTO.setLemma(lemma);
+			rList.add(pDTO);
+			pDTO = null;
+		}
+	
+		return rList;
 	}
 	
 	public Map<String, Object> toMap(){

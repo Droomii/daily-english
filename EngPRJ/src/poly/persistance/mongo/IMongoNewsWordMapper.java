@@ -9,7 +9,7 @@ public interface IMongoNewsWordMapper {
 
 	void insertWords(List<WordDTO> words) throws Exception;
 	
-	void createCollection() throws Exception;
+	void createCollection(String colNm) throws Exception;
 
 	Map<String, List<String>> getWordPool() throws Exception;
 

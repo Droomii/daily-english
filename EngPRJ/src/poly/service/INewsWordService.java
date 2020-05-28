@@ -15,5 +15,8 @@ public interface INewsWordService {
 	void loadWordPool() throws Exception;
 
 	void highlightWords(NewsDTO news) throws Exception;
+	
+	void saveTodayWordToRedis(NewsDTO news) throws Exception;
+	
 
 }

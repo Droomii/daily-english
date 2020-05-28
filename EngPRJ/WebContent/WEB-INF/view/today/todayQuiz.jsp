@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%
 
-	String pageTitle = "오늘의 퀴즈";
+	String pageTitle = "실력 측정";
 
 %>
 <!DOCTYPE html>
@@ -35,13 +35,13 @@
   }
   
   .choice:hover{
-  	background-color:rgb(180,180,180);
-  	border-color:rgb(180,180,180);
+  	background-color:rgb(200,200,200);
+  	border-color:rgb(200,200,200);
   	color:black;
   }
   .choice:active{
-  	background-color:rgb(180,180,180) !important;
-  	border-color:rgb(180,180,180) !important;
+  	background-color:rgb(200,200,200) !important;
+  	border-color:rgb(200,200,200) !important;
   	color:black !important;
   }
   
@@ -101,21 +101,23 @@
 		<div class="col-lg-4 offset-lg-4 col-md-12">
 			<div class="card">
 				<div class="card-header pb-0">
-					<h4 class="card-title mb-0" style="font-size:1.5rem">오늘의 퀴즈</h4>
+					<h4 class="card-title mb-0" style="font-size:1.5rem">실력 측정 테스트</h4>
 				</div>
+				<div id="card-content">
 				<div class="card-body">
 				<p style="font-weight:bold">
-				빈 칸에 들어갈 알맞은 단어를 고르세요.
+				밑줄 친 단어의 알맞은 해석을 고르세요.
 				</p>
 				<p>
-				1. This is an <span class="stress">example.</span>
+				<span id="no"></span>. <span id="word"></span> : <span id="sentence"></span>
 				</p>
 				</div>
 				<div class="card-body">
-				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">example</button>
-				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">hello</button>
-				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">world</button>
-				<button type="button" class="btn mb-1 choice btn-secondary btn-sm btn-block">wrong</button>
+				<button type="button" id="a" class="btn mb-1 choice btn-secondary btn-sm btn-block">example</button>
+				<button type="button" id="b" class="btn mb-1 choice btn-secondary btn-sm btn-block">hello</button>
+				<button type="button" id="c" class="btn mb-1 choice btn-secondary btn-sm btn-block">world</button>
+				<button type="button" id="d" class="btn mb-1 choice btn-secondary btn-sm btn-block">wrong</button>
+				</div>
 				</div>
 			</div>
 		</div>
@@ -136,10 +138,73 @@
     </div>
     <!-- content end -->
 	<script type="text/javascript">
+	// choices(a, b, c, d)
 	var choices = $(".choice")
+	var no = 0;
+	var index = 0;
+	$(document).ready(function(){
+		$.ajax({
+	           type:"GET",
+	           url:"/submitTestAnswer.do",
+	           dataType:"JSON",
+	           success : function(json) {
+	        	   $('.chosen').removeClass('chosen');
+	        	   $("#no").html(++no);
+	        	   $("#word").html(json.word);
+	        	   $("#sentence").html(json.sentence);
+	        	   $("#a").html(json.a);
+	        	   $("#b").html(json.b);
+	        	   $("#c").html(json.c);
+	        	   $("#d").html(json.d);
+	        	   index = json.no * 1;
+	           },
+	           error : function(xhr, status, error) {
+	        	   console.log('error!!');
+	           }
+	     });
+		
+	})
+	
+	// when choices are clicked
 	choices.on("click", function(e){
-		$('.chosen').removeClass('chosen');
-		$(this).addClass('chosen')
+		if( $(this).hasClass('chosen') ){
+			$.ajax({
+		           type:"GET",
+		           url:"/submitTestAnswer.do",
+		           data: {answer : $(this).attr("id"),
+		        	   index : index},
+		           dataType:"JSON",
+		           success : function(json) {
+		        	   
+		        	   if(json.finalLevel!=null){
+		        		   var resultContent = 
+		        			   "<div class='card-body'>"
+		        		   		+ "<h4 class='card-title mb-0 text-center' style='font-size:1.5rem'>"
+		        		   		+ "당신의 영어 실력은...</h4><h4 class='card-title mt-3 text-center' style='font-size:2rem'>"
+		        		   		+ "Level " + json.finalLevel + "</h4></div>";
+		        		   $("#card-content").html(resultContent);
+		        		   
+		        	   }else{
+		        		   $('.chosen').removeClass('chosen');
+			        	   $("#no").html(++no);
+			        	   $("#word").html(json.word);
+			        	   $("#sentence").html(json.sentence);
+			        	   $("#a").html(json.a);
+			        	   $("#b").html(json.b);
+			        	   $("#c").html(json.c);
+			        	   $("#d").html(json.d);
+			        	   index = json.no * 1;   
+		        	   }
+		        	   
+		           },
+		           error : function(xhr, status, error) {
+		        	   console.log('error!!');
+		           }
+		     });
+		}else{
+			$('.chosen').removeClass('chosen');
+			$(this).addClass('chosen')
+		}
 	})
 	</script>
     <%@ include file="/WEB-INF/view/footer.jsp" %>

@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 
 import poly.dto.NewsDTO;
 import poly.dto.WordDTO;
+import poly.dto.WordQuizDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
 import poly.persistance.mongo.IMongoNewsWordMapper;
+import poly.persistance.redis.IRedisNewsWordMapper;
 import poly.service.INewsWordService;
 
 @Service("NewsWordService")
@@ -26,6 +28,9 @@ public class NewsWordService implements INewsWordService{
 	@Resource(name = "MongoNewsMapper")
 	IMongoNewsMapper mongoNewsMapper;
 
+	@Resource(name = "RedisNewsWordMapper")
+	IRedisNewsWordMapper redisNewsWordMapper;
+	
 	private Map<String, List<String>> WORD_POOL = new HashMap<>();
 	
 	Logger log = Logger.getLogger(this.getClass());
@@ -53,7 +58,7 @@ public class NewsWordService implements INewsWordService{
 		
 	}
 
-	/** @return : [{word : (String)"단어", pool : (List of String)"속한 풀", sntncIdx : (Integer)"문장 인덱스", wordIdx : (Integer)"단어 인덱스"}]
+	/** @return : [{lemma : (String)"단어원형", pool : (List of String)"속한 풀", sntncIdx : (Integer)"문장 인덱스", wordIdx : (Integer)"단어 인덱스"}]
 	 *
 	 */
 	@Override
@@ -65,13 +70,15 @@ public class NewsWordService implements INewsWordService{
 		Map<String, Object> pMap = null;
 		
 		int sntncIdx = 0;
-		for(List<String> wordsBySentence : pDTO.getLemmas()) {
+		// 각 단어의 동사원형으로 for each
+		for(List<String> lemmasBySentence : pDTO.getLemmas()) {
 			int wordIdx = 0;
-			for(String word : wordsBySentence) {
-				if(WORD_POOL.containsKey(word.toLowerCase())) {
+			for(String lemma : lemmasBySentence) {
+				if(WORD_POOL.containsKey(lemma.toLowerCase())) {
 					pMap = new HashMap<String, Object>();
-					pMap.put("word", word);
-					pMap.put("pool", WORD_POOL.get(word.toLowerCase()));
+					pMap.put("lemma", lemma);
+					pMap.put("word", pDTO.getTokens().get(sntncIdx).get(wordIdx));
+					pMap.put("pool", WORD_POOL.get(lemma.toLowerCase()));
 					pMap.put("sntncIdx", sntncIdx);
 					pMap.put("wordIdx", wordIdx);
 					rList.add(pMap);
@@ -92,8 +99,19 @@ public class NewsWordService implements INewsWordService{
 		
 		List<Map<String, Object>> extractedWords = extractWords(news);
 		
-		news.highlightWords(extractedWords);
+		news.highlightAllWords(extractedWords);
 		
+	}
+
+
+	@Override
+	public void saveTodayWordToRedis(NewsDTO pDTO) throws Exception {
+		log.info("pDTO : " + pDTO);
+		List<Map<String, Object>> extractedWords = extractWords(pDTO);
+		
+		List<WordQuizDTO> rList = pDTO.generateProblems(extractedWords);
+		
+		redisNewsWordMapper.saveTodayWordToRedis(rList);
 	}
 
 	

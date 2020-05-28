@@ -1,6 +1,5 @@
 package poly.persistance.mongo.impl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +20,7 @@ import poly.persistance.mongo.IMongoNewsWordMapper;
 @Mapper("MongoNewsWordMapper")
 public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 
-	private static final String COL_NM = "wordPool";
+	private static final String WORD_POOL = "wordPool";
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
@@ -31,19 +30,18 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 	@Override
 	public void insertWords(List<WordDTO> words) throws Exception {
 		
-		createCollection();
-		mongodb.insert(words, COL_NM);
+		createCollection(WORD_POOL);
+		mongodb.insert(words, WORD_POOL);
 		
 		
 	}
 
-	@Override
-	public void createCollection() throws Exception {
+	public void createCollection(String colNm) throws Exception {
 		log.info(this.getClass().getName() + ".createCollection start");
 
 
-		if (!mongodb.collectionExists(COL_NM)) {
-			mongodb.createCollection(COL_NM).createIndex(new BasicDBObject("word", 1), "wordIdx");
+		if (!mongodb.collectionExists(colNm)) {
+			mongodb.createCollection(colNm).createIndex(new BasicDBObject("word", 1), "wordIdx");
 		}
 
 		log.info(this.getClass().getName() + ".createCollection end");
@@ -56,7 +54,7 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 		log.info(this.getClass().getName() + ".getWordPool start");
 		
 		DBObject query = new BasicDBObject("pool", new BasicDBObject("$in", Arrays.asList("TOEIC", "Academic", "Business")));
-		DBCursor cursor = mongodb.getCollection(COL_NM).find(query);
+		DBCursor cursor = mongodb.getCollection(WORD_POOL).find(query);
 		
 		Map<String, List<String>> rMap = new HashMap<>();
 		while(cursor.hasNext()) {
@@ -67,5 +65,6 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 		log.info(this.getClass().getName() + ".getWordPool end");
 		return rMap;
 	}
+	
 	
 }

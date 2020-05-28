@@ -49,7 +49,6 @@ public class NewsService implements INewsService{
 
 	@Override
 	public NewsDTO getLatestNews() throws Exception {
-		
 		NewsDTO rDTO = mongoNewsMapper.getLatestNews();
 		return rDTO;
 	}
@@ -68,6 +67,5 @@ public class NewsService implements INewsService{
 		log.info(this.getClass().getName() + ".scheduleCrawl end");
 		
 	}
-
 	
 }
