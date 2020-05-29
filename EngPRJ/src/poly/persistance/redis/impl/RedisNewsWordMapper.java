@@ -132,6 +132,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		WordQuizDTO rDTO = (WordQuizDTO) redisDB.opsForList().index(COL_NM, quizIntIdx);
 
 		Map<String, String> rMap = new HashMap<String, String>();
+		rMap.put("lemma", rDTO.getLemma());
 		rMap.put("answerSentence", rDTO.getAnswerSentence());
 
 		// get user quiz info

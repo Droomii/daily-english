@@ -25,6 +25,7 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 
 	private static final String WORD_POOL = "wordPool";
 	private static final String WORD_USAGE = "wordUsage";
+	private static final String QUIZ_RECORD = "quizRecord";
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
@@ -78,7 +79,6 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 			mongodb.createCollection(WORD_USAGE).createIndex(new BasicDBObject("lemma", 1), "lemmaIdx");
 		}
 		List<Map<String, String>> pList = new ArrayList<Map<String,String>>();
-		
 		Map<String, String> pMap = null;
 		
 		for(WordQuizDTO wDTO : rList) {
@@ -101,6 +101,19 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 			
 		}
 		mongodb.insert(pList, WORD_USAGE);
+	}
+
+	@Override
+	public void insertQuizRecord(Map<String, String> rMap) throws Exception {
+		if (!mongodb.collectionExists(QUIZ_RECORD)) {
+			mongodb.createCollection(QUIZ_RECORD).createIndex(new BasicDBObject("word", 1), "wordIdx");
+		}
+		DBObject obj = new BasicDBObject()
+				.append("user_seq", Integer.parseInt(rMap.get("user_seq")))
+				.append("word", rMap.get("lemma"))
+				.append("correct", Integer.parseInt(rMap.get("result")));
+		
+		mongodb.insert(obj, QUIZ_RECORD);
 	}
 	
 	

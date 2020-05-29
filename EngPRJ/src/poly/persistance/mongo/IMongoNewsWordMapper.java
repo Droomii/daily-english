@@ -16,5 +16,7 @@ public interface IMongoNewsWordMapper {
 
 	void saveWordUsage(List<WordQuizDTO> rList) throws Exception;
 
+	void insertQuizRecord(Map<String, String> rMap) throws Exception;
+
 
 }
