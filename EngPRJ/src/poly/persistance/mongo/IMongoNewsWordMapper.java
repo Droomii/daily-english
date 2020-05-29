@@ -18,5 +18,7 @@ public interface IMongoNewsWordMapper {
 
 	void insertQuizRecord(Map<String, String> rMap) throws Exception;
 
+	void insertReviewWord(Map<String, String> rMap) throws Exception;
+
 
 }

@@ -130,6 +130,9 @@ public class NewsWordService implements INewsWordService{
 		Map<String, String> rMap =redisNewsWordMapper.submitTodayQuizAnswer(user_seq, quizIdx, answer);
 		rMap.put("user_seq", user_seq);
 		mongoNewsWordMapper.insertQuizRecord(rMap);
+		if(rMap.get("result").equals("0")) {
+			mongoNewsWordMapper.insertReviewWord(rMap);
+		}
 		return rMap;
 		
 	}

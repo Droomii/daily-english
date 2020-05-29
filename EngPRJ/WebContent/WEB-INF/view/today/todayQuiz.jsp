@@ -127,6 +127,11 @@
                       </form>
                  <button type="button" id="next" class="btn mb-1 btn-info btn-lg btn-block" hidden="hidden" disabled="disabled">다음(Enter)&gt;</button>
                  </div>
+                 <div class="card-body">
+                 	<div class="card-text text-center">
+                 	(<span id="no2"></span> / <span id="total"></span>) 
+                 	</div>
+                 </div>
                   
                   
 				</div>
@@ -164,7 +169,9 @@
 				url : "getRandomTodayQuiz.do",
 				dataType : "JSON",
 				success : function(json) {
-					$("#no").html(++no);
+					$("#no").html(json.answeredQCount+1);
+					$("#no2").html(json.answeredQCount+1);
+					$("#total").html(json.totalQs);
 					$("#sentence").html(json.sentence);
 					$("#translation").html(json.translation);
 					idx = json.idx * 1;
@@ -241,7 +248,9 @@
 				dataType : "JSON",
 				success : function(json) {
 					if(json.idx * 1 != -1){
-						$("#no").html(++no);
+						$("#no").html(json.answeredQCount+1);
+						$("#no2").html(json.answeredQCount+1);
+						$("#total").html(json.totalQs);
 						$("#sentence").html(json.sentence);
 						$("#translation").html(json.translation);
 						idx = json.idx * 1;

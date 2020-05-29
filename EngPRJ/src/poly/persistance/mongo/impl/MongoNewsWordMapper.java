@@ -26,6 +26,7 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 	private static final String WORD_POOL = "wordPool";
 	private static final String WORD_USAGE = "wordUsage";
 	private static final String QUIZ_RECORD = "quizRecord";
+	private static final String REVIEW_WORDS = "reviewWords";
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
@@ -114,6 +115,23 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 				.append("correct", Integer.parseInt(rMap.get("result")));
 		
 		mongodb.insert(obj, QUIZ_RECORD);
+	}
+
+	@Override
+	public void insertReviewWord(Map<String, String> rMap) throws Exception {
+		if (!mongodb.collectionExists(REVIEW_WORDS)) {
+			mongodb.createCollection(REVIEW_WORDS).createIndex(new BasicDBObject("word", 1), "wordIdx");
+		}
+		
+		// correctCounter : user needs to answer this amount of review questions correctly
+		// in order to remove this word from the review word collection
+		DBObject obj = new BasicDBObject()
+				.append("user_seq", Integer.parseInt(rMap.get("user_seq")))
+				.append("word", rMap.get("lemma"))
+				.append("correctCounter", 2);
+		
+		mongodb.insert(obj, REVIEW_WORDS);
+		
 	}
 	
 	

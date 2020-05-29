@@ -89,6 +89,8 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 			int randomIdx = r.nextInt(quizList.size());
 			WordQuizDTO rDTO = quizList.get(randomIdx);
 			rDTO.setIdx(randomIdx);
+			rDTO.setAnsweredQCount(0);
+			rDTO.setTotalQCount(quizList.size());
 			return rDTO;
 		}
 		
@@ -114,6 +116,8 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		log.info("randomIdx : " + randomIdx);
 		WordQuizDTO rDTO = quizList.get(randomIdx);
 		rDTO.setIdx(randomIdx);
+		rDTO.setAnsweredQCount(qiDTO.getAnsweredQs().size());
+		rDTO.setTotalQCount(quizList.size());
 		return rDTO;
 		
 		
