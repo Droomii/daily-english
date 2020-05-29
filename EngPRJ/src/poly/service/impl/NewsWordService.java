@@ -111,6 +111,7 @@ public class NewsWordService implements INewsWordService{
 		
 		List<WordQuizDTO> rList = pDTO.generateProblems(extractedWords);
 		
+		mongoNewsWordMapper.saveWordUsage(rList);
 		redisNewsWordMapper.saveTodayWordToRedis(rList);
 	}
 

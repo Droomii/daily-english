@@ -1,5 +1,6 @@
 package poly.persistance.mongo.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -10,17 +11,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 import config.Mapper;
 import poly.dto.WordDTO;
+import poly.dto.WordQuizDTO;
 import poly.persistance.mongo.IMongoNewsWordMapper;
 
 @Mapper("MongoNewsWordMapper")
 public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 
 	private static final String WORD_POOL = "wordPool";
+	private static final String WORD_USAGE = "wordUsage";
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
@@ -64,6 +68,39 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 		
 		log.info(this.getClass().getName() + ".getWordPool end");
 		return rMap;
+	}
+
+	// saving word usage to mongo
+	@Override
+	public void saveWordUsage(List<WordQuizDTO> rList) throws Exception {
+		
+		if (!mongodb.collectionExists(WORD_USAGE)) {
+			mongodb.createCollection(WORD_USAGE).createIndex(new BasicDBObject("lemma", 1), "lemmaIdx");
+		}
+		List<Map<String, String>> pList = new ArrayList<Map<String,String>>();
+		
+		Map<String, String> pMap = null;
+		
+		for(WordQuizDTO wDTO : rList) {
+			
+			// check for duplicate
+			DBObject query = new BasicDBObject()
+					.append("lemma", wDTO.getLemma())
+					.append("sentence", wDTO.getOriginalSentence());
+			DBCursor queryRes = mongodb.getCollection(WORD_USAGE).find(query);
+
+			// if not duplicate
+			if(!queryRes.hasNext()) {
+				pMap = new HashMap<String, String>();
+				pMap.put("lemma", wDTO.getLemma());
+				pMap.put("word", wDTO.getAnswer());
+				pMap.put("sentence", wDTO.getOriginalSentence());
+				pList.add(pMap);
+				pMap = null;
+			}
+			
+		}
+		mongodb.insert(pList, WORD_USAGE);
 	}
 	
 	

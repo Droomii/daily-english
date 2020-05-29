@@ -3,6 +3,7 @@ package poly.dto;
 public class WordQuizDTO {
 
 	private int idx;
+	private String originalSentence;
 	private String sentence;
 	private String answerSentence;
 	private String answer;
@@ -11,6 +12,12 @@ public class WordQuizDTO {
 	
 	
 	
+	public String getOriginalSentence() {
+		return originalSentence;
+	}
+	public void setOriginalSentence(String originalSentence) {
+		this.originalSentence = originalSentence;
+	}
 	public int getIdx() {
 		return idx;
 	}

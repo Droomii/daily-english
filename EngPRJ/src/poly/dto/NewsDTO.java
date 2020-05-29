@@ -250,6 +250,7 @@ public class NewsDTO {
 				String answerSentence = originalSentence.replace(originalWord, "<span class='hl'>" + originalWord + "</span>");
 				pDTO.setAnswer(originalWord);
 				pDTO.setSentence(sentence);
+				pDTO.setOriginalSentence(originalSentence);
 				pDTO.setAnswerSentence(answerSentence);
 				pDTO.setLemma(lemma);
 				pDTO.setTranslation(translation);
