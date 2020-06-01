@@ -20,5 +20,9 @@ public interface IMongoNewsWordMapper {
 
 	void insertReviewWord(Map<String, String> rMap) throws Exception;
 
+	List<Map<String, Object>> getReviewWords(String user_seq) throws Exception;
+
+	WordQuizDTO getRandomUsage(String word) throws Exception;
+
 
 }

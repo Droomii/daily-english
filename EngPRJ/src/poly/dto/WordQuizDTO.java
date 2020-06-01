@@ -9,9 +9,20 @@ public class WordQuizDTO {
 	private String answer;
 	private String lemma;
 	private String translation;
+	private int correctCounter;
 	private int totalQs;
 	private int answeredQCount;
 	
+	
+	public int getCorrectCounter() {
+		return correctCounter;
+	}
+	public void setCorrectCounter(int correctCounter) {
+		this.correctCounter = correctCounter;
+	}
+	public void setTotalQs(int totalQs) {
+		this.totalQs = totalQs;
+	}
 	public int getTotalQs() {
 		return totalQs;
 	}

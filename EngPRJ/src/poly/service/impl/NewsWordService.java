@@ -137,6 +137,28 @@ public class NewsWordService implements INewsWordService{
 		
 	}
 
+
+	@Override
+	public void putReviewWordToRedis(String user_seq) throws Exception {
+
+		boolean hasKey = redisNewsWordMapper.hasKey("reviewWord_" + user_seq);
+		if(!hasKey) {
+			// pList keys: {word, correctCounter}
+			List<Map<String, Object>> pList = mongoNewsWordMapper.getReviewWords(user_seq);
+			
+			List<WordQuizDTO> quizList = new ArrayList<WordQuizDTO>();
+			for(Map<String, Object> pMap : pList) {
+				String word = (String)pMap.get("word");
+				WordQuizDTO wqDTO = mongoNewsWordMapper.getRandomUsage(word);
+				wqDTO.setCorrectCounter((Integer)pMap.get("correctCounter"));
+				quizList.add(wqDTO);
+			}
+			
+			redisNewsWordMapper.putReviewWordToRedis(user_seq, quizList);
+		}
+		
+	}
+
 	
 	
 	

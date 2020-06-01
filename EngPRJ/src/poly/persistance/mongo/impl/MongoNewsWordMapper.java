@@ -1,6 +1,5 @@
 package poly.persistance.mongo.impl;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,13 +7,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
@@ -22,6 +21,7 @@ import config.Mapper;
 import poly.dto.WordDTO;
 import poly.dto.WordQuizDTO;
 import poly.persistance.mongo.IMongoNewsWordMapper;
+import static poly.util.CmmUtil.nvl;
 
 @Mapper("MongoNewsWordMapper")
 public class MongoNewsWordMapper implements IMongoNewsWordMapper{
@@ -31,6 +31,7 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 	private static final String QUIZ_RECORD = "quizRecord";
 	private static final String REVIEW_WORDS = "reviewWords";
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMdd");
+	private static final Random R = new Random();
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
@@ -134,9 +135,61 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 				.append("user_seq", Integer.parseInt(rMap.get("user_seq")))
 				.append("word", rMap.get("lemma"))
 				.append("correctCounter", 2)
-				.append("updDt", SDF.format(new Date()));
+				.append("updDt", Integer.parseInt(SDF.format(new Date())));
 		
 		mongodb.insert(obj, REVIEW_WORDS);
+		
+	}
+
+	@Override
+	public List<Map<String, Object>> getReviewWords(String user_seq) throws Exception {
+		DBObject query = new BasicDBObject()
+				.append("user_seq", Integer.parseInt(user_seq))
+				.append("updDt", new BasicDBObject("$lt", Integer.parseInt(SDF.format(new Date()))));
+		
+		DBCursor queryRes = mongodb.getCollection(REVIEW_WORDS).find(query);
+		List<Map<String, Object>> rList = new ArrayList<Map<String,Object>>();
+		while(queryRes.hasNext()) {
+			DBObject obj = queryRes.next();
+			Map<String, Object> pMap = new HashMap<String, Object>();
+			log.info("reviewWord : " + nvl((String)obj.get("word")));
+			pMap.put("word", nvl((String)obj.get("word")));
+			pMap.put("correctCounter", nvl((String)obj.get("correctCounter")));
+			rList.add(pMap);
+		}
+		return rList;
+	}
+
+	@Override
+	public WordQuizDTO getRandomUsage(String word) throws Exception {
+		DBObject query = new BasicDBObject("lemma", word);
+		DBCursor queryRes = mongodb.getCollection(WORD_USAGE).find(query);
+		int count = queryRes.count();
+		int randomIdx = R.nextInt(count);
+		for(int i=0; i<randomIdx;i++) {
+			queryRes.next();
+		}
+		DBObject resObj = queryRes.next();
+		if(resObj!=null) {
+			String originalWord = (String)resObj.get("word");
+			String originalSentence = (String)resObj.get("sentence");
+			String translation = (String)resObj.get("translation");
+			String sentence = originalSentence.replace(originalWord, originalWord.substring(0, 2)+"_____");
+			String answerSentence = originalSentence.replace(originalWord, "<span class='hl'>" + originalWord + "</span>");
+			
+			WordQuizDTO rDTO = new WordQuizDTO();
+			
+			rDTO.setAnswer(originalWord);
+			rDTO.setSentence(sentence);
+			rDTO.setOriginalSentence(originalSentence);
+			rDTO.setAnswerSentence(answerSentence);
+			rDTO.setLemma(word);
+			rDTO.setTranslation(translation);
+			return rDTO;
+		}else {
+			return null;
+		}
+		
 		
 	}
 	

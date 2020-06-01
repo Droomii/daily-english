@@ -2,6 +2,7 @@ package poly.persistance.redis.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 
 	private static final String COL_NM = "todayQuiz";
 	private static final String QUIZ_INFO_PREFIX = "quizInfo_";
+	private static final String REVIEW_WORD_PREFIX = "reviewWord_";
 	private static List<WordQuizDTO> quizList = null;
 	private static Random r = new Random();
 
@@ -157,18 +159,57 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		rMap.put("result", res ? "1" : "0");
 		redisDB.opsForValue().set(key, qDTO);
 
-		Calendar c = Calendar.getInstance();
 
-		// to tomorrow
+		redisDB.expireAt(key, getTomorrow());
+		return rMap;
+
+	}
+
+	@Override
+	public boolean hasKey(String colNm) throws Exception {
+		
+		return redisDB.hasKey(colNm);
+	}
+	
+	@Override
+	public void putReviewWordToRedis(String user_seq, List<WordQuizDTO> quizList) throws Exception {
+		
+		String key = REVIEW_WORD_PREFIX + user_seq;
+		
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
+		
+		Iterator<WordQuizDTO> quiz = quizList.iterator();
+
+		WordQuizDTO wDTO = null;
+
+		while (quiz.hasNext()) {
+
+			wDTO = quiz.next();
+			redisDB.opsForList().rightPush(key, wDTO);
+		}
+
+		redisDB.expireAt(key, getTomorrow());
+		
+		
+		
+	}
+	
+	public Date getTomorrow() {
+		// set expire time to tomorrow
+		Calendar c = Calendar.getInstance();
+		
 		c.add(Calendar.DATE, 1);
 		c.set(Calendar.HOUR_OF_DAY, 7);
 		c.set(Calendar.MINUTE, 0);
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.MILLISECOND, 0);
-
-		redisDB.expireAt(key, c.getTime());
-		return rMap;
-
+		
+		return c.getTime();
 	}
+
+	
+
+
 
 }
