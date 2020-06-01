@@ -100,6 +100,7 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 				pMap.put("lemma", wDTO.getLemma());
 				pMap.put("word", wDTO.getAnswer());
 				pMap.put("sentence", wDTO.getOriginalSentence());
+				pMap.put("translation", wDTO.getTranslation());
 				pList.add(pMap);
 				pMap = null;
 			}

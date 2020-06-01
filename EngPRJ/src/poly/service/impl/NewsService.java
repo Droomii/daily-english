@@ -76,5 +76,11 @@ public class NewsService implements INewsService{
 		log.info(this.getClass().getName() + ".scheduleCrawl end");
 		
 	}
+
+	@Override
+	public NewsDTO getNews(int i) throws Exception {
+		NewsDTO rDTO = mongoNewsMapper.getNews(i);
+		return rDTO;
+	}
 	
 }

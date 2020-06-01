@@ -1,7 +1,5 @@
 package poly.service;
 
-import java.util.List;
-
 import poly.dto.NewsDTO;
 
 public interface INewsService {
@@ -11,5 +9,7 @@ public interface INewsService {
 	NewsDTO getLatestNews() throws Exception;
 	
 	void scheduleCrawl() throws Exception;
+
+	NewsDTO getNews(int i) throws Exception;
 
 }

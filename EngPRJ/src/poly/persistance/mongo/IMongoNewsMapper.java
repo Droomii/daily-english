@@ -10,5 +10,7 @@ public interface IMongoNewsMapper {
 
 	NewsDTO getLatestNews() throws Exception;
 
+	NewsDTO getNews(int i) throws Exception;
+
 
 }

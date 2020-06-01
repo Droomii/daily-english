@@ -98,7 +98,25 @@ public class NewsWordController {
 		return "success";
 	}
 	
+	@RequestMapping(value = "saveAllQuiz")
+	@ResponseBody
+	public String saveAllQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".saveLatestQuiz start");
 
+		try {
+			int i = 0;
+			while(true) {
+				NewsDTO news = newsService.getNews(i);
+				newsWordService.saveTodayWordToRedis(news);
+				i++;
+			}
+		}catch (Exception e) {}
+		
+		
+		log.info(this.getClass().getName() + ".saveLatestQuiz end");
+		return "success";
+	}
 	private void removeStopWords(String path, Map<String, WordDTO> wordMap) throws IOException {
 		
 		File f = new File(path);

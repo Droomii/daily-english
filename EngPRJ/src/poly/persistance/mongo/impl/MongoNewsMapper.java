@@ -65,4 +65,13 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		return rDTO;
 	}
 
+	@Override
+	public NewsDTO getNews(int i) throws Exception {
+		DBCursor cursor = mongodb.getCollection(COL_NM).find();
+		for(int j = 0; j < i; j++) {
+			cursor.next();
+		}
+		return new NewsDTO(cursor.next());
+	}
+
 }
