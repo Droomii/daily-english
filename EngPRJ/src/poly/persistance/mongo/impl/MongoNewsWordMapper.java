@@ -1,7 +1,10 @@
 package poly.persistance.mongo.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +30,7 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 	private static final String WORD_USAGE = "wordUsage";
 	private static final String QUIZ_RECORD = "quizRecord";
 	private static final String REVIEW_WORDS = "reviewWords";
+	private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMdd");
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
@@ -128,7 +132,8 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 		DBObject obj = new BasicDBObject()
 				.append("user_seq", Integer.parseInt(rMap.get("user_seq")))
 				.append("word", rMap.get("lemma"))
-				.append("correctCounter", 2);
+				.append("correctCounter", 2)
+				.append("updDt", SDF.format(new Date()));
 		
 		mongodb.insert(obj, REVIEW_WORDS);
 		
