@@ -183,19 +183,11 @@
 					$("#wordInput").focus();
 					correctCounter = json.correctCounter;
 					if(correctCounter==2){
-						$("#firstCounter").css("color", "rgb(200,200,200)");
-						$("#firstCounter").removeClass("la-times-circle");
-						$("#firstCounter").addClass("la-check-circle");
-						$("#secondCounter").removeClass("la-times-circle");
-						$("#secondCounter").css("color", "rgb(200,200,200)");
-						$("#secondCounter").addClass("la-check-circle");
+						gray(1);
+						gray(2);
 					}else{
-						$("#firstCounter").css("color", "green");
-						$("#firstCounter").removeClass("la-times-circle");
-						$("#firstCounter").addClass("la-check-circle");
-						$("#secondCounter").removeClass("la-times-circle");
-						$("#secondCounter").css("color", "rgb(200,200,200)");
-						$("#secondCounter").addClass("la-check-circle");
+						check(1);
+						gray(2);
 					}
 				},
 				error : function(xhr, status, error) {
@@ -241,22 +233,16 @@
 					if (json.result == "1") {
 						$("#result").html("정답입니다!!")
 						if(correctCounter==2){
-							$("#firstCounter").css("color", "green");
-							$("#firstCounter").removeClass("la-times-circle");
-							$("#firstCounter").addClass("la-check-circle");
+							check(1);
 						}else{
-							$("#secondCounter").css("color", "green");
+							check(2);
 						}
 					} else {
 						$("#result").html("틀렸습니다!!")
 						if(correctCounter==2){
-							$("#firstCounter").css("color", "red");
-							$("#firstCounter").removeClass("la-check-circle");
-							$("#firstCounter").addClass("la-times-circle");
+							cross(1);
 						}else{
-							$("#secondCounter").removeClass("la-check-circle");
-							$("#secondCounter").css("color", "red");
-							$("#secondCounter").addClass("la-times-circle");
+							cross(2);
 						}
 					}
 					$("#sentence").html(json.answerSentence);
@@ -292,19 +278,11 @@
 						
 						correctCounter = json.correctCounter;
 						if(correctCounter==2){
-							$("#firstCounter").css("color", "rgb(200,200,200)");
-							$("#firstCounter").removeClass("la-times-circle");
-							$("#firstCounter").addClass("la-check-circle");
-							$("#secondCounter").removeClass("la-times-circle");
-							$("#secondCounter").css("color", "rgb(200,200,200)");
-							$("#secondCounter").addClass("la-check-circle");
+							gray(1);
+							gray(2);
 						}else{
-							$("#firstCounter").css("color", "green");
-							$("#firstCounter").removeClass("la-times-circle");
-							$("#firstCounter").addClass("la-check-circle");
-							$("#secondCounter").removeClass("la-times-circle");
-							$("#secondCounter").css("color", "rgb(200,200,200)");
-							$("#secondCounter").addClass("la-check-circle");
+							check(1);
+							gray(2);
 						}
 						
 						
@@ -332,6 +310,28 @@
 				}
 			});
 		}
+		function cross(num){
+			var numStr = num==1 ? "first" : "second";
+			$("#"+ numStr + "Counter").css("color", "red");
+			$("#"+ numStr + "Counter").removeClass("la-check-circle");
+			$("#"+ numStr + "Counter").addClass("la-times-circle");
+		}
+		
+		function gray(num){
+			var numStr = num==1 ? "first" : "second";
+			$("#"+ numStr + "Counter").css("color", "rgb(200,200,200)");
+			$("#"+ numStr + "Counter").removeClass("la-times-circle");
+			$("#"+ numStr + "Counter").addClass("la-check-circle");
+		}
+		function check(num){
+			var numStr = num==1 ? "first" : "second";
+			$("#"+ numStr + "Counter").css("color", "green");
+			$("#"+ numStr + "Counter").removeClass("la-times-circle");
+			$("#"+ numStr + "Counter").addClass("la-check-circle");
+		}
+		
+		
+		
 	</script>
     <%@ include file="/WEB-INF/view/footer.jsp" %>
     <!-- END PAGE LEVEL JS-->
