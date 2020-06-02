@@ -109,6 +109,10 @@
 				<p style="font-weight:bold">
 				빈 칸에 알맞은 단어를 입력하세요
 				</p>
+				<div>
+				 <i class="la" id="firstCounter" style="font-size:2rem"></i>
+				 <i class="la" id="secondCounter" style="font-size:2rem"></i>
+				 </div>
 				<p>
 				<span id="no"></span>. <span id="sentence"></span>
 				</p>
@@ -161,7 +165,7 @@
 		
 		// real problem index
 		var idx = 0;
-		
+		var correctCounter = 0;
 		// get random today quiz
 		$(document).ready(function() {
 			$.ajax({
@@ -177,6 +181,22 @@
 					idx = json.idx * 1;
 					$("#wordInput").val(json.answer.substr(0, 2));
 					$("#wordInput").focus();
+					correctCounter = json.correctCounter;
+					if(correctCounter==2){
+						$("#firstCounter").css("color", "rgb(200,200,200)");
+						$("#firstCounter").removeClass("la-times-circle");
+						$("#firstCounter").addClass("la-check-circle");
+						$("#secondCounter").removeClass("la-times-circle");
+						$("#secondCounter").css("color", "rgb(200,200,200)");
+						$("#secondCounter").addClass("la-check-circle");
+					}else{
+						$("#firstCounter").css("color", "green");
+						$("#firstCounter").removeClass("la-times-circle");
+						$("#firstCounter").addClass("la-check-circle");
+						$("#secondCounter").removeClass("la-times-circle");
+						$("#secondCounter").css("color", "rgb(200,200,200)");
+						$("#secondCounter").addClass("la-check-circle");
+					}
 				},
 				error : function(xhr, status, error) {
 					console.log('error!!');
@@ -220,8 +240,24 @@
 				success : function(json) {
 					if (json.result == "1") {
 						$("#result").html("정답입니다!!")
+						if(correctCounter==2){
+							$("#firstCounter").css("color", "green");
+							$("#firstCounter").removeClass("la-times-circle");
+							$("#firstCounter").addClass("la-check-circle");
+						}else{
+							$("#secondCounter").css("color", "green");
+						}
 					} else {
 						$("#result").html("틀렸습니다!!")
+						if(correctCounter==2){
+							$("#firstCounter").css("color", "red");
+							$("#firstCounter").removeClass("la-check-circle");
+							$("#firstCounter").addClass("la-times-circle");
+						}else{
+							$("#secondCounter").removeClass("la-check-circle");
+							$("#secondCounter").css("color", "red");
+							$("#secondCounter").addClass("la-times-circle");
+						}
 					}
 					$("#sentence").html(json.answerSentence);
 					$("#answerForm").attr("hidden", "hidden");
@@ -253,6 +289,25 @@
 						$("#total").html(json.totalQs);
 						$("#sentence").html(json.sentence);
 						$("#translation").html(json.translation);
+						
+						correctCounter = json.correctCounter;
+						if(correctCounter==2){
+							$("#firstCounter").css("color", "rgb(200,200,200)");
+							$("#firstCounter").removeClass("la-times-circle");
+							$("#firstCounter").addClass("la-check-circle");
+							$("#secondCounter").removeClass("la-times-circle");
+							$("#secondCounter").css("color", "rgb(200,200,200)");
+							$("#secondCounter").addClass("la-check-circle");
+						}else{
+							$("#firstCounter").css("color", "green");
+							$("#firstCounter").removeClass("la-times-circle");
+							$("#firstCounter").addClass("la-check-circle");
+							$("#secondCounter").removeClass("la-times-circle");
+							$("#secondCounter").css("color", "rgb(200,200,200)");
+							$("#secondCounter").addClass("la-check-circle");
+						}
+						
+						
 						idx = json.idx * 1;
 						$("#wordInput").val(json.answer.substr(0, 2));
 						$("#result").attr("hidden", "hidden");
@@ -261,6 +316,7 @@
 						$("#answerForm").removeAttr("hidden");
 						$("#wordInput").focus();
 						$("#submit").attr("disabled", "disabled");
+						
 					}else{
 						$("#no").html(++no);
 						$("#sentence").html("You have seen all quizzes");
