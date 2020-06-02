@@ -128,16 +128,28 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 		if (!mongodb.collectionExists(REVIEW_WORDS)) {
 			mongodb.createCollection(REVIEW_WORDS).createIndex(new BasicDBObject("word", 1), "wordIdx");
 		}
+		int user_seq = Integer.parseInt(rMap.get("user_seq"));
 		
-		// correctCounter : user needs to answer this amount of review questions correctly
-		// in order to remove this word from the review word collection
-		DBObject obj = new BasicDBObject()
-				.append("user_seq", Integer.parseInt(rMap.get("user_seq")))
-				.append("word", rMap.get("lemma"))
-				.append("correctCounter", 2)
-				.append("updDt", Integer.parseInt(SDF.format(new Date())));
+		DBObject query = new BasicDBObject()
+				.append("user_seq", user_seq)
+				.append("word", rMap.get("lemma"));
 		
-		mongodb.insert(obj, REVIEW_WORDS);
+		DBCursor queryRes = mongodb.getCollection(REVIEW_WORDS).find(query);
+		if(queryRes.hasNext()) {
+			log.info("word already exists in review collection");
+		}else {
+			// correctCounter : user needs to answer this amount of review questions correctly
+			// in order to remove this word from the review word collection
+			DBObject obj = new BasicDBObject()
+					.append("user_seq", user_seq)
+					.append("word", rMap.get("lemma"))
+					.append("correctCounter", 2)
+					.append("updDt", Integer.parseInt(SDF.format(new Date())));
+			
+			mongodb.insert(obj, REVIEW_WORDS);
+
+		}
+		
 		
 	}
 
@@ -154,7 +166,7 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 			Map<String, Object> pMap = new HashMap<String, Object>();
 			log.info("reviewWord : " + nvl((String)obj.get("word")));
 			pMap.put("word", nvl((String)obj.get("word")));
-			pMap.put("correctCounter", nvl((String)obj.get("correctCounter")));
+			pMap.put("correctCounter", (Integer)obj.get("correctCounter"));
 			rList.add(pMap);
 		}
 		return rList;

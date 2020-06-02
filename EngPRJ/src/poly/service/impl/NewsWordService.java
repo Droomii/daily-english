@@ -141,6 +141,7 @@ public class NewsWordService implements INewsWordService{
 	@Override
 	public void putReviewWordToRedis(String user_seq) throws Exception {
 
+		log.info(this.getClass().getName() + ".putReviewWordToRedis start");
 		boolean hasKey = redisNewsWordMapper.hasKey("reviewWord_" + user_seq);
 		if(!hasKey) {
 			// pList keys: {word, correctCounter}
@@ -156,6 +157,8 @@ public class NewsWordService implements INewsWordService{
 			
 			redisNewsWordMapper.putReviewWordToRedis(user_seq, quizList);
 		}
+		
+		log.info(this.getClass().getName() + ".putReivewWordToRedis end");
 		
 	}
 

@@ -94,46 +94,46 @@ public class QuizController {
 		return "/review/reviewQuiz";
 	}
 	
-//	@RequestMapping(value = "review/submitReviewQuizAnswer", method = RequestMethod.POST)
-//	@ResponseBody
-//	public Map<String, String> submitReviewQuizAnswer(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
-//			throws Exception {
-//		log.info(this.getClass().getName() + ".submitReviewQuizAnswer start");
-//
-//		String user_seq = (String) session.getAttribute("user_seq");
-//		if(user_seq==null) {
-//			user_seq="1";
-//		}
-//		
-//		String quizIdx = request.getParameter("quizIdx");
-//		String answer = request.getParameter("answer");
-//		log.info("quizIdx : " + quizIdx);
-//		log.info("answer : " + answer);
-//		Map<String, String> rMap = newsWordService.submitReviewQuizAnswer(user_seq, quizIdx, answer);
-//		
-//		log.info("answer : " + (rMap.get("result").equals("1") ? "right" : "wrong"));
-//		rMap.put("originalSentence", rMap.get("answerSentence"));
-//		
-//		log.info(this.getClass().getName() + ".submitReviewQuizAnswer end");
-//		return rMap;
-//	}
-//	
-//	@RequestMapping(value = "review/getRandomReviewQuiz", method = RequestMethod.POST)
-//	@ResponseBody
-//	public WordQuizDTO getRandomReviewQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
-//			throws Exception {
-//		log.info(this.getClass().getName() + ".getRandomReviewQuiz start");
-//		
-//		String user_seq = (String) session.getAttribute("user_seq");
-//		if(user_seq==null) {
-//			user_seq = "1";
-//		}
-//		
-//		WordQuizDTO qDTO = newsWordService.getRandomReviewQuiz(user_seq); 
-//		log.info("qDTO : " + qDTO);
-//		log.info(this.getClass().getName() + ".getRandomReviewQuiz end");
-//		return qDTO;
-//	}
+	@RequestMapping(value = "review/submitReviewQuizAnswer", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, String> submitReviewQuizAnswer(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".submitReviewQuizAnswer start");
+
+		String user_seq = (String) session.getAttribute("user_seq");
+		if(user_seq==null) {
+			user_seq="1";
+		}
+		
+		String quizIdx = request.getParameter("quizIdx");
+		String answer = request.getParameter("answer");
+		log.info("quizIdx : " + quizIdx);
+		log.info("answer : " + answer);
+		Map<String, String> rMap = newsWordService.submitReviewQuizAnswer(user_seq, quizIdx, answer);
+		
+		log.info("answer : " + (rMap.get("result").equals("1") ? "right" : "wrong"));
+		rMap.put("originalSentence", rMap.get("answerSentence"));
+		
+		log.info(this.getClass().getName() + ".submitReviewQuizAnswer end");
+		return rMap;
+	}
+	
+	@RequestMapping(value = "review/getRandomReviewQuiz", method = RequestMethod.POST)
+	@ResponseBody
+	public WordQuizDTO getRandomReviewQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".getRandomReviewQuiz start");
+		
+		String user_seq = (String) session.getAttribute("user_seq");
+		if(user_seq==null) {
+			user_seq = "1";
+		}
+		
+		WordQuizDTO qDTO = newsWordService.getRandomReviewQuiz(user_seq); 
+		log.info("qDTO : " + qDTO);
+		log.info(this.getClass().getName() + ".getRandomReviewQuiz end");
+		return qDTO;
+	}
 
 
 }
