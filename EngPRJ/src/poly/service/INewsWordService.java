@@ -25,9 +25,9 @@ public interface INewsWordService {
 
 	void putReviewWordToRedis(String user_seq) throws Exception;
 
-	Map<String, String> submitReviewQuizAnswer(String user_seq, String quizIdx, String answer);
+	Map<String, String> submitReviewQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception;
 
-	WordQuizDTO getRandomReviewQuiz(String user_seq);
+	WordQuizDTO getRandomReviewQuiz(String user_seq) throws Exception;
 	
 
 }

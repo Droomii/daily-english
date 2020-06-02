@@ -32,6 +32,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 	private static final String COL_NM = "todayQuiz";
 	private static final String QUIZ_INFO_PREFIX = "quizInfo_";
 	private static final String REVIEW_WORD_PREFIX = "reviewWord_";
+	private static final String REVIEW_INFO_PREFIX = "reviewInfo_";
 	private static List<WordQuizDTO> quizList = null;
 	private static Random r = new Random();
 
@@ -179,10 +180,13 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		redisDB.setKeySerializer(new StringRedisSerializer());
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
 		
+		if(!redisDB.hasKey(key)) {
+		
 		Iterator<WordQuizDTO> quiz = quizList.iterator();
 
 		WordQuizDTO wDTO = null;
 
+		
 		while (quiz.hasNext()) {
 
 			wDTO = quiz.next();
@@ -190,7 +194,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		}
 
 		redisDB.expireAt(key, getTomorrow());
-		
+		}
 		
 		
 	}
@@ -206,6 +210,105 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		c.set(Calendar.MILLISECOND, 0);
 		
 		return c.getTime();
+	}
+
+	/**@return
+	 * {lemma, answerSentence, res}
+	 *
+	 */
+	@Override
+	public Map<String, String> submitReviewQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception {
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
+
+		int quizIntIdx = Integer.parseInt(quizIdx);
+		String key = REVIEW_INFO_PREFIX + user_seq;
+		String reviewWord = REVIEW_WORD_PREFIX + user_seq;
+
+		// get quiz word by index
+		WordQuizDTO rDTO = (WordQuizDTO) redisDB.opsForList().index(reviewWord, quizIntIdx);
+
+		Map<String, String> rMap = new HashMap<String, String>();
+		rMap.put("lemma", rDTO.getLemma());
+		rMap.put("answerSentence", rDTO.getAnswerSentence());
+
+		// get user quiz info
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(QuizInfoDTO.class));
+		QuizInfoDTO qDTO = (QuizInfoDTO) redisDB.opsForValue().get(key);
+		if (qDTO == null) {
+			qDTO = new QuizInfoDTO();
+		}
+		boolean res;
+		if (rDTO.getAnswer().equalsIgnoreCase(answer)) {
+			res = true;
+		} else {
+			res = false;
+		}
+
+		qDTO.setUser_seq(user_seq);
+		qDTO.getAnsweredQs().put(quizIntIdx, res);
+		rMap.put("result", res ? "1" : "0");
+		redisDB.opsForValue().set(key, qDTO);
+
+
+		redisDB.expireAt(key, getTomorrow());
+		return rMap;
+
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public WordQuizDTO getReviewQuiz(String user_seq) throws Exception {
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		
+
+		String userKey = REVIEW_INFO_PREFIX + user_seq;
+		String reviewWord = REVIEW_WORD_PREFIX + user_seq;
+		
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
+		List<WordQuizDTO> quizList = (List)redisDB.opsForList().range(reviewWord, 0, -1);
+		
+		
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(QuizInfoDTO.class));
+		// get user todayquiz info
+		QuizInfoDTO qiDTO = (QuizInfoDTO)redisDB.opsForValue().get(userKey);
+		
+		// get random question if null
+		if(qiDTO==null) {
+			int randomIdx = r.nextInt(quizList.size());
+			WordQuizDTO rDTO = quizList.get(randomIdx);
+			rDTO.setIdx(randomIdx);
+			rDTO.setAnsweredQCount(0);
+			rDTO.setTotalQCount(quizList.size());
+			return rDTO;
+		}
+		
+		// getting left questions
+		List<Integer> leftIndex = new ArrayList<Integer>();
+		for(int i=0; i<quizList.size();i++) {
+			leftIndex.add(i);
+		}
+		Set<Integer> answeredIndex = qiDTO.getAnsweredQs().keySet();
+		// all questions - answered questions
+		leftIndex.removeAll(answeredIndex);
+		log.info("leftIndex : " + leftIndex);
+		
+		// returns null if all questions answered
+		if(leftIndex.isEmpty()) {
+			WordQuizDTO rDTO = new WordQuizDTO();
+			rDTO.setIdx(-1);
+			return rDTO;
+		}
+		
+		int randomIdxOfIdx = r.nextInt(leftIndex.size());
+		int randomIdx = leftIndex.get(randomIdxOfIdx);
+		log.info("randomIdx : " + randomIdx);
+		WordQuizDTO rDTO = quizList.get(randomIdx);
+		rDTO.setIdx(randomIdx);
+		rDTO.setAnsweredQCount(qiDTO.getAnsweredQs().size());
+		rDTO.setTotalQCount(quizList.size());
+		return rDTO;
+
 	}
 
 	

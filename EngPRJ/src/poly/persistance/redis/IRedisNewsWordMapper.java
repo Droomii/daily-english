@@ -17,4 +17,8 @@ public interface IRedisNewsWordMapper {
 
 	boolean hasKey(String colNm) throws Exception;
 
+	Map<String, String> submitReviewQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception;
+
+	WordQuizDTO getReviewQuiz(String user_seq) throws Exception;
+
 }

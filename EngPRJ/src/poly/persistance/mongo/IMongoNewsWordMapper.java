@@ -24,5 +24,8 @@ public interface IMongoNewsWordMapper {
 
 	WordQuizDTO getRandomUsage(String word) throws Exception;
 
+	void updateCorrectCounter(Map<String, String> rMap) throws Exception;
+
+
 
 }

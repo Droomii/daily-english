@@ -162,6 +162,25 @@ public class NewsWordService implements INewsWordService{
 		
 	}
 
+
+	@Override
+	public Map<String, String> submitReviewQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception {
+
+		
+		Map<String, String> rMap =redisNewsWordMapper.submitReviewQuizAnswer(user_seq, quizIdx, answer);
+		rMap.put("user_seq", user_seq);
+		mongoNewsWordMapper.updateCorrectCounter(rMap);
+		
+		return rMap;
+	}
+
+
+	@Override
+	public WordQuizDTO getRandomReviewQuiz(String user_seq) throws Exception {
+		
+		return redisNewsWordMapper.getReviewQuiz(user_seq);
+	}
+
 	
 	
 	

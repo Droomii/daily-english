@@ -204,6 +204,35 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper{
 		
 		
 	}
-	
+
+	@Override
+	public void updateCorrectCounter(Map<String, String> rMap) throws Exception {
+		int user_seq = Integer.parseInt(rMap.get("user_seq"));
+		
+		DBObject query = new BasicDBObject()
+				.append("user_seq", user_seq)
+				.append("word", rMap.get("lemma"));
+		
+		DBObject queryRes = mongodb.getCollection(REVIEW_WORDS).find(query).one();
+
+		int res = Integer.parseInt(rMap.get("result"));
+		
+		int correctCounter = (Integer)queryRes.get("correctCounter");
+		if(!(res==0 && correctCounter==2)) {
+			
+			correctCounter = res==1 ? correctCounter - 1 : 2;
+			
+			if(correctCounter < 1) {
+				mongodb.getCollection(REVIEW_WORDS).remove(queryRes);
+			}else {
+				queryRes.put("correctCounter", correctCounter);
+				mongodb.getCollection(REVIEW_WORDS).update(query, queryRes);
+			}
+		}
+		
+		
+		
+		
+	}
 	
 }
