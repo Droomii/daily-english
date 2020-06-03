@@ -58,6 +58,12 @@
   .word{
   	text-align:center;
   	width:100%;
+  	margin:auto;
+  }
+  .meaning{
+  	text-align:left;
+  	width:100%;
+  	margin:auto;
   }
   
   .card-flip{
@@ -134,12 +140,12 @@
 							<div class="card">
 							  <div id="card-content">
 							<div class="card-body">
-							<div class="card-flip" id="word-card">
-								<div class="shadow p-3 rounded card-front" id="front" style="background-color:rgb(250,250,250);border: 1px solid rgb(230,230,230)">
-									<div class="word" style="font-size:2rem">Front</div>
+							<div class="card-flip" style="height: 300px;" id="word-card">
+								<div class="shadow rounded card-front" id="word" style="background-color:rgb(250,250,250);border: 1px solid rgb(230,230,230)">
+									<div class="word" style="font-size:1.5rem">Front</div>
 								</div>
-								<div class="shadow p-3 rounded card-back" id="back" style="background-color:rgb(250,250,250);border: 1px solid rgb(230,230,230)">
-									<div>Back</div>
+								<div class="shadow p-2 rounded card-back" id="meaning" style="background-color:rgb(250,250,250);border: 1px solid rgb(230,230,230)">
+									<div class="meaning">Back</div>
 								</div>
 							</div>
 							</div>
@@ -169,13 +175,11 @@
     var cardFlipped = false;
     
     $("#word-card").on("click", function(e){
-    	if(cardFlipped){
-    		$("#front").css("transform", "rotateY(0deg)");
-    		$("#back").css("transform", "rotateY(-180deg)");
-    	}else{
-    		$("#back").css("transform", "rotateY(0deg)");
-    		$("#front").css("transform", "rotateY(-180deg)");
-    	}
+    	var currentFront = cardFlipped ? "#meaning" : "#word";
+    	var currentBack = !cardFlipped ? "#meaning" : "#word";
+    	
+   		$(currentBack).css("transform", "rotateY(0deg)");
+   		$(currentFront).css("transform", "rotateY(-180deg)");
     	
     	cardFlipped = !cardFlipped;
     })
