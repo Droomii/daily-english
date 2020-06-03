@@ -189,15 +189,20 @@
     // card flip logic
     var cardFlipped = false;
     
-    $("#word-card").on("click", function(e){
+    function flipCard(){
     	var currentFront = cardFlipped ? "#meaning" : "#word";
     	var currentBack = !cardFlipped ? "#meaning" : "#word";
     	
    		$(currentBack).css("transform", "rotateY(0deg)");
    		$(currentFront).css("transform", "rotateY(-180deg)");
+   		cardFlipped = !cardFlipped;
+    }
+    
+    $("#word-card").on("click", function(e){
+    	flipCard();
     	
-    	cardFlipped = !cardFlipped;
     })
+    
     </script>
     <script type="text/javascript">
     
@@ -219,15 +224,15 @@
     
     $("#next").on("click", function(){
     	$("#word > div").html(wordList[++wordIdx]);
-    	refreshBtn();
+    	refresh();
     });
     
     $("#prev").on("click", function(){
     	$("#word > div").html(wordList[--wordIdx]);
-    	refreshBtn();
+    	refresh();
     });
     
-    function refreshBtn(){
+    function refresh(){
     	$("#current").html(wordIdx+1);
     	if(wordIdx==0){
     		$("#prev").attr("disabled", "disabled");
@@ -240,6 +245,10 @@
     	}else{
     		$("#next").removeAttr("disabled");
     	}
+    	if(cardFlipped){
+    		flipCard();    		
+    	}
+    	
     }
     
     
