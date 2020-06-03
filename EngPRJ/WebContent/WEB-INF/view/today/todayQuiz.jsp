@@ -169,14 +169,25 @@
 				url : "getRandomTodayQuiz.do",
 				dataType : "JSON",
 				success : function(json) {
-					$("#no").html(json.answeredQCount+1);
-					$("#no2").html(json.answeredQCount+1);
-					$("#total").html(json.totalQs);
-					$("#sentence").html(json.sentence);
-					$("#translation").html(json.translation);
-					idx = json.idx * 1;
-					$("#wordInput").val(json.answer.substr(0, 2));
-					$("#wordInput").focus();
+					if(json.idx * 1 != -1){
+						$("#no").html(json.answeredQCount+1);
+						$("#no2").html(json.answeredQCount+1);
+						$("#total").html(json.totalQs);
+						$("#sentence").html(json.sentence);
+						$("#translation").html(json.translation);
+						idx = json.idx * 1;
+						$("#wordInput").val(json.answer.substr(0, 2));
+						$("#result").attr("hidden", "hidden");
+						$("#next").attr("hidden", "hidden");
+						$("#next").attr("disabled", "disabled");
+						$("#answerForm").removeAttr("hidden");
+						$("#wordInput").focus();
+						$("#submit").attr("disabled", "disabled");
+					}else{
+						$("#no").html(++no);
+						$("#sentence").html("You have seen all quizzes");
+						$("#translation").html("모든 단어를 보았습니다");
+					}
 				},
 				error : function(xhr, status, error) {
 					console.log('error!!');

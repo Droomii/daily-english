@@ -74,7 +74,7 @@
 	*/
 	.card-flip > div {
 	  backface-visibility: hidden;
-	  transition: transform 300ms;
+	  transition: transform 200ms;
 	  transition-timing-function: linear;
 	  width: 100%;
 	  height: 100%;
@@ -139,15 +139,29 @@
 							<!-- front content -->
 							<div class="card">
 							  <div id="card-content">
+							  <div class="card-header">
+							  <h4>틀린 단어 다시보기</h4>
+							  </div>
 							<div class="card-body">
 							<div class="card-flip" style="height: 300px;" id="word-card">
 								<div class="shadow rounded card-front" id="word" style="background-color:rgb(250,250,250);border: 1px solid rgb(230,230,230)">
 									<div class="word" style="font-size:1.5rem">Front</div>
 								</div>
 								<div class="shadow p-2 rounded card-back" id="meaning" style="background-color:rgb(250,250,250);border: 1px solid rgb(230,230,230)">
-									<div class="meaning">Back</div>
+									<div class="meaning">뜻</div>
 								</div>
 							</div>
+							</div>
+							<div class="row">
+								<div class="col-12 mt-1 mb-1 text-center">
+									<button type="button" disabled='disabled' id="prev" class="btn btn-info btn-icon ">&lt;</button>
+									<button type="button" id="next" class="btn btn-info btn-icon ">&gt;</button>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12 mb-3 text-center">
+								(<span id="current">n</span> / <span id="all">n</span>)
+								</div>
 							</div>
 							</div>
 							</div>
@@ -172,6 +186,7 @@
     <!-- content end -->
     <script src="/js/jquery.flip.min.js"></script>
     <script type="text/javascript">
+    // card flip logic
     var cardFlipped = false;
     
     $("#word-card").on("click", function(e){
@@ -183,8 +198,51 @@
     	
     	cardFlipped = !cardFlipped;
     })
-
-	
+    </script>
+    <script type="text/javascript">
+    
+    var wordList;
+    var wordIdx = 0;
+    $(document).ready(function(){
+    	$.ajax({
+			type : "POST",
+			url : "getWrongWords.do",
+			dataType : "JSON",
+			success : function(json) {
+				wordList = json.res;
+				$("#word > div").html(wordList[0]);
+				$("#all").html(wordList.length);
+				$("#current").html(wordIdx+1);
+			}
+    	})
+    })
+    
+    $("#next").on("click", function(){
+    	$("#word > div").html(wordList[++wordIdx]);
+    	refreshBtn();
+    });
+    
+    $("#prev").on("click", function(){
+    	$("#word > div").html(wordList[--wordIdx]);
+    	refreshBtn();
+    });
+    
+    function refreshBtn(){
+    	$("#current").html(wordIdx+1);
+    	if(wordIdx==0){
+    		$("#prev").attr("disabled", "disabled");
+    	}
+    	else{
+    		$("#prev").removeAttr("disabled");
+    	}
+    	if(wordIdx+1 == wordList.length){
+    		$("#next").attr("disabled", "disabled");
+    	}else{
+    		$("#next").removeAttr("disabled");
+    	}
+    }
+    
+    
     </script>
     <%@ include file="/WEB-INF/view/footer.jsp" %>
     <!-- END PAGE LEVEL JS-->

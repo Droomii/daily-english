@@ -181,6 +181,14 @@ public class NewsWordService implements INewsWordService{
 		return redisNewsWordMapper.getReviewQuiz(user_seq);
 	}
 
+
+	@Override
+	public List<String> getWrongWords(String user_seq) throws Exception {
+		
+		List<String> wrongWords = redisNewsWordMapper.getWrongWords(user_seq);
+		return wrongWords;
+	}
+
 	
 	
 	

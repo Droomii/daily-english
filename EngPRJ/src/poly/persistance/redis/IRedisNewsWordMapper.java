@@ -21,4 +21,6 @@ public interface IRedisNewsWordMapper {
 
 	WordQuizDTO getReviewQuiz(String user_seq) throws Exception;
 
+	List<String> getWrongWords(String user_seq) throws Exception;
+
 }

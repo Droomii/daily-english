@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -36,6 +38,17 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 	private static List<WordQuizDTO> quizList = null;
 	private static Random r = new Random();
 
+	
+	@SuppressWarnings("unchecked")
+	@PostConstruct
+	public void loadQuizList()  throws Exception{
+		log.info("post construct of quizList start!!");
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
+		quizList = (List) redisDB.opsForList().range(COL_NM, 0, -1);
+		log.info("quizList : " + quizList);
+	}
+	
 	@Override
 	public void saveTodayWordToRedis(List<WordQuizDTO> pList) throws Exception {
 
@@ -76,19 +89,18 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 	public WordQuizDTO getTodayQuiz(String user_seq) throws Exception {
 
 		redisDB.setKeySerializer(new StringRedisSerializer());
-		
 
 		String userKey = QUIZ_INFO_PREFIX + user_seq;
-		if(quizList==null) {
+		if (quizList == null) {
 			redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
-			quizList = (List)redisDB.opsForList().range(COL_NM, 0, -1);
+			quizList = (List) redisDB.opsForList().range(COL_NM, 0, -1);
 		}
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(QuizInfoDTO.class));
 		// get user todayquiz info
-		QuizInfoDTO qiDTO = (QuizInfoDTO)redisDB.opsForValue().get(userKey);
-		
+		QuizInfoDTO qiDTO = (QuizInfoDTO) redisDB.opsForValue().get(userKey);
+
 		// get random question if null
-		if(qiDTO==null) {
+		if (qiDTO == null) {
 			int randomIdx = r.nextInt(quizList.size());
 			WordQuizDTO rDTO = quizList.get(randomIdx);
 			rDTO.setIdx(randomIdx);
@@ -96,24 +108,24 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 			rDTO.setTotalQCount(quizList.size());
 			return rDTO;
 		}
-		
+
 		// getting left questions
 		List<Integer> leftIndex = new ArrayList<Integer>();
-		for(int i=0; i<quizList.size();i++) {
+		for (int i = 0; i < quizList.size(); i++) {
 			leftIndex.add(i);
 		}
 		Set<Integer> answeredIndex = qiDTO.getAnsweredQs().keySet();
 		// all questions - answered questions
 		leftIndex.removeAll(answeredIndex);
 		log.info("leftIndex : " + leftIndex);
-		
+
 		// returns null if all questions answered
-		if(leftIndex.isEmpty()) {
+		if (leftIndex.isEmpty()) {
 			WordQuizDTO rDTO = new WordQuizDTO();
 			rDTO.setIdx(-1);
 			return rDTO;
 		}
-		
+
 		int randomIdxOfIdx = r.nextInt(leftIndex.size());
 		int randomIdx = leftIndex.get(randomIdxOfIdx);
 		log.info("randomIdx : " + randomIdx);
@@ -122,9 +134,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		rDTO.setAnsweredQCount(qiDTO.getAnsweredQs().size());
 		rDTO.setTotalQCount(quizList.size());
 		return rDTO;
-		
-		
-		
+
 	}
 
 	@Override
@@ -160,7 +170,6 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		rMap.put("result", res ? "1" : "0");
 		redisDB.opsForValue().set(key, qDTO);
 
-
 		redisDB.expireAt(key, getTomorrow());
 		return rMap;
 
@@ -168,52 +177,50 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 
 	@Override
 	public boolean hasKey(String colNm) throws Exception {
-		
+
 		return redisDB.hasKey(colNm);
 	}
-	
+
 	@Override
 	public void putReviewWordToRedis(String user_seq, List<WordQuizDTO> quizList) throws Exception {
-		
+
 		String key = REVIEW_WORD_PREFIX + user_seq;
-		
+
 		redisDB.setKeySerializer(new StringRedisSerializer());
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
-		
-		if(!redisDB.hasKey(key)) {
-		
-		Iterator<WordQuizDTO> quiz = quizList.iterator();
 
-		WordQuizDTO wDTO = null;
+		if (!redisDB.hasKey(key)) {
 
-		
-		while (quiz.hasNext()) {
+			Iterator<WordQuizDTO> quiz = quizList.iterator();
 
-			wDTO = quiz.next();
-			redisDB.opsForList().rightPush(key, wDTO);
+			WordQuizDTO wDTO = null;
+
+			while (quiz.hasNext()) {
+
+				wDTO = quiz.next();
+				redisDB.opsForList().rightPush(key, wDTO);
+			}
+
+			redisDB.expireAt(key, getTomorrow());
 		}
 
-		redisDB.expireAt(key, getTomorrow());
-		}
-		
-		
 	}
-	
+
 	public Date getTomorrow() {
 		// set expire time to tomorrow
 		Calendar c = Calendar.getInstance();
-		
+
 		c.add(Calendar.DATE, 1);
 		c.set(Calendar.HOUR_OF_DAY, 7);
 		c.set(Calendar.MINUTE, 0);
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.MILLISECOND, 0);
-		
+
 		return c.getTime();
 	}
 
-	/**@return
-	 * {lemma, answerSentence, res}
+	/**
+	 * @return {lemma, answerSentence, res}
 	 *
 	 */
 	@Override
@@ -250,7 +257,6 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		rMap.put("result", res ? "1" : "0");
 		redisDB.opsForValue().set(key, qDTO);
 
-
 		redisDB.expireAt(key, getTomorrow());
 		return rMap;
 
@@ -260,21 +266,19 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 	@Override
 	public WordQuizDTO getReviewQuiz(String user_seq) throws Exception {
 		redisDB.setKeySerializer(new StringRedisSerializer());
-		
 
 		String userKey = REVIEW_INFO_PREFIX + user_seq;
 		String reviewWord = REVIEW_WORD_PREFIX + user_seq;
-		
+
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
-		List<WordQuizDTO> quizList = (List)redisDB.opsForList().range(reviewWord, 0, -1);
-		
-		
+		List<WordQuizDTO> quizList = (List) redisDB.opsForList().range(reviewWord, 0, -1);
+
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(QuizInfoDTO.class));
 		// get user todayquiz info
-		QuizInfoDTO qiDTO = (QuizInfoDTO)redisDB.opsForValue().get(userKey);
-		
+		QuizInfoDTO qiDTO = (QuizInfoDTO) redisDB.opsForValue().get(userKey);
+
 		// get random question if null
-		if(qiDTO==null) {
+		if (qiDTO == null) {
 			int randomIdx = r.nextInt(quizList.size());
 			WordQuizDTO rDTO = quizList.get(randomIdx);
 			rDTO.setIdx(randomIdx);
@@ -282,24 +286,24 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 			rDTO.setTotalQCount(quizList.size());
 			return rDTO;
 		}
-		
+
 		// getting left questions
 		List<Integer> leftIndex = new ArrayList<Integer>();
-		for(int i=0; i<quizList.size();i++) {
+		for (int i = 0; i < quizList.size(); i++) {
 			leftIndex.add(i);
 		}
 		Set<Integer> answeredIndex = qiDTO.getAnsweredQs().keySet();
 		// all questions - answered questions
 		leftIndex.removeAll(answeredIndex);
 		log.info("leftIndex : " + leftIndex);
-		
+
 		// returns null if all questions answered
-		if(leftIndex.isEmpty()) {
+		if (leftIndex.isEmpty()) {
 			WordQuizDTO rDTO = new WordQuizDTO();
 			rDTO.setIdx(-1);
 			return rDTO;
 		}
-		
+
 		int randomIdxOfIdx = r.nextInt(leftIndex.size());
 		int randomIdx = leftIndex.get(randomIdxOfIdx);
 		log.info("randomIdx : " + randomIdx);
@@ -311,8 +315,30 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 
 	}
 
-	
+	@Override
+	public List<String> getWrongWords(String user_seq) throws Exception {
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(QuizInfoDTO.class));
 
+		String key = QUIZ_INFO_PREFIX + user_seq;
+		QuizInfoDTO qDTO = (QuizInfoDTO) redisDB.opsForValue().get(key);
+		if(qDTO==null)
+			qDTO = new QuizInfoDTO();
+		
+		Map<Integer, Boolean> answeredQs = qDTO.getAnsweredQs();
 
+		log.info("answeredQs : " + answeredQs);
+		List<String> rList = new ArrayList<String>();
+		answeredQs.forEach((k, v) -> {
+			log.info("v : " + v);
+			log.info("k : " + k);
+			if (v) {
+				
+				rList.add(quizList.get(k).getLemma());
+			}
+		});
+
+		return rList;
+	}
 
 }

@@ -28,6 +28,8 @@ public interface INewsWordService {
 	Map<String, String> submitReviewQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception;
 
 	WordQuizDTO getRandomReviewQuiz(String user_seq) throws Exception;
+
+	List<String> getWrongWords(String user_seq) throws Exception;
 	
 
 }
