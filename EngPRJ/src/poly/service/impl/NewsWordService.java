@@ -125,10 +125,11 @@ public class NewsWordService implements INewsWordService{
 
 
 	@Override
-	public Map<String, String> submitTodayQuizAnswer(String user_seq, String quizIdx, String answer) throws Exception {
+	public Map<String, String> submitTodayQuizAnswer(String user_seq, String user_lvl, String quizIdx, String answer) throws Exception {
 
 		Map<String, String> rMap =redisNewsWordMapper.submitTodayQuizAnswer(user_seq, quizIdx, answer);
 		rMap.put("user_seq", user_seq);
+		rMap.put("user_lvl", user_lvl);
 		mongoNewsWordMapper.insertQuizRecord(rMap);
 		if(rMap.get("result").equals("0")) {
 			mongoNewsWordMapper.insertReviewWord(rMap);

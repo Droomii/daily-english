@@ -48,11 +48,16 @@ public class QuizController {
 			user_seq="1";
 		}
 		
+		String user_lvl = (String) session.getAttribute("user_lvl");
+		if(user_lvl==null) {
+			user_lvl = "5";
+		}
+		
 		String quizIdx = request.getParameter("quizIdx");
 		String answer = request.getParameter("answer");
 		log.info("quizIdx : " + quizIdx);
 		log.info("answer : " + answer);
-		Map<String, String> rMap = newsWordService.submitTodayQuizAnswer(user_seq, quizIdx, answer);
+		Map<String, String> rMap = newsWordService.submitTodayQuizAnswer(user_seq, user_lvl, quizIdx, answer);
 		
 		log.info("answer : " + (rMap.get("result").equals("1") ? "right" : "wrong"));
 		rMap.put("originalSentence", rMap.get("answerSentence"));
