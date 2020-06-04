@@ -316,7 +316,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 	}
 
 	@Override
-	public List<String> getWrongWords(String user_seq) throws Exception {
+	public List<String> getTodayWrongWords(String user_seq) throws Exception {
 		redisDB.setKeySerializer(new StringRedisSerializer());
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(QuizInfoDTO.class));
 
