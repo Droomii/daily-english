@@ -185,8 +185,8 @@
 						$("#submit").attr("disabled", "disabled");
 					}else{
 						$("#no").html(++no);
-						$("#sentence").html("You have seen all quizzes");
-						$("#translation").html("모든 단어를 보았습니다");
+						alert("오늘의 퀴즈를 이미 완료했습니다");
+						location.href = "todayWordCard.do";
 					}
 				},
 				error : function(xhr, status, error) {
@@ -274,8 +274,8 @@
 						$("#submit").attr("disabled", "disabled");
 					}else{
 						$("#no").html(++no);
-						$("#sentence").html("You have seen all quizzes");
-						$("#translation").html("모든 단어를 보았습니다");
+						alert("오늘의 퀴즈를 모두 보았습니다");
+						location.href = "todayWordCard.do";
 					}
 					
 					
