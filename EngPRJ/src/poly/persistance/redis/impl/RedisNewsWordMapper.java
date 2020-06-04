@@ -332,7 +332,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		answeredQs.forEach((k, v) -> {
 			log.info("v : " + v);
 			log.info("k : " + k);
-			if (v) {
+			if (!v) {
 				
 				rList.add(quizList.get(k).getLemma());
 			}
