@@ -116,6 +116,7 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper {
 		if (!mongodb.collectionExists(QUIZ_RECORD)) {
 			mongodb.createCollection(QUIZ_RECORD).createIndex(new BasicDBObject("word", 1), "wordIdx");
 		}
+		log.info("user_lvl : " + rMap.get("user_lvl"));
 		DBObject obj = new BasicDBObject()
 				.append("user_seq", Integer.parseInt(rMap.get("user_seq")))
 				.append("user_lvl", Integer.parseInt(rMap.get("user_lvl")))
