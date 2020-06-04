@@ -223,12 +223,36 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper {
 
 	}
 
+	// for inserting meaning
+//	@Override
+//	public void insertMeaning() throws Exception {
+//
+//		DBObject wordPoolQuery = new BasicDBObject("pool",
+//				new BasicDBObject("$in", Arrays.asList("TOEIC", "Academic", "Business")));
+//		wordPoolQuery.put("meaning", null);
+//		DBCursor words = mongodb.getCollection(WORD_POOL).find(wordPoolQuery);
+//		int i = 0;
+//		while (words.hasNext()) {
+//			DBObject wordObj = words.next();
+//			String word = (String) wordObj.get("word");
+//			log.info(i + ". inserting meaning : " + word);
+//			DBObject query = new BasicDBObject("word", word);
+//
+//			String meaning = (String) wordObj.get("meaning");
+//			wordObj.put("meaning", meaning);
+//			mongodb.getCollection(WORD_POOL).update(query, wordObj);
+//
+//			i++;
+//		}
+//
+//	}
+	
+	// for splitting meaning, limiting up to three meanings
 	@Override
 	public void insertMeaning() throws Exception {
 
 		DBObject wordPoolQuery = new BasicDBObject("pool",
 				new BasicDBObject("$in", Arrays.asList("TOEIC", "Academic", "Business")));
-		wordPoolQuery.put("meaning", null);
 		DBCursor words = mongodb.getCollection(WORD_POOL).find(wordPoolQuery);
 		int i = 0;
 		while (words.hasNext()) {
@@ -236,14 +260,13 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper {
 			String word = (String) wordObj.get("word");
 			log.info(i + ". inserting meaning : " + word);
 			DBObject query = new BasicDBObject("word", word);
-
 			String meaning = (String) wordObj.get("meaning");
-			wordObj.put("meaning", meaning);
+			String meaningSplit = meaning.split("\\. ")[0].replaceAll("<br>", "<br><br>");
+			wordObj.put("meaning", meaningSplit);
 			mongodb.getCollection(WORD_POOL).update(query, wordObj);
 
 			i++;
 		}
-
 	}
 
 	@Override

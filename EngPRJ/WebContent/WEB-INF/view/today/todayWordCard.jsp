@@ -143,7 +143,7 @@
 							  <h4>틀린 단어 다시보기</h4>
 							  </div>
 							<div class="card-body">
-							<div class="card-flip" style="height: 300px;" id="word-card">
+							<div class="card-flip" style="height: 400px;" id="word-card">
 								<div class="shadow rounded card-front" id="word" style="background-color:rgb(250,250,250);border: 1px solid rgb(230,230,230)">
 									<div class="word" style="font-size:1.5rem">Front</div>
 								</div>
