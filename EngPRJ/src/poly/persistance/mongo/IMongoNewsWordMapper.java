@@ -26,6 +26,10 @@ public interface IMongoNewsWordMapper {
 
 	void updateCorrectCounter(Map<String, String> rMap) throws Exception;
 
+	void insertMeaning() throws Exception;
+
+	List<Map<String, String>> getWrongWordMeaning(List<String> wrongWords) throws Exception;
+
 
 
 }

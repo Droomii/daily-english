@@ -38,6 +38,7 @@ public class NewsWordController {
 	@Resource(name = "NewsService")
 	INewsService newsService;
 	
+	// test
 	@RequestMapping(value = "newsWord/insertWords")
 	@ResponseBody
 	public String insertWords(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
@@ -72,6 +73,19 @@ public class NewsWordController {
 		return "success";
 	}
 	
+	// test
+	@RequestMapping(value = "insertMeaning")
+	@ResponseBody
+	public String insertMeaning(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".insertMeaning start");
+
+		newsWordService.insertMeaning();
+		log.info(this.getClass().getName() + ".insertMeaning end");
+		return "success";
+	}
+	
+	// test
 	@RequestMapping(value = "extractWords")
 	@ResponseBody
 	public List<Map<String, Object>> extractWords(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)

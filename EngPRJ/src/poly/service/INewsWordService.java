@@ -29,7 +29,9 @@ public interface INewsWordService {
 
 	WordQuizDTO getRandomReviewQuiz(String user_seq) throws Exception;
 
-	List<String> getWrongWords(String user_seq) throws Exception;
+	List<Map<String, String>> getWrongWords(String user_seq) throws Exception;
+
+	void insertMeaning() throws Exception;
 	
 
 }

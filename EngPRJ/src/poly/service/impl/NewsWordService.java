@@ -183,10 +183,19 @@ public class NewsWordService implements INewsWordService{
 
 
 	@Override
-	public List<String> getWrongWords(String user_seq) throws Exception {
+	public List<Map<String, String>> getWrongWords(String user_seq) throws Exception {
 		
 		List<String> wrongWords = redisNewsWordMapper.getWrongWords(user_seq);
-		return wrongWords;
+		List<Map<String, String>> rList = mongoNewsWordMapper.getWrongWordMeaning(wrongWords);
+		return rList;
+	}
+
+
+	@Override
+	public void insertMeaning() throws Exception {
+		
+		mongoNewsWordMapper.insertMeaning();
+		
 	}
 
 	

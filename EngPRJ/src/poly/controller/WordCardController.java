@@ -39,7 +39,7 @@ public class WordCardController {
 	
 	@RequestMapping(value = "today/getWrongWords", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, List<String>> getWrongWords(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+	public Map<String, List<Map<String, String>>> getWrongWords(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".getWrongWords start");
 		String user_seq = (String) session.getAttribute("user_seq");
@@ -48,7 +48,7 @@ public class WordCardController {
 		}
 		
 		log.info(this.getClass().getName() + ".getWrongWords end");
-		Map<String, List<String>> rMap = new HashMap<String, List<String>>();
+		Map<String, List<Map<String, String>>> rMap = new HashMap<>();
 		rMap.put("res", newsWordService.getWrongWords(user_seq));
 		return rMap;
 	}

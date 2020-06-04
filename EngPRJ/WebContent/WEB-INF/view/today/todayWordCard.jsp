@@ -215,7 +215,8 @@
 			dataType : "JSON",
 			success : function(json) {
 				wordList = json.res;
-				$("#word > div").html(wordList[0]);
+				$("#word > div").html(wordList[0].word);
+				$("#meaning > div").html(wordList[0].meaning);
 				$("#all").html(wordList.length);
 				$("#current").html(wordIdx+1);
 			}
@@ -223,12 +224,14 @@
     })
     
     $("#next").on("click", function(){
-    	$("#word > div").html(wordList[++wordIdx]);
+    	$("#word > div").html(wordList[++wordIdx].word);
+    	$("#meaning > div").html(wordList[wordIdx].meaning);
     	refresh();
     });
     
     $("#prev").on("click", function(){
-    	$("#word > div").html(wordList[--wordIdx]);
+    	$("#word > div").html(wordList[--wordIdx].word);
+    	$("#meaning > div").html(wordList[wordIdx].meaning);
     	refresh();
     });
     
