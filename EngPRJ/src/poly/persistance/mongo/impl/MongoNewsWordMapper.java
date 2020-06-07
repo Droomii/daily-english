@@ -272,6 +272,7 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper {
 			i++;
 		}
 	}
+	// commit
 	@Override
 	public List<Map<String, String>> getWrongWordMeaning(List<String> wrongWords) throws Exception {
 
