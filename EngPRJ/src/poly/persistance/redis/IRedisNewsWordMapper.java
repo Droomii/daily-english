@@ -25,4 +25,6 @@ public interface IRedisNewsWordMapper {
 
 	void saveTodayTTS() throws Exception;
 
+	List<Map<String, Object>> getTodaySentences() throws Exception;
+
 }

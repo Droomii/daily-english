@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%
 
-	String pageTitle = "pageTemplate";
+	String pageTitle = "읽기 연습";
 
 %>
 <!DOCTYPE html>
@@ -82,13 +82,18 @@
 				<div class="card-header">
 					<h4 class="card-title mb-0" style="font-size:1.5rem">오늘의 문장 따라하기</h4>
 				</div>
-				<div class="card-body" id="contentBlock">
+				<div class="card-body pb-0">
+				<p>
+				<span id="no"></span>. <span id="sentence"></span>
+				</p>
+				<div class="text-center"><button type="button" id="listen" style="border-radius:100%;"class="btn btn-icon btn-info p-0"><i style="font-size:2rem" class="la la-volume-up"></i></button></div>
+				</div>
+				<div class="card-body p-0" id="contentBlock">
 							<br>
 							<div id="mic" style="width:15em;height:15em;margin:auto">
 									<div id="progressCircle" style="width:15em;height:15em;color:white;" data-stroke="red" data-preset="circle" class="label-center" data-value="100" data-precision="0.01"></div>
 									<div id="analyzingCircle"></div>
 							</div>
-							<p id="answer-text" class="card-text"></p>
 							
 							
 						
@@ -103,7 +108,7 @@
 						</form>
 						
 					</div>
-				<div class="card-body">
+				<div class="card-body p-0">
 					<div class="row">
 						<div class="col-12 mt-1 mb-1 text-center">
 							<button type="button" disabled='disabled' id="prev" class="btn btn-info btn-icon ">&lt;</button>
@@ -139,6 +144,68 @@
     <%@ include file="/WEB-INF/view/footer.jsp" %>
     <!-- END PAGE LEVEL JS-->
   </body>
+  <script>
+  var sentenceList;
+  var sentenceIdx = 0;
+  var sentenceAudioIdx;
+  var audio;
+  var audioIdx = -1;
+  $(document).ready(function(){
+  	$.ajax({
+			type : "POST",
+			url : "getTodaySentences.do",
+			dataType : "JSON",
+			success : function(json) {
+				sentenceList = json.res;
+				$("#all").html(sentenceList.length);
+				$("#sentence").html(sentenceList[0].sentence);
+				sentenceAudioIdx = sentenceList[0].index * 1;
+				$("#current").html(sentenceIdx+1);
+				$("#no").html(sentenceIdx+1);
+			}
+  	})
+  })
+  
+  $("#next").on("click", function(){
+	  $("#sentence").html(sentenceList[++sentenceIdx].sentence);
+    	refresh();
+    });
+    
+    $("#prev").on("click", function(){
+    	$("#sentence").html(sentenceList[--sentenceIdx].sentence);
+    	refresh();
+    });
+    
+    function refresh(){
+    	$("#current").html(sentenceIdx+1);
+    	$("#no").html(sentenceIdx+1);
+    	sentenceAudioIdx = sentenceList[sentenceIdx].index * 1;
+    	if(sentenceIdx==0){
+    		$("#prev").attr("disabled", "disabled");
+    	}
+    	else{
+    		$("#prev").removeAttr("disabled");
+    	}
+    	if(sentenceIdx+1 == sentenceList.length){
+    		$("#next").attr("disabled", "disabled");
+    	}else{
+    		$("#next").removeAttr("disabled");
+    	}
+    	audio.pause();
+    	audio.currentTime = 0;
+    }
+  $("#listen").on("click", function(){
+	  if(audioIdx != sentenceAudioIdx){
+	  	audio = new Audio('/audio/getTodaySentenceAudio.do?idx=' + sentenceAudioIdx);
+	  	audioIdx = sentenceAudioIdx;
+	  }else{
+		  audio.pause();
+		  audio.currentTime = 0;
+	  }
+	  audio.play();
+  })
+  
+  </script>
   <script>
 	// 음성 데이터 담는 글로벌 변수
 	var globalAudioData;

@@ -6,14 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -32,11 +26,11 @@ import com.google.protobuf.ByteString;
  */
 public class TTSUtil {
 
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
-	private static final boolean IS_WINDOWS = System.getProperty("os.name").startsWith("Windows");
-	private static final String TTS_PATH = IS_WINDOWS ? "C:\\Users\\DATALAB_3\\tts\\" : "/daily-english/tts/";
-	private static final String SLASH = IS_WINDOWS ? "\\" : "/";
-	private static final String FFMPEG_PATH = IS_WINDOWS ? "C:\\ffmpeg\\bin\\ffmpeg.exe" : "ffmpeg";
+	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
+	public static final boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().startsWith("windows");
+	public static final String TTS_PATH = IS_WINDOWS ? "C:\\Users\\DATALAB_3\\tts\\" : "/daily-english/tts/";
+	public static final String SLASH = IS_WINDOWS ? "\\" : "/";
+	public static final String FFMPEG_PATH = IS_WINDOWS ? "C:\\ffmpeg\\bin\\ffmpeg.exe" : "ffmpeg";
 
 	public static void saveTTS(int index, String sentence) throws IOException, UnsupportedAudioFileException {
 		try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
@@ -90,18 +84,4 @@ public class TTSUtil {
 		}
 	}
 
-	public static void main(String[] args) throws IOException {
-		// wav to ogg
-		ProcessBuilder pb = new ProcessBuilder();
-		pb.command(FFMPEG_PATH, "-i", "C:\\Users\\DATALAB_3\\tts\\200615\\0" + ".wav", "-acodec", "libvorbis", "C:\\Users\\DATALAB_3\\tts\\200615\\0" + ".ogg");
-		pb.redirectErrorStream(true);
-		Process process = pb.start();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-		String line = null;
-		String fullLine = "";
-		while ((line = reader.readLine()) != null) {
-			fullLine += line;
-		}
-		System.out.println(fullLine);
-	}
 }

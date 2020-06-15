@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -357,6 +358,30 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 			i++;
 		}
 		
+	}
+
+	@Override
+	public List<Map<String, Object>> getTodaySentences() throws Exception {
+		redisDB.setKeySerializer(new StringRedisSerializer());
+
+		if (quizList == null) {
+			redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
+			quizList = (List) redisDB.opsForList().range(COL_NM, 0, -1);
+		}
+		Set<String> rSet = new LinkedHashSet<String>();
+		List<Map<String, Object>> rList = new ArrayList<>();
+		int i = 0;
+		for(WordQuizDTO e : quizList){
+			if(rSet.add(e.getOriginalSentence())) {
+				Map<String, Object> rMap = new HashMap<String, Object>();
+				rMap.put("sentence", e.getOriginalSentence());
+				rMap.put("index", i);
+				rList.add(rMap);
+			}
+			i++;
+		};
+		
+		return rList;
 	}
 
 }

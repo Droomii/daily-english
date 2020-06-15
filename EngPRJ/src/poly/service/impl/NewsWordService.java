@@ -206,6 +206,12 @@ public class NewsWordService implements INewsWordService{
 		
 	}
 
+
+	@Override
+	public List<Map<String, Object>> getTodaySentences() throws Exception {
+		return redisNewsWordMapper.getTodaySentences();
+	}
+
 	
 	
 	
