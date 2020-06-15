@@ -29,11 +29,6 @@ public class PythonUtil {
 		File example = new File("C:\\Users\\DATALAB_3\\word-stress-analysis\\sample.wav");
 		File answer = new File("C:\\Users\\DATALAB_3\\word-stress-analysis\\sample.m4a");
 		
-		File tempAnswer = File.createTempFile("temp", null);
-		
-		AudioAttributes audio = new AudioAttributes();
-		audio.setCodec("pcm_s161e");
-		
 		FileBody exampleFileBody = new FileBody(example);
 		FileBody answerFileBody = new FileBody(answer);
 		
@@ -59,7 +54,7 @@ public class PythonUtil {
 		String charset = "UTF-8";
 		
 		// wavefiles
-		
+		w
 		
 		try {
 			MultipartUtil mp = new MultipartUtil(requestURL, charset);
