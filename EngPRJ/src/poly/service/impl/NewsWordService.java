@@ -199,6 +199,13 @@ public class NewsWordService implements INewsWordService{
 		
 	}
 
+
+	@Override
+	public void saveTodayTTS() throws Exception {
+		redisNewsWordMapper.saveTodayTTS();
+		
+	}
+
 	
 	
 	

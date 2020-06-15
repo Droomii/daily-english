@@ -32,6 +32,8 @@ public interface INewsWordService {
 	List<Map<String, String>> getTodayWrongWords(String user_seq) throws Exception;
 
 	void insertMeaning() throws Exception;
+
+	void saveTodayTTS() throws Exception;
 	
 
 }

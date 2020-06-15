@@ -93,4 +93,16 @@ public class NewsController {
 		return res;
 	}
 	
+	@RequestMapping(value = "doTTS")
+	@ResponseBody
+	public String doTTS(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".doTTS start");
+
+		newsWordService.saveTodayTTS();
+		
+		log.info(this.getClass().getName() + ".doTTS end");
+		return "success";
+	}
+
 }

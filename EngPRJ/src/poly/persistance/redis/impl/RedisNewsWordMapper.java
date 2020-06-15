@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import poly.dto.QuizInfoDTO;
 import poly.dto.WordQuizDTO;
 import poly.persistance.redis.IRedisNewsWordMapper;
+import poly.util.TTSUtil;
 
 @Component("RedisNewsWordMapper")
 public class RedisNewsWordMapper implements IRedisNewsWordMapper {
@@ -339,6 +340,23 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		});
 
 		return rList;
+	}
+
+	@Override
+	public void saveTodayTTS() throws Exception {
+		redisDB.setKeySerializer(new StringRedisSerializer());
+
+		if (quizList == null) {
+			redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
+			quizList = (List) redisDB.opsForList().range(COL_NM, 0, -1);
+		}
+		int i = 0;
+		for(WordQuizDTO wqDTO : quizList) {
+			String sentence = wqDTO.getOriginalSentence();
+			TTSUtil.saveTTS(i, sentence);
+			i++;
+		}
+		
 	}
 
 }

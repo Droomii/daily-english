@@ -23,4 +23,6 @@ public interface IRedisNewsWordMapper {
 
 	List<String> getTodayWrongWords(String user_seq) throws Exception;
 
+	void saveTodayTTS() throws Exception;
+
 }

@@ -49,9 +49,6 @@ public class NewsService implements INewsService{
 	    	newsWordService.saveTodayWordToRedis(rDTO);
 	    }
 	    
-	    
-	    
-	    
 	    return rDTO;
 		
 	}
