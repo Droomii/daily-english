@@ -1,5 +1,9 @@
 from flask import Flask, request
 from analyzer import pitch_score
+from tempfile import TemporaryFile
+
+
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -16,17 +20,41 @@ def me_api():
 
 @app.route('/score', methods=['POST'])
 def score():
-    print('hello world!!')
-    example = request.files.get('example')
-    answer = request.files.get('answer')
-    if example is None:
-        return 'example is null!!'
-    if answer is None:
-        return 'answer is null!!'
-    
+    example = None
+    answer = None
+    if request.files:
+        example = request.files['example']
+        answer = request.files['answer']
+        if example is None:
+            return 'example is null!!'
+        if answer is None:
+            return 'answer is null!!'
+    else:
+        return 'file is null!!'
     example_pitch_matrix, pitch_matrix, score = pitch_score(example, answer, pitch_sample=50, time_sample=100)
     a = {}
     a['example_pitch_matrix'] = example_pitch_matrix
     a['pitch_matrix'] = pitch_matrix
     a['score'] = score
     return a
+
+@app.route('/tts')
+def tts():
+    import google.cloud.texttospeech as tts
+    client = tts.TextToSpeechClient()
+    
+    synthesis_input = tts.SynthesisInput(text="Is this a sample sentence?")
+    
+    voice = tts.VoiceSelectionParams(
+        language_code="en-US",
+        name="en-US-Wavenet-D"
+    )
+    
+    audio_config = tts.AudioConfig(audio_encoding=tts.AudioEncoding.LINEAR16)
+    
+    response = client.synthesize_speech(input=synthesis_input, voice=voice, audio_config=audio_config)
+    
+    with open("/daily-english/texttospeech/sampletest.wav", "wb") as out:
+        out.write(response.audio_content)
+    
+    return "success"

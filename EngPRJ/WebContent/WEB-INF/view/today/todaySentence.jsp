@@ -15,7 +15,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/addons/p5.sound.js"></script>
 <style>
 	#mic{
-		background-image:url("/resources/app-assets/images/elements/mic_disabled.png");
+		background-image:url("/resources/img/mic_disabled.png");
 		background-size:15em 15em;
 	}
 	.ldBar-label{
@@ -103,6 +103,19 @@
 						</form>
 						
 					</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-12 mt-1 mb-1 text-center">
+							<button type="button" disabled='disabled' id="prev" class="btn btn-info btn-icon ">&lt;</button>
+							<button type="button" id="next" class="btn btn-info btn-icon ">&gt;</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12 mb-3 text-center">
+						(<span id="current">n</span> / <span id="all">n</span>)
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		
