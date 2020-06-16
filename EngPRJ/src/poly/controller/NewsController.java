@@ -59,7 +59,7 @@ public class NewsController {
 		}
 		
 		NewsDTO rDTO = newsService.nlpAndSaveNews(title, inputText, newsUrl);
-		
+		newsWordService.saveTodayTTS();
 
 		log.info(this.getClass().getName() + ".lemmatize end");
 		return rDTO;

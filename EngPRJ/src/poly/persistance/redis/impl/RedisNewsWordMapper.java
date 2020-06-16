@@ -352,9 +352,13 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 			quizList = (List) redisDB.opsForList().range(COL_NM, 0, -1);
 		}
 		int i = 0;
+		String lastSentence = "";
 		for(WordQuizDTO wqDTO : quizList) {
 			String sentence = wqDTO.getOriginalSentence();
-			TTSUtil.saveTTS(i, sentence);
+			if(!sentence.equals(lastSentence)) {
+				TTSUtil.saveTTS(i, sentence);
+			}
+			lastSentence = sentence;
 			i++;
 		}
 		
