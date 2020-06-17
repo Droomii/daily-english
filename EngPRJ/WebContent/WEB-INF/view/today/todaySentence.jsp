@@ -160,6 +160,7 @@
 				$("#all").html(sentenceList.length);
 				$("#sentence").html(sentenceList[0].sentence);
 				sentenceAudioIdx = sentenceList[0].index * 1;
+				audio = new Audio('/audio/getTodaySentenceAudio.do?idx=' + sentenceAudioIdx);
 				$("#current").html(sentenceIdx+1);
 				$("#no").html(sentenceIdx+1);
 			}
@@ -208,7 +209,7 @@
   </script>
   <script>
 	// 음성 데이터 담는 글로벌 변수
-	var globalAudioData;
+	var globalAudioData = {};
 	
 	var randQ = '';
 	$("#startInterview").on("click", function(){
@@ -273,12 +274,8 @@
 				      reader.onloadend = function() {
 				          base64data = reader.result;                
 				          console.log(base64data);
-					      var fd = new FormData();
-					      fd.append('data', base64data);
-					      fd.append('mimeType', mediaRecorder.mimeType);
-					      fd.append('qsetNo', 1);
-					      fd.append('randQ', randQ);
-					      globalAudioData = fd;
+					      globalAudioData.data = base64data;
+					      globalAudioData.mimeType = mediaRecorder.mimeType;
 				       }
 				      
  				      
@@ -344,8 +341,6 @@
 	          type: 'POST',
 	          url: 'analyzeAudio.do',
 	          data: globalAudioData,
-	          processData: false,
-	          contentType: false,
 	          success: function(data){
 	        	  
 	          }

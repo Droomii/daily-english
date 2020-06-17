@@ -64,7 +64,7 @@ public class TTSUtil {
 			String finalDir = dir + SLASH + Integer.toString(index);
 
 			// Write the response to the output file.
-			try (OutputStream out = new FileOutputStream(finalDir)) {
+			try (OutputStream out = new FileOutputStream(finalDir + ".wav")) {
 				out.write(audioContents.toByteArray());
 				System.out.println("Audio content written to " + finalDir + ".wav");
 			}

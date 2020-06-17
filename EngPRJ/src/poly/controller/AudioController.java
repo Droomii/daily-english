@@ -61,7 +61,10 @@ public class AudioController {
 	public String analyzeAudio(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".analyzeAudio start");
-
+		String data = request.getParameter("data");
+		String mimeType = request.getParameter("mimeType");
+		log.info("mimeType : " + mimeType);
+		log.info("data : " + data);
 		
 		
 		log.info(this.getClass().getName() + ".analyzeAudio end");
