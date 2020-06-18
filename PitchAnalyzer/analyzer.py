@@ -4,37 +4,35 @@ import numpy as np
 from scipy import interpolate
 import scipy.spatial as sp
 import scipy.io.wavfile as wav
-from tempfile import TemporaryFile
+import tempfile
 import base64
+import os
+import glob
 
-def pitch_score(example, answer, pitch_sample=20, time_sample=20, tolerance=0.5):
+def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, tolerance=0.5):
     # TODO : example, answer parameter are Base64.
     # Need to convert it into numpy ndarray
     
     # convert base64 string to ascii bytes
-    example_ascii = example.encode('ascii')
-    asnwer_ascii = answer.encode('ascii')
+    answer_ascii = answer.split(',')[1].encode('ascii')
     
     # decode base64 to bytes
-    example_decoded = base64.b64decode(example_ascii)
     answer_decoded = base64.b64decode(answer_ascii)
     
     # make temporary files
-    example_temp_file = TemporaryFile()
-    answer_temp_file = TemporaryFile()
-    
+    answer_temp_file = tempfile.mkstemp()[1]
     # write bytes to tempfile
-    example_temp_file.write(example_decoded)
-    answer_temp_file.write(answer_decoded)
-    example_temp_file.seek(0)
-    answer_temp_file.seek(0)
+    with open(answer_temp_file, 'wb') as f:
+        f.write(answer_decoded)
     
-    # read decoded sound
-    example_snd = wav.read(example_temp_file)
-    answer_snd = wav.read(answer_temp_file)
+    os.system('mkvextract {0} tracks 0:{0}.ogg'.format(answer_temp_file))
+    os.system('ffmpeg -i {0}.ogg {0}.wav'.format(answer_temp_file))
+
+    example_snd = parselmouth.Sound('/daily-english/tts/{}/{}.wav'.format(date, example))
+    answer_snd = parselmouth.Sound(answer_temp_file + '.wav')
     
-    example_snd = parselmouth.Sound(example_snd[1], sampling_frequency=example_snd[0])
-    answer_snd = parselmouth.Sound(answer_snd[1], sampling_frequency=answer_snd[0])
+    for f in glob.glob(answer_temp_file + "*"):
+        os.remove(f)
     
     # get pitch of sounds
     example_pitch = example_snd.to_pitch_ac(very_accurate=False, silence_threshold=0.1, voicing_threshold=0.50).smooth()
@@ -124,14 +122,12 @@ def pitch_score(example, answer, pitch_sample=20, time_sample=20, tolerance=0.5)
     
     trimmed_pitch_values -= all_min
     trimmed_pitch_values /= (all_max - all_min)
-    print(np.max(example_trimmed_pitch_values))
     example_trimmed_pitch_values -= all_min
     example_trimmed_pitch_values /= (all_max - all_min)
     
     # pitch values 0~sample
     trimmed_pitch_values *= (pitch_sample-1)
     example_trimmed_pitch_values *= (pitch_sample-1)
-    print(np.max(example_trimmed_pitch_values))
     
     
     
@@ -169,6 +165,19 @@ def pitch_score(example, answer, pitch_sample=20, time_sample=20, tolerance=0.5)
             if (pitch_sample-1)-(pv+k) > -1:
                 pitch_matrix[i, pv+k] = score_tolerance-k
                     
-    score = 1 - sum(a) / np.sum(grid1)
-    
-    return example_pitch_matrix, pitch_matrix, score
+    a = np.ndarray.flatten(example_pitch_matrix - pitch_matrix)
+    a[a<0] = 0
+    score = 1 - sum(a) / np.sum(example_pitch_matrix)
+    print("score : {}".format(score))
+    return example_pitch_matrix.tolist(), pitch_matrix.tolist(), score
+
+
+def fill_nan(A):
+    '''
+    interpolate to fill nan values
+    '''
+    inds = np.arange(A.shape[0])
+    good = np.where(np.isfinite(A))
+    f = interpolate.interp1d(inds[good], A[good],bounds_error=False)
+    B = np.where(np.isfinite(A),A,f(inds))
+    return B

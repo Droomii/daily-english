@@ -22,21 +22,26 @@ def me_api():
 def score():
     example = None
     answer = None
-    if request.files:
-        example = request.files['example']
-        answer = request.files['answer']
+    if request.form:
+        example = request.form['idx']
+        answer = request.form['data']
+        date = request.form['date']
         if example is None:
             return 'example is null!!'
         if answer is None:
             return 'answer is null!!'
     else:
         return 'file is null!!'
-    example_pitch_matrix, pitch_matrix, score = pitch_score(example, answer, pitch_sample=50, time_sample=100)
+    example_pitch_matrix, pitch_matrix, score = pitch_score(example, answer, date, pitch_sample=50, time_sample=100)
     a = {}
     a['example_pitch_matrix'] = example_pitch_matrix
     a['pitch_matrix'] = pitch_matrix
     a['score'] = score
     return a
+
+@app.route('/score2', methods=['POST'])
+def score2():
+    return str(request.form)
 
 @app.route('/tts')
 def tts():
