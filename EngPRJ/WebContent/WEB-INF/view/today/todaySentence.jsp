@@ -275,7 +275,7 @@
 				          base64data = reader.result;                
 				          console.log(base64data);
 					      globalAudioData.data = base64data;
-					      globalAudioData.mimeType = mediaRecorder.mimeType;
+					      globalAudioData.sentenceAudioIdx = sentenceAudioIdx;
 				       }
 				      
  				      

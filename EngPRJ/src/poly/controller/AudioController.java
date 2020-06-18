@@ -1,5 +1,6 @@
 package poly.controller;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,12 +63,11 @@ public class AudioController {
 			throws Exception {
 		log.info(this.getClass().getName() + ".analyzeAudio start");
 		String data = request.getParameter("data");
-		String mimeType = request.getParameter("mimeType");
-		log.info("mimeType : " + mimeType);
-		log.info("data : " + data);
-		
-		
+		String sentenceAudioIdx = request.getParameter("sentenceAudioIdx");
+		log.info("sentenceAudioIdx : " + sentenceAudioIdx);
+		Map<String, Object> rMap = audioService.analyzeAudio(data, sentenceAudioIdx);
 		log.info(this.getClass().getName() + ".analyzeAudio end");
+		
 		return null;
 	}
 	
