@@ -67,8 +67,19 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
 
     # linear interpolation of nans
     trimmed_pitch_values = fill_nan(trimmed_pitch_values)
-
-
+    
+    # smoothening
+    #window = 10;
+    #trimmed_smoothened_list = []
+    
+    #for i in range(window, len(trimmed_pitch_values)):
+    #    trimmed_smoothened_list.append(np.mean(trimmed_pitch_values[i-window:i]))
+    #print('original length : ', len(trimmed_pitch_values))
+    #print('trimmed length : ', len(trimmed_smoothened_list))
+    #trimmed_pitch_values = np.array(trimmed_smoothened_list)
+    
+    
+    
     # trim time and normalize
     xs = pitch.xs()[pitch_start_index:pitch_end_index+1]
     xs -= np.min(xs)
@@ -104,7 +115,13 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     # linear interpolation of nans
     example_trimmed_pitch_values = fill_nan(example_trimmed_pitch_values)
 
-
+    #example_trimmed_smoothened_list = []
+    #for i in range(window, len(example_trimmed_pitch_values)):
+    #    example_trimmed_smoothened_list.append(np.mean(example_trimmed_pitch_values[i-window:i]))
+    #print('original length : ', len(example_trimmed_pitch_values))
+    #print('trimmed length : ', len(example_trimmed_smoothened_list))
+    #example_trimmed_pitch_values = np.array(example_trimmed_smoothened_list)
+    
     # trim time and normalize
     example_xs = example_pitch.xs()[example_pitch_start_index:example_pitch_end_index+1]
     example_xs -= np.min(example_xs)
@@ -119,6 +136,9 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     all_min = min(pitch_min, example_pitch_min)
     all_max = max(pitch_max, example_pitch_max)
     # normalize both pitch values to between 0 and 1
+    
+    answer_y = np.copy(trimmed_pitch_values)
+    example_y = np.copy(example_trimmed_pitch_values)
     
     trimmed_pitch_values -= all_min
     trimmed_pitch_values /= (all_max - all_min)
@@ -170,7 +190,7 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     score = 1 - sum(a) / np.sum(example_pitch_matrix)
     print("score : {}".format(score))
     
-    return example_normalized_xs.tolist(), example_trimmed_pitch_values.tolist(), normalized_xs.tolist(), trimmed_pitch_values.tolist(), score
+    return example_normalized_xs.tolist(), example_y.tolist(), normalized_xs.tolist(), answer_y.tolist(), score
 
 
 def fill_nan(A):

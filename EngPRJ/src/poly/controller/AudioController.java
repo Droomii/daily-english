@@ -59,7 +59,7 @@ public class AudioController {
 	
 	@RequestMapping(value = "today/analyzeAudio", method = RequestMethod.POST)
 	@ResponseBody
-	public String analyzeAudio(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+	public Map<String, Object> analyzeAudio(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".analyzeAudio start");
 		String data = request.getParameter("data");
@@ -68,7 +68,7 @@ public class AudioController {
 		Map<String, Object> rMap = audioService.analyzeAudio(data, sentenceAudioIdx);
 		log.info(this.getClass().getName() + ".analyzeAudio end");
 		
-		return null;
+		return rMap;
 	}
 	
 	@RequestMapping(value = "audio/getTodaySentenceAudio", method = RequestMethod.GET, produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)

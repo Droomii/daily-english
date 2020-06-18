@@ -11,8 +11,15 @@
   <%@ include file="/WEB-INF/view/header.jsp" %>
   <link rel="stylesheet" type="text/css" href="/css/loading-bar.css" />
 <script type="text/javascript" src="/js/loading-bar.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/addons/p5.sound.js"></script>
+<!-- amchart -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="https://unpkg.com/wavesurfer.js"></script>
+
 <style>
 	#mic{
 		background-image:url("/resources/img/mic_disabled.png");
@@ -81,6 +88,7 @@
 			<div class="card">
 				<div class="card-header">
 					<h4 class="card-title mb-0" style="font-size:1.5rem">오늘의 문장 따라하기</h4>
+					<div id="waveform" hidden='hidden'></div>
 				</div>
 				<div class="card-body pb-0">
 				<p>
@@ -88,28 +96,29 @@
 				</p>
 				<div class="text-center"><button type="button" id="listen" style="border-radius:100%;"class="btn btn-icon btn-info p-0"><i style="font-size:2rem" class="la la-volume-up"></i></button></div>
 				</div>
-				<div class="card-body p-0" id="contentBlock">
+				<div class="card-body p-0" id="timerBlock">
 							<br>
 							<div id="mic" style="width:15em;height:15em;margin:auto">
 									<div id="progressCircle" style="width:15em;height:15em;color:white;" data-stroke="red" data-preset="circle" class="label-center" data-value="100" data-precision="0.01"></div>
 									<div id="analyzingCircle"></div>
 							</div>
-							
-							
-						
 						<div class="text-center">
 							<h1 id="timer"></h1>
 							<button id="startInterview" class="btn btn-danger">녹음 시작</button>
 							<button style="display:none" id="stopInterview" class="btn btn-danger">녹음 종료</button>
+							<button style="display:none" id="resetInterview" class="btn btn-warning">다시 녹음</button>
 							<button style="display:none" id="submitInterview" class="btn btn-danger">제출</button>
 						</div>
-						<form name="resultForm"action="/dataAn/viewChart.do" hidden="hidden">
-						<input name="answerNo" value="">
-						</form>
-						
 					</div>
-				<div class="card-body p-0">
+				<div class="card-body p-0" id="resultBlock" hidden="hidden">
 					<div class="row">
+						<div class="col-12 mt-1 mb-1 text-center">
+						<div id="chartdiv" style="width:100%;height:500px;"></div>
+						</div>
+					</div>
+				</div>
+				<div class="card-body p-0">
+					<div class="row" id="navigator">
 						<div class="col-12 mt-1 mb-1 text-center">
 							<button type="button" disabled='disabled' id="prev" class="btn btn-info btn-icon ">&lt;</button>
 							<button type="button" id="next" class="btn btn-info btn-icon ">&gt;</button>
@@ -148,8 +157,20 @@
   var sentenceList;
   var sentenceIdx = 0;
   var sentenceAudioIdx;
-  var audio;
+  var audio = WaveSurfer.create({
+	  container:"#waveform",
+	  waveColor:"blue",
+	  progressColor:"purple"
+  });
+  
+  
   var audioIdx = -1;
+  var resultJSON;
+  var chart;
+  var exampleSeries;
+  var answerSeries;
+  var cursorX;
+  var cursorY;
   $(document).ready(function(){
   	$.ajax({
 			type : "POST",
@@ -160,7 +181,9 @@
 				$("#all").html(sentenceList.length);
 				$("#sentence").html(sentenceList[0].sentence);
 				sentenceAudioIdx = sentenceList[0].index * 1;
-				audio = new Audio('/audio/getTodaySentenceAudio.do?idx=' + sentenceAudioIdx);
+				audio.load('/audio/getTodaySentenceAudio.do?idx=0');
+				audioIdx = 0;
+				sentenceAudioIdx = 0;
 				$("#current").html(sentenceIdx+1);
 				$("#no").html(sentenceIdx+1);
 			}
@@ -178,6 +201,17 @@
     });
     
     function refresh(){
+    	
+    	$("#timerBlock").removeAttr("hidden");
+    	$("#resultBlock").attr("hidden", "hidden");
+    	$("#startInterview").removeAttr("hidden");
+    	$("#timer").attr("hidden", "hidden");
+    	$("#stopInterview").css("display", "None");
+	    $("#mic").css("background-image", 'url("/resources/img/mic_disabled.png")');
+	    $("#resetInterview").css("display", "None");
+	    $("#submitInterview").css("display", "None");
+	    $("#analyzingCircle").css("visibility", "hidden");
+	    
     	$("#current").html(sentenceIdx+1);
     	$("#no").html(sentenceIdx+1);
     	sentenceAudioIdx = sentenceList[sentenceIdx].index * 1;
@@ -197,11 +231,17 @@
     }
   $("#listen").on("click", function(){
 	  if(audioIdx != sentenceAudioIdx){
-	  	audio = new Audio('/audio/getTodaySentenceAudio.do?idx=' + sentenceAudioIdx);
+		  audio.destroy()
+		  audio = WaveSurfer.create({
+			  container:"#waveform",
+			  waveColor:"blue",
+			  progressColor:"purple"
+		  });
+	  	audio.load('/audio/getTodaySentenceAudio.do?idx=' + sentenceAudioIdx);
+	  	audio.on('ready', audio.play.bind(audio));
 	  	audioIdx = sentenceAudioIdx;
 	  }else{
-		  audio.pause();
-		  audio.currentTime = 0;
+		  audio.stop();
 	  }
 	  audio.play();
   })
@@ -210,6 +250,10 @@
   <script>
 	// 음성 데이터 담는 글로벌 변수
 	var globalAudioData = {};
+	
+	$("#resetInterview").on("click", function(){
+		refresh();
+	})
 	
 	var randQ = '';
 	$("#startInterview").on("click", function(){
@@ -233,6 +277,7 @@
 				
 			  var timer =  document.getElementById("timer");
 			  // Display the result in the element with id="demo"
+			 $("#navigator").attr("hidden", "hidden");
 			 timer.innerHTML = "녹음 시작까지 "+seconds+"초";
 			
 			  // If the count down is finished, write some text 
@@ -241,6 +286,7 @@
 			    
 			    $("#stopInterview").css("display", "inline");
 			    $("#mic").css("background-image", 'url("/resources/img/mic.png")');
+			    $("#progressCircle").css("display", "inline");
 			    timer.style.color = "red";
 			    timer.innerHTML = "30"
 			    
@@ -290,7 +336,9 @@
 				    
 				    stopButton.addEventListener('click', function(){
 				    	stopInterview=true;
-				    	$("#stopInterview").attr("hidden", "hidden");
+				    	console.log('stopped')
+				    	$("#stopInterview").css("display", "none");
+				    	$("#resetInterview").css("display", "inline");
 				    	$("#submitInterview").css("display", "inline");
 				    })
 				    var stopInterview = false;
@@ -317,6 +365,7 @@
 						    clearInterval(x2);
 						    mediaRecorder.stop();
 						    console.table(mediaRecorder);
+						    $("#navigator").removeAttr("hidden");
 						    $("#progressCircle").css("display", "none");
 						    timer.style.color = "black";
 						    timer.innerHTML = "제출 버튼을 누르시면 분석을 시작합니다";
@@ -333,6 +382,7 @@
 	});
 
 	$("#submitInterview").click(function(){
+		$("#resetInterview").hide();
 		$("#submitInterview").hide();
 		$("#analyzingCircle").css("visibility", "visible");
 		var timer =  document.getElementById("timer");
@@ -341,8 +391,75 @@
 	          type: 'POST',
 	          url: 'analyzeAudio.do',
 	          data: globalAudioData,
-	          success: function(data){
+	          dataType: "JSON",
+	          success: function(json){
+	        	  $("#timerBlock").attr('hidden', 'hidden');
+	        	  $("#resultBlock").removeAttr("hidden");
+	        	  resultJSON = json;
 	        	  
+	        		// Themes begin
+	        		am4core.useTheme(am4themes_animated);
+	        		// Themes end
+	
+	        		chart = am4core.create("chartdiv", am4charts.XYChart);
+					var data = [];
+					// add data
+	        		for(var i=0; i<json.example_x.length;i++){
+	        			data.push({"exampleTime":json.example_x[i] * 1, "examplePitch":json.example_y[i]*1})
+	        		}
+	        		for(var i=0; i<json.answer_x.length;i++){
+	        			data.push({"answerTime":json.answer_x[i] * 1, "answerPitch":json.answer_y[i]*1})
+	        		}
+					
+					
+	        		chart.data = data;
+	
+	        		// Create axes
+	        		var xAxis = chart.xAxes.push(new am4charts.ValueAxis());
+					xAxis.min = 0;
+					xAxis.max = 1;
+					xAxis.strictMinMax = true;
+					
+	        		var yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+	
+	        		// Create series
+	        		exampleSeries = chart.series.push(new am4charts.LineSeries());
+	        		exampleSeries.dataFields.valueX = "exampleTime";
+	        		exampleSeries.dataFields.valueY = "examplePitch";
+	        		exampleSeries.tooltipText = "{exampleTime}"
+	        		exampleSeries.strokeWidth = 2;
+	        		exampleSeries.stroke = am4core.color("#ff7575");
+	        		
+	        		exampleSeries.tooltip.pointerOrientation = "vertical";
+	        		
+	        		// Create series
+	        		answerSeries = chart.series.push(new am4charts.LineSeries());
+	        		answerSeries.dataFields.valueX = "answerTime";
+	        		answerSeries.dataFields.valueY = "answerPitch";
+	        		answerSeries.tooltipText = "{answerTime}"
+	        		answerSeries.strokeWidth = 2;
+	        		answerSeries.stroke = am4core.color("#758eff");
+	        		
+	        		answerSeries.tooltip.pointerOrientation = "vertical";
+	
+	        		chart.cursor = new am4charts.XYCursor();
+	        		chart.cursor.xAxis = xAxis;
+	
+	        		//chart.scrollbarY = new am4core.Scrollbar();
+	        		chart.scrollbarX = new am4core.Scrollbar();
+	        		
+	        		chart.cursor.events.on("cursorpositionchanged", function(ev) {
+        			  var xAxis = ev.target.chart.xAxes.getIndex(0);
+        			  var yAxis = ev.target.chart.yAxes.getIndex(0);
+        			  cursorX = xAxis.positionToValue(xAxis.toAxisPosition(ev.target.xPosition));
+        			  cursorY = yAxis.positionToValue(yAxis.toAxisPosition(ev.target.yPosition));
+        			});
+	        		
+	        		chart.events.on("hit", function(e){
+	        			audio.stop();
+	        			audio.seekTo(cursorX)
+	        			audio.play();
+	        		})
 	          }
 	          
 	      }).done(function(data) {

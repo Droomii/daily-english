@@ -22,6 +22,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import poly.service.IAudioService;
@@ -63,16 +64,20 @@ public class AudioService implements IAudioService{
 		HttpResponse response = httpClient.execute(httpPost);
 		HttpEntity resEntity = response.getEntity();
 		System.out.println(response.getStatusLine());
+		StringBuffer sb = new StringBuffer();
 		if(resEntity != null) {
 			try(InputStream instream = resEntity.getContent()){
 				BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
 		        String line = null;
 		        while ((line = reader.readLine()) != null) {
-		        	log.info("line : " + line);
+		        	sb.append(line);
 		        }
 			}
 		}
-		return null;
+		
+		JSONObject res = new JSONObject(sb.toString());
+		
+		return res.toMap();
 	}
 
 }
