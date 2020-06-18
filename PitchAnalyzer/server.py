@@ -32,12 +32,15 @@ def score():
             return 'answer is null!!'
     else:
         return 'file is null!!'
-    example_pitch_matrix, pitch_matrix, score = pitch_score(example, answer, date, pitch_sample=50, time_sample=100)
-    a = {}
-    a['example_pitch_matrix'] = example_pitch_matrix
-    a['pitch_matrix'] = pitch_matrix
-    a['score'] = score
-    return a
+    example_normalized_xs, example_trimmed_pitch_values, normalized_xs, trimmed_pitch_values, score = pitch_score(example, answer, date, pitch_sample=50, time_sample=100)
+    res = {}
+    example_normalized_xs, example_trimmed_pitch_values, normalized_xs, trimmed_pitch_values, score
+    res['example_x'] = example_normalized_xs
+    res['example_y'] = example_trimmed_pitch_values
+    res['answer_x'] = normalized_xs
+    res['answer_y'] = trimmed_pitch_values
+    res['score'] = score
+    return res
 
 @app.route('/score2', methods=['POST'])
 def score2():

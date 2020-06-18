@@ -169,7 +169,8 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     a[a<0] = 0
     score = 1 - sum(a) / np.sum(example_pitch_matrix)
     print("score : {}".format(score))
-    return example_pitch_matrix.tolist(), pitch_matrix.tolist(), score
+    
+    return example_normalized_xs.tolist(), example_trimmed_pitch_values.tolist(), normalized_xs.tolist(), trimmed_pitch_values.tolist(), score
 
 
 def fill_nan(A):
