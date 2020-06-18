@@ -105,7 +105,7 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     example_pitch_end_index = np.where(~np.isnan(example_pitch_values))[0][-1]
 
     # trim pitch values by start and end
-    example_trimmed_pitch_values = example_pitch_values[example_pitch_start_index:example_pitch_end_index+1]
+    example_trimmed_pitch_values = example_pitch_values
 
 
 
@@ -114,6 +114,7 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
 
     # linear interpolation of nans
     example_trimmed_pitch_values = fill_nan(example_trimmed_pitch_values)
+    example_trimmed_pitch_values[np.isnan(example_trimmed_pitch_values)] = 0
 
     #example_trimmed_smoothened_list = []
     #for i in range(window, len(example_trimmed_pitch_values)):
@@ -123,7 +124,7 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     #example_trimmed_pitch_values = np.array(example_trimmed_smoothened_list)
     
     # trim time and normalize
-    example_xs = example_pitch.xs()[example_pitch_start_index:example_pitch_end_index+1]
+    example_xs = example_pitch.xs()
     example_xs -= np.min(example_xs)
     example_normalized_xs = example_xs / np.max(example_xs)
 

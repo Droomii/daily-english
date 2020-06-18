@@ -106,7 +106,7 @@
 							<h1 id="timer"></h1>
 							<button id="startInterview" class="btn btn-danger">녹음 시작</button>
 							<button style="display:none" id="stopInterview" class="btn btn-danger">녹음 종료</button>
-							<button style="display:none" id="resetInterview" class="btn btn-warning">다시 녹음</button>
+							<button hidden='hidden' id="resetInterview" class="btn btn-warning">다시 녹음</button>
 							<button style="display:none" id="submitInterview" class="btn btn-danger">제출</button>
 						</div>
 					</div>
@@ -166,6 +166,9 @@
   
   var audioIdx = -1;
   var resultJSON;
+  var exampleStart;
+  var exampleEnd;
+  var exampleRatio;
   var chart;
   var exampleSeries;
   var answerSeries;
@@ -208,7 +211,7 @@
     	$("#timer").attr("hidden", "hidden");
     	$("#stopInterview").css("display", "None");
 	    $("#mic").css("background-image", 'url("/resources/img/mic_disabled.png")');
-	    $("#resetInterview").css("display", "None");
+	    $("#resetInterview").attr("hidden", "hidden");
 	    $("#submitInterview").css("display", "None");
 	    $("#analyzingCircle").css("visibility", "hidden");
 	    
@@ -257,6 +260,7 @@
 	
 	var randQ = '';
 	$("#startInterview").on("click", function(){
+		audio.stop();
 		$("#startInterview").attr("hidden", "hidden");
 		$("#timer").removeAttr("hidden");
 		//Countdown Timer
@@ -382,7 +386,7 @@
 	});
 
 	$("#submitInterview").click(function(){
-		$("#resetInterview").hide();
+		$("#resetInterview").attr('hidden', 'hidden');
 		$("#submitInterview").hide();
 		$("#analyzingCircle").css("visibility", "visible");
 		var timer =  document.getElementById("timer");
@@ -395,6 +399,7 @@
 	          success: function(json){
 	        	  $("#timerBlock").attr('hidden', 'hidden');
 	        	  $("#resultBlock").removeAttr("hidden");
+	        	  $("#resetInterview").removeAttr('hidden');
 	        	  resultJSON = json;
 	        	  
 	        		// Themes begin
@@ -404,9 +409,30 @@
 	        		chart = am4core.create("chartdiv", am4charts.XYChart);
 					var data = [];
 					// add data
+					// get start time
+					for(var i=0; i<json.example_x.length; i++){
+						if(json.example_y[i]!=0){
+	        				exampleStart = json.example_x[i];
+	        				break;
+						}
+					}
+					// get end time
+					for(var i=json.example_x.length-1; i>-1; i--){
+						if(json.example_y[i]!=0){
+	        				exampleEnd = json.example_x[i];
+	        				break;
+						}
+					}
+					
+					exampleRatio = exampleEnd - exampleStart;
+					
 	        		for(var i=0; i<json.example_x.length;i++){
-	        			data.push({"exampleTime":json.example_x[i] * 1, "examplePitch":json.example_y[i]*1})
+	        			if(json.example_y[i]!=0){
+	        				data.push({"exampleTime":(json.example_x[i] - exampleStart) / exampleRatio, "examplePitch":json.example_y[i]*1})
+	        			}
+	        			
 	        		}
+	        		
 	        		for(var i=0; i<json.answer_x.length;i++){
 	        			data.push({"answerTime":json.answer_x[i] * 1, "answerPitch":json.answer_y[i]*1})
 	        		}
@@ -457,7 +483,7 @@
 	        		
 	        		chart.events.on("hit", function(e){
 	        			audio.stop();
-	        			audio.seekTo(cursorX)
+	        			audio.seekTo(cursorX * exampleRatio + exampleStart)
 	        			audio.play();
 	        		})
 	          }
