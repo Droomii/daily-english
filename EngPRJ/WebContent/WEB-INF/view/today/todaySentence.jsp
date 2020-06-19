@@ -283,16 +283,16 @@
 			  // Display the result in the element with id="demo"
 			 $("#navigator").attr("hidden", "hidden");
 			 timer.innerHTML = "녹음 시작까지 "+seconds+"초";
-			
+			 
 			  // If the count down is finished, write some text 
 			  if (seconds <=0) {
 			    clearInterval(x);
-			    
+			    audio.play();
 			    $("#stopInterview").css("display", "inline");
 			    $("#mic").css("background-image", 'url("/resources/img/mic.png")');
 			    $("#progressCircle").css("display", "inline");
 			    timer.style.color = "red";
-			    timer.innerHTML = "30"
+			    timer.innerHTML = parseInt(audio.getDuration());
 			    
 			    var bar1 = new ldBar("#progressCircle");
 				var bar2 = document.getElementById('progressCircle').ldBar;
@@ -342,11 +342,12 @@
 				    	stopInterview=true;
 				    	console.log('stopped')
 				    	$("#stopInterview").css("display", "none");
-				    	$("#resetInterview").css("display", "inline");
+				    	$("#resetInterview").removeAttr("hidden");
 				    	$("#submitInterview").css("display", "inline");
 				    })
 				    var stopInterview = false;
-				    var countDown2 = new Date().getTime()+30000;
+				    var countDownTimeMilliseconds = parseInt(audio.getDuration() * 1000)+ 1000
+				    var countDown2 = new Date().getTime()+ countDownTimeMilliseconds;
 					var x2 = setInterval(function() {
 						
 						  // Get today's date and time
@@ -363,7 +364,7 @@
 						  // Display the result in the element with id="demo"
 						 timer2.innerHTML = seconds2;
 						  
-						 bar1.set(progress*100/30);
+						 bar1.set(progress*100 / countDownTimeMilliseconds * 1000);
 						  // If the count down is finished, write some text 
 						  if (seconds2 <=0 || stopInterview == true) {
 						    clearInterval(x2);
