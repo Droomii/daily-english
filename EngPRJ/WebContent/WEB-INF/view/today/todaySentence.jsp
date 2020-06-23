@@ -105,8 +105,8 @@
 						<div class="text-center">
 							<h1 id="timer"></h1>
 							<button id="startInterview" class="btn btn-danger">녹음 시작</button>
-							<button style="display:none" id="stopInterview" class="btn btn-danger">녹음 종료</button>
 							<button hidden='hidden' id="resetInterview" class="btn btn-warning">다시 녹음</button>
+							<button style="display:none" id="stopInterview" class="btn btn-danger">녹음 종료</button>
 							<button style="display:none" id="submitInterview" class="btn btn-danger">제출</button>
 						</div>
 					</div>
@@ -288,7 +288,7 @@
 			  if (seconds <=0) {
 			    clearInterval(x);
 			    audio.play();
-			    $("#stopInterview").css("display", "inline");
+			    $("#resetInterview").removeAttr("hidden");
 			    $("#mic").css("background-image", 'url("/resources/img/mic.png")');
 			    $("#progressCircle").css("display", "inline");
 			    timer.style.color = "red";
@@ -336,14 +336,14 @@
 				    
 				    
 				    const stopButton = document.getElementById('stopInterview');
+				    const resetButton = document.getElementById('resetInterview');
 				    
-				    
-				    stopButton.addEventListener('click', function(){
+				    resetButton.addEventListener('click', function(){
 				    	stopInterview=true;
 				    	console.log('stopped')
 				    	$("#stopInterview").css("display", "none");
-				    	$("#resetInterview").removeAttr("hidden");
-				    	$("#submitInterview").css("display", "inline");
+				    	$("#resetInterview").attr("hidden", "hidden");
+				    	$("#submitInterview").css("display", "none");
 				    })
 				    var stopInterview = false;
 				    var countDownTimeMilliseconds = parseInt(audio.getDuration() * 1000)+ 1000
@@ -367,6 +367,8 @@
 						 bar1.set(progress*100 / countDownTimeMilliseconds * 1000);
 						  // If the count down is finished, write some text 
 						  if (seconds2 <=0 || stopInterview == true) {
+							  if(!stopInterview)
+								$("#submitInterview").css("display", "inline");
 						    clearInterval(x2);
 						    mediaRecorder.stop();
 						    console.table(mediaRecorder);
