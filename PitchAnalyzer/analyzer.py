@@ -61,22 +61,8 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     # divide pitch values by pitch median(to get relational values)
     trimmed_pitch_values /= np.nanmedian(trimmed_pitch_values)
 
-    # normalize pitch values between 0 to 1
-    #trimmed_pitch_values -= np.nanmin(trimmed_pitch_values)
-    #trimmed_pitch_values /= np.nanmax(trimmed_pitch_values)
-
     # linear interpolation of nans
     trimmed_pitch_values = fill_nan(trimmed_pitch_values)
-    
-    # smoothening
-    #window = 10;
-    #trimmed_smoothened_list = []
-    
-    #for i in range(window, len(trimmed_pitch_values)):
-    #    trimmed_smoothened_list.append(np.mean(trimmed_pitch_values[i-window:i]))
-    #print('original length : ', len(trimmed_pitch_values))
-    #print('trimmed length : ', len(trimmed_smoothened_list))
-    #trimmed_pitch_values = np.array(trimmed_smoothened_list)
     
     
     
@@ -87,6 +73,8 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
 
     pitch_max = np.max(trimmed_pitch_values)
     pitch_min = np.min(trimmed_pitch_values)
+    
+    
     
     # --------------------------- example pitch -------------------------------
     
@@ -105,26 +93,16 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     example_pitch_end_index = np.where(~np.isnan(example_pitch_values))[0][-1]
 
     # trim pitch values by start and end
-    example_trimmed_pitch_values = example_pitch_values
-
-
+    example_trimmed_pitch_values = example_pitch_values[example_pitch_start_index:example_pitch_end_index+1]
 
     # divide pitch values by pitch median(to get relational values)
     example_trimmed_pitch_values /= np.nanmedian(example_trimmed_pitch_values)
 
     # linear interpolation of nans
     example_trimmed_pitch_values = fill_nan(example_trimmed_pitch_values)
-    example_trimmed_pitch_values[np.isnan(example_trimmed_pitch_values)] = 0
-
-    #example_trimmed_smoothened_list = []
-    #for i in range(window, len(example_trimmed_pitch_values)):
-    #    example_trimmed_smoothened_list.append(np.mean(example_trimmed_pitch_values[i-window:i]))
-    #print('original length : ', len(example_trimmed_pitch_values))
-    #print('trimmed length : ', len(example_trimmed_smoothened_list))
-    #example_trimmed_pitch_values = np.array(example_trimmed_smoothened_list)
     
     # trim time and normalize
-    example_xs = example_pitch.xs()
+    example_xs = example_pitch.xs()[example_pitch_start_index:example_pitch_end_index+1]
     example_xs -= np.min(example_xs)
     example_normalized_xs = example_xs / np.max(example_xs)
 

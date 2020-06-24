@@ -292,7 +292,7 @@
 			    $("#mic").css("background-image", 'url("/resources/img/mic.png")');
 			    $("#progressCircle").css("display", "inline");
 			    timer.style.color = "red";
-			    timer.innerHTML = parseInt(audio.getDuration());
+			    timer.innerHTML = Math.ceil(parseFloat(audio.getDuration()));
 			    
 			    var bar1 = new ldBar("#progressCircle");
 				var bar2 = document.getElementById('progressCircle').ldBar;
@@ -328,9 +328,6 @@
 					      globalAudioData.sentenceAudioIdx = sentenceAudioIdx;
 				       }
 				      
- 				      
-				      
-				      
 				    });
 					
 				    
@@ -346,7 +343,7 @@
 				    	$("#submitInterview").css("display", "none");
 				    })
 				    var stopInterview = false;
-				    var countDownTimeMilliseconds = parseInt(audio.getDuration() * 1000)+ 1000
+				    var countDownTimeMilliseconds = parseInt(audio.getDuration() * 1000)
 				    var countDown2 = new Date().getTime()+ countDownTimeMilliseconds;
 					var x2 = setInterval(function() {
 						
@@ -358,7 +355,7 @@
 						
 						  // Time calculations for days, hours, minutes and seconds
 						  var progress = (distance2 % (1000 * 60)) / 1000;
-						  var seconds2 = Math.floor(progress);
+						  var seconds2 = Math.ceil(progress);
 							
 						  var timer2 =  document.getElementById("timer");
 						  // Display the result in the element with id="demo"

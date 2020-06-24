@@ -1,5 +1,5 @@
 from flask import Flask, request
-from analyzer import pitch_score
+from analyzer2 import pitch_score
 from tempfile import TemporaryFile
 
 
