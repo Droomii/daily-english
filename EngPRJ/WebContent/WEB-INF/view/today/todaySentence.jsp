@@ -409,32 +409,19 @@
 	        		chart = am4core.create("chartdiv", am4charts.XYChart);
 					var data = [];
 					// add data
-					// get start time
-					for(var i=0; i<json.example_x.length; i++){
-						if(json.example_y[i]!=0){
-	        				exampleStart = json.example_x[i];
-	        				break;
-						}
-					}
-					// get end time
-					for(var i=json.example_x.length-1; i>-1; i--){
-						if(json.example_y[i]!=0){
-	        				exampleEnd = json.example_x[i];
-	        				break;
-						}
-					}
 					
-					exampleRatio = exampleEnd - exampleStart;
 					
 	        		for(var i=0; i<json.example_x.length;i++){
-	        			if(json.example_y[i]!=0){
-	        				data.push({"exampleTime":(json.example_x[i] - exampleStart) / exampleRatio, "examplePitch":json.example_y[i]*1})
+	        			if(json.example_y[i] * 1 > 0){
+	        				data.push({"exampleTime":json.example_x[i] * 1, "examplePitch":json.example_y[i] * 1})
 	        			}
 	        			
 	        		}
 	        		
 	        		for(var i=0; i<json.answer_x.length;i++){
-	        			data.push({"answerTime":json.answer_x[i] * 1, "answerPitch":json.answer_y[i]*1})
+	        			if(json.answer_y[i] * 1 > 0){
+	        				data.push({"answerTime":json.answer_x[i] * 1, "answerPitch":json.answer_y[i]*1})
+	        			}
 	        		}
 					
 					
@@ -483,7 +470,7 @@
 	        		
 	        		chart.events.on("hit", function(e){
 	        			audio.stop();
-	        			audio.seekTo(cursorX * exampleRatio + exampleStart)
+	        			audio.seekTo(cursorX);
 	        			audio.play();
 	        		})
 	          }

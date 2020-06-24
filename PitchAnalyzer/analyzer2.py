@@ -40,13 +40,17 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     example_normalized_xs, example_trimmed_pitch_values = normalize_pitch(example_pitch)
     
     # get min max of two pitches
-    pitch_max = np.max(trimmed_pitch_values)
-    pitch_min = np.min(trimmed_pitch_values)
-    example_pitch_max = np.max(example_trimmed_pitch_values)
-    example_pitch_min = np.min(example_trimmed_pitch_values)
+    pitch_max = np.nanmax(trimmed_pitch_values)
+    pitch_min = np.nanmin(trimmed_pitch_values)
+    example_pitch_max = np.nanmax(example_trimmed_pitch_values)
+    example_pitch_min = np.nanmin(example_trimmed_pitch_values)
+    all_min = min(pitch_min, example_pitch_min)
+    all_max = max(pitch_max, example_pitch_max)
     
     answer_y = np.copy(trimmed_pitch_values)
     example_y = np.copy(example_trimmed_pitch_values)
+    answer_y[np.isnan(answer_y)] = -1
+    example_y[np.isnan(example_y)] = -1
     
     trimmed_pitch_values -= all_min
     trimmed_pitch_values /= (all_max - all_min)
@@ -69,8 +73,11 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     example_pitch_matrix = np.zeros((time_sample, pitch_sample), dtype=int)
 
     for i in range(time_sample):
-        pv = int(example_resampled_pitch_values[i])
-        example_pitch_matrix[i, pv] = score_tolerance
+        try:
+            pv = int(example_resampled_pitch_values[i])
+            example_pitch_matrix[i, pv] = score_tolerance
+        except ValueError:
+            continue
     
     #--------------- resampling pitch --------------------
     x = np.arange(len(trimmed_pitch_values))
@@ -83,13 +90,16 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     score_tolerance = int(pitch_sample * tolerance)
     
     for i in range(time_sample):
-        pv = int(resampled_pitch_values[i])
-        pitch_matrix[i, pv] = score_tolerance
-        for k in range(1, score_tolerance):
-            if (pitch_sample-1)-(pv-k) < pitch_sample:
-                pitch_matrix[i, pv-k] = score_tolerance-k
-            if (pitch_sample-1)-(pv+k) > -1:
-                pitch_matrix[i, pv+k] = score_tolerance-k
+        try:
+            pv = int(resampled_pitch_values[i])
+            pitch_matrix[i, pv] = score_tolerance
+            for k in range(1, score_tolerance):
+                if (pitch_sample-1)-(pv-k) < pitch_sample:
+                    pitch_matrix[i, pv-k] = score_tolerance-k
+                if (pitch_sample-1)-(pv+k) > -1:
+                    pitch_matrix[i, pv+k] = score_tolerance-k
+        except ValueError:
+            continue
                     
     a = np.ndarray.flatten(example_pitch_matrix - pitch_matrix)
     a[a<0] = 0
@@ -149,15 +159,15 @@ def normalize_pitch(pitch):
         # linear interpolation of nans
         trimmed_pitch_values = fill_nan(trimmed_pitch_values)
     
+    # insert trimmed pitch values
+    pitch_values[pitch_start_index:pitch_end_index+1] = trimmed_pitch_values
+    
     # trim time and normalize
-    xs = pitch.xs()[pitch_start_index:pitch_end_index+1]
+    xs = pitch.xs()
     xs -= np.min(xs)
     normalized_xs = xs / np.max(xs)
-
-    pitch_max = np.max(trimmed_pitch_values)
-    pitch_min = np.min(trimmed_pitch_values)
     
-    return normalized_xs, trimmed_pitch_values
+    return normalized_xs, pitch_values
 
 
 
