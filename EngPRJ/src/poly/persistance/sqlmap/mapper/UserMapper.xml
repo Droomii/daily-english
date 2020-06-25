@@ -10,4 +10,14 @@
 		WHERE
 			USER_SEQ = #{0}
 	</update>
+	<select id="checkLogin" parameterType="String" resultType="String">
+		SELECT
+			USER_SEQ
+		FROM
+			USER_INFO
+		WHERE
+			USER_EMAIL = #{0}
+		AND
+			USER_PW = #{1}
+	</select>
 </mapper>

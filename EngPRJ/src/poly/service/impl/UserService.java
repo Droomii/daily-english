@@ -23,4 +23,12 @@ public class UserService implements IUserService{
 		userMapper.updateUserLvl(user_seq, finalLevel);
 	}
 
+	@Override
+	public String checkLogin(String email, String pw) throws Exception {
+		log.info(this.getClass().getName() + ".checkLogin start");
+		return userMapper.checkLogin(email,pw);
+	}
+	
+	
+
 }
