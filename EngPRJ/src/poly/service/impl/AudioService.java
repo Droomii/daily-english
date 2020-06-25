@@ -40,7 +40,7 @@ public class AudioService implements IAudioService{
 		
 		// fixed date to 200619 for development purpose
 		// String finalPath = TTSUtil.TTS_PATH + today + TTSUtil.SLASH + idx + ".ogg";
-		String finalPath = TTSUtil.TTS_PATH + "200619" + TTSUtil.SLASH + idx + ".ogg";
+		String finalPath = TTSUtil.TTS_PATH + today + TTSUtil.SLASH + idx + ".ogg";
 		
 		File f = new File(finalPath);
 		InputStream in = new FileInputStream(f);
@@ -61,8 +61,8 @@ public class AudioService implements IAudioService{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
 		
 //		fixed date to 200619 for development purpose
-		// params.add(new BasicNameValuePair("date", sdf.format(c.getTime())));
-		params.add(new BasicNameValuePair("date", "200619"));
+		params.add(new BasicNameValuePair("date", sdf.format(c.getTime())));
+//		params.add(new BasicNameValuePair("date", "200619"));
 		params.add(new BasicNameValuePair("data", data));
 		params.add(new BasicNameValuePair("idx", sentenceAudioIdx));
 		httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));

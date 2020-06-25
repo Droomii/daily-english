@@ -114,6 +114,7 @@
 					<div class="row">
 						<div class="col-12 mt-1 mb-1 text-center">
 						<div id="chartdiv" style="width:100%;height:500px;"></div>
+						<button id="resetInterview2" class="btn btn-warning">다시 녹음</button>
 						</div>
 					</div>
 				</div>
@@ -255,6 +256,9 @@
 	var globalAudioData = {};
 	
 	$("#resetInterview").on("click", function(){
+		refresh();
+	})
+	$("#resetInterview2").on("click", function(){
 		refresh();
 	})
 	

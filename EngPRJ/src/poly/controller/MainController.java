@@ -15,7 +15,7 @@ public class MainController {
 	Logger log = Logger.getLogger(this.getClass());
 	
 	
-	 @RequestMapping(value = "index")
+	@RequestMapping(value = "index")
 	public String index(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".index start");
@@ -23,4 +23,14 @@ public class MainController {
 		log.info(this.getClass().getName() + ".index end");
 		return "/index";
 	}
+	
+	@RequestMapping(value = "login")
+	public String login(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".login start");
+
+		log.info(this.getClass().getName() + ".login end");
+		return "/login";
+	}
+	 
 }
