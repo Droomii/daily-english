@@ -10,9 +10,11 @@
 		WHERE
 			USER_SEQ = #{0}
 	</update>
-	<select id="checkLogin" parameterType="String" resultType="String">
+	<select id="checkLogin" parameterType="String" resultType="UserDTO">
 		SELECT
-			USER_SEQ
+			USER_SEQ,
+			USER_LVL,
+			USER_NICK
 		FROM
 			USER_INFO
 		WHERE

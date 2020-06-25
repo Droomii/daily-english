@@ -28,7 +28,7 @@
     <script src="/js/jquery-3.5.0.min.js"></script>
     <style>
     @import url(//fonts.googleapis.com/earlyaccess/nanumgothic.css);
-    body, h4, .navigation {
+    body, h4, .navigation, .user-name, .dropdown-item {
   		font-family: 'Nanum Gothic', 'sans-serif' !important;
 	}
     </style>

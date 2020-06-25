@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import poly.dto.UserDTO;
 import poly.service.IUserService;
 
 @Controller
@@ -55,16 +56,33 @@ public class MainController {
 		String email = nvl(request.getParameter("email"));
 		log.info("pw : " + pw);
 		log.info("email : " + email);
-		String user_seq = userService.checkLogin(email, pw);
-		log.info("user_seq : " + user_seq);
-		if(user_seq==null) {
+		UserDTO rDTO = userService.checkLogin(email, pw);
+		if(rDTO==null) {
 			log.info("user not found");
 			log.info(this.getClass().getName() + ".doLogin end");
 			return "1";
 		}
-		session.setAttribute("user_seq", user_seq);
+		log.info("user_seq : " + rDTO.getUSER_SEQ());
+		session.setAttribute("user_seq", rDTO.getUSER_SEQ());
+		session.setAttribute("user_nick", rDTO.getUSER_NICK());
+		session.setAttribute("user_lvl", rDTO.getUSER_LVL());
+		
 		log.info(this.getClass().getName() + ".doLogin end");
 		return "0";
+	}
+	
+	@RequestMapping(value = "logout")
+	public String logout(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".logout start");
+
+		session.invalidate();
+		String url = "/login.do";
+		String msg = "로그아웃 하였습니다.";
+		model.addAttribute("url", url);
+		model.addAttribute("msg", msg);
+		log.info(this.getClass().getName() + ".logout end");
+		return "/redirect";
 	}
 	 
 }

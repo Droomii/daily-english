@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import poly.dto.UserDTO;
 import poly.persistance.mapper.IUserMapper;
 import poly.service.IUserService;
 
@@ -24,7 +25,7 @@ public class UserService implements IUserService{
 	}
 
 	@Override
-	public String checkLogin(String email, String pw) throws Exception {
+	public UserDTO checkLogin(String email, String pw) throws Exception {
 		log.info(this.getClass().getName() + ".checkLogin start");
 		return userMapper.checkLogin(email,pw);
 	}
