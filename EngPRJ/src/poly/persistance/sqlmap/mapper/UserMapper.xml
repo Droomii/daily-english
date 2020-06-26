@@ -22,4 +22,24 @@
 		AND
 			USER_PW = #{1}
 	</select>
+	
+	<select id="checkEmailDuplicate" parameterType="String" resultType="String">
+		SELECT
+			COUNT(1)
+		FROM
+			USER_INFO
+		WHERE
+			USER_EMAIL = #{0}
+	</select>
+	<insert id="insertUser" parameterType="UserDTO">
+	INSERT INTO USER_INFO(
+		USER_EMAIL,
+		USER_NICK,
+		USER_PW
+	)VALUES(
+		#{USER_EMAIL},
+		#{USER_NICK},
+		#{USER_PW}
+	)
+	</insert>
 </mapper>

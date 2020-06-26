@@ -1,5 +1,8 @@
 package poly.dto;
 
+import org.apache.ibatis.type.Alias;
+
+@Alias("UserDTO")
 public class UserDTO {
 
 	private String USER_SEQ;

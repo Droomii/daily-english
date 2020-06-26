@@ -97,7 +97,11 @@
 				<button type="button" id="c" class="btn mb-1 choice btn-secondary btn-sm btn-block">world</button>
 				<button type="button" id="d" class="btn mb-1 choice btn-secondary btn-sm btn-block">wrong</button>
 				</div>
+				
 				</div>
+				<div id="goback" class="card-body text-center" hidden='hidden'>
+				<button type="button" id="next" class="btn mb-1 btn-info btn-lg btn-block" onclick="location.href='/index.do'">처음으로</button>
+					</div>
 			</div>
 		</div>
 	</div>
@@ -156,12 +160,14 @@
 		           success : function(json) {
 		        	   
 		        	   if(json.finalLevel!=null){
+		        		   $("#goback").removeAttr('hidden');
 		        		   var resultContent = 
 		        			   "<div class='card-body'>"
 		        		   		+ "<h4 class='card-title mb-0 text-center' style='font-size:1.5rem'>"
 		        		   		+ "당신의 영어 실력은...</h4><h4 class='card-title mt-3 text-center' style='font-size:2rem'>"
 		        		   		+ "Level " + json.finalLevel + "</h4></div>";
 		        		   $("#card-content").html(resultContent);
+		        		   
 		        		   
 		        	   }else{
 		        		   $('.chosen').removeClass('chosen');

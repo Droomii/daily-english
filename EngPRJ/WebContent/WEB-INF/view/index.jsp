@@ -29,23 +29,16 @@
 <!-- Header footer section start -->
 <section id="header-footer">
 	<div class="row match-height">
-		<div class="col-lg-12 col-md-12">
-			<div class="card">
-				<div class="card-header">
-					<h4 class="card-title mb-0" style="font-size:1.5rem">출석체크</h4>
-				</div>
-			</div>
-		</div>
 		
 		<div class="col-lg-12 col-md-12">
-			<div class="card">
+			<div class="card" onclick="location.href='/today/todayQuiz.do'">
 				<div class="card-body">
 					<h4 class="card-title text-center mb-0" style="font-size:1.5rem;"><i class="la la-book" style="font-size:2rem;vertical-align:center;"></i><span style="font-size:2rem">오늘의 뉴스</span></h4>
 				</div>
 			</div>
 		</div>
 		<div class="col-6">
-			<div class="card">
+			<div class="card" onclick="location.href='/review/reviewQuiz.do'">
 			<div class="card-body text-center pt-1 pb-0">
 			<i class="la la-check-circle" style="font-size:5rem"></i>
 			</div>
@@ -55,12 +48,12 @@
 			</div>
 		</div>
 		<div class="col-6">
-			<div class="card">
+			<div class="card" onclick="location.href='/today/todaySentence.do'">
 			<div class="card-body text-center pt-1 pb-0">
 			<i class="la la-sticky-note" style="font-size:5rem"></i>
 			</div>
 				<div class="card-body pt-0">
-					<h4 class="card-title text-center mb-0" style="font-size:1.5rem">단어장</h4>
+					<h4 class="card-title text-center mb-0" style="font-size:1.5rem">발음연습</h4>
 				</div>
 			</div>
 		</div>

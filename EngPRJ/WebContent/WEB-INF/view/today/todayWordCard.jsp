@@ -136,6 +136,9 @@
 									<button type="button" disabled='disabled' id="prev" class="btn btn-info btn-icon ">&lt;</button>
 									<button type="button" id="next" class="btn btn-info btn-icon ">&gt;</button>
 								</div>
+								<div class="col-12 mt-1 mb-1 text-center">
+									<button type="button" id="gotoPronounce" onclick="location.href='/today/todaySentence.do'" class="btn btn-info btn-icon ">발음 연습하러 가기 &gt; </button>
+								</div>
 							</div>
 							<div class="row">
 								<div class="col-12 mb-3 text-center">
@@ -224,6 +227,8 @@
     	}
     	if(wordIdx+1 == wordList.length){
     		$("#next").attr("disabled", "disabled");
+    		$("#gotoPronounce").removeAttr("disabled");
+    		
     	}else{
     		$("#next").removeAttr("disabled");
     	}

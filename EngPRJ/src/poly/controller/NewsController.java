@@ -59,7 +59,7 @@ public class NewsController {
 		}
 		
 		NewsDTO rDTO = newsService.nlpAndSaveNews(title, inputText, newsUrl);
-		newsWordService.saveTodayTTS();
+		//newsWordService.saveTodayTTS();
 
 		log.info(this.getClass().getName() + ".lemmatize end");
 		return rDTO;
@@ -69,7 +69,20 @@ public class NewsController {
 	public String getLatestNews(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".getNews start");
+		String user_seq = (String) session.getAttribute("user_seq");
+		if(user_seq == null) {
+			return "/login";
+		}
 		
+		String user_lvl = (String) session.getAttribute("user_lvl");
+		log.info("user_lvl : " + user_lvl);
+		if(user_lvl == null) {
+			String url = "/wordTest/takeTest.do";
+			String msg = "처음 가입 후 실력 측정 테스트가 필요합니다.";
+			model.addAttribute("url", url);
+			model.addAttribute("msg", msg);
+			return "/redirect";
+		}
 		NewsDTO news = newsService.getLatestNews();
 		newsWordService.highlightWords(news);
 

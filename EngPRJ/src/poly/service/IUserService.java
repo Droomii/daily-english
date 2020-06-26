@@ -8,4 +8,8 @@ public interface IUserService {
 
 	UserDTO checkLogin(String email, String pw) throws Exception;
 
+	String checkEmailDuplicate(String email) throws Exception;
+
+	int insertUser(UserDTO pDTO) throws Exception;
+
 }

@@ -68,6 +68,7 @@
 				<div class="card-header">
 					<h4 class="card-title mb-0" style="font-size:1.5rem">오늘의 문장 따라하기</h4>
 					<div id="waveform" hidden='hidden'></div>
+					<div id="waveform2" hidden='hidden'></div>
 				</div>
 				<div class="card-body pb-0">
 				<p>
@@ -108,6 +109,9 @@
 						<div class="col-12 mb-3 text-center">
 						(<span id="current">n</span> / <span id="all">n</span>)
 						</div>
+						<div class="col-12 mb-1 text-center">
+									<button type="button" id="gotoPronounce" onclick="location.href='/getLatestNews.do'" class="btn btn-info btn-icon ">뉴스 원문 보기 &gt; </button>
+								</div>
 					</div>
 				</div>
 			</div>
@@ -138,6 +142,11 @@
   var sentenceIdx = 0;
   var sentenceAudioIdx;
   var audio = WaveSurfer.create({
+	  container:"#waveform",
+	  waveColor:"blue",
+	  progressColor:"purple"
+  });
+  var answerAudio = WaveSurfer.create({
 	  container:"#waveform",
 	  waveColor:"blue",
 	  progressColor:"purple"
@@ -450,11 +459,15 @@
         			  cursorX = xAxis.positionToValue(xAxis.toAxisPosition(ev.target.xPosition));
         			  cursorY = yAxis.positionToValue(yAxis.toAxisPosition(ev.target.yPosition));
         			});
+	        		answerAudio.load('/audio/getAnswerAudio.do?file=' + json.answer_temp_file);
 	        		
 	        		chart.events.on("hit", function(e){
 	        			audio.stop();
+	        			answerAudio.stop();
 	        			audio.seekTo(cursorX);
+	        			answerAudio.seekTo(cursorX);
 	        			audio.play();
+	        			answerAudio.play();
 	        		})
 	          }
 	          

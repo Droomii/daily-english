@@ -29,6 +29,16 @@ public class UserService implements IUserService{
 		log.info(this.getClass().getName() + ".checkLogin start");
 		return userMapper.checkLogin(email,pw);
 	}
+
+	@Override
+	public String checkEmailDuplicate(String email) throws Exception {
+		return userMapper.checkEmailDuplicate(email);
+	}
+
+	@Override
+	public int insertUser(UserDTO pDTO) throws Exception {
+		return userMapper.insertUser(pDTO);
+	}
 	
 	
 

@@ -54,7 +54,7 @@
                                 <div class="col-md-6 col-12 text-center text-sm-left">
                                    
                                 </div>
-                                <div class="col-md-6 col-12 float-sm-left text-center text-sm-right"><a href="recover-password.html" class="card-link">암호를 잊으셨나요?</a></div>
+                                <div class="col-md-6 col-12 float-sm-left text-center text-sm-right"><a href="/recoverPw.do" class="card-link">암호를 잊으셨나요?</a></div>
                             </div>                           
                             <div class="form-group text-center">
                                 <button type="submit" id="submit-btn" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1">로그인</button>    
@@ -62,7 +62,7 @@
                            
                         </form>
                     </div>
-                    <p class="card-subtitle text-muted text-right font-small-3 mx-2 my-1"><span>계정이 없으신가요?<a href="register.html" class="card-link">회원가입</a></span></p>                    
+                    <p class="card-subtitle text-muted text-right font-small-3 mx-2 my-1"><span>계정이 없으신가요?<a href="/register.do" class="card-link">회원가입</a></span></p>                    
                 </div>
             </div>
         </div>

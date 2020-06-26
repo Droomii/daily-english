@@ -28,9 +28,20 @@ public class MainController {
 	public String index(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".index start");
+		
 		String user_seq = (String) session.getAttribute("user_seq");
 		if(user_seq == null) {
 			return "/login";
+		}
+		
+		String user_lvl = (String) session.getAttribute("user_lvl");
+		log.info("user_lvl : " + user_lvl);
+		if(user_lvl == null) {
+			String url = "/wordTest/takeTest.do";
+			String msg = "처음 가입 후 실력 측정 테스트가 필요합니다.";
+			model.addAttribute("url", url);
+			model.addAttribute("msg", msg);
+			return "/redirect";
 		}
 		
 		log.info(this.getClass().getName() + ".index end");
@@ -41,11 +52,35 @@ public class MainController {
 	public String login(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".login start");
-
+		String user_seq = (String) session.getAttribute("user_seq");
+		if(user_seq != null) {
+			return "/index";
+		}
 		log.info(this.getClass().getName() + ".login end");
 		return "/login";
 	}
 	
+	@RequestMapping(value = "register")
+	public String register(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".register start");
+
+		
+		log.info(this.getClass().getName() + ".register end");
+		return "/register";
+	}
+	
+	@RequestMapping(value = "checkEmailDuplicate", method = RequestMethod.POST)
+	@ResponseBody
+	public String checkEmailDuplicate(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".checkEmailDuplicate start");
+		String email = request.getParameter("email");
+		String res = userService.checkEmailDuplicate(email);
+		
+		log.info(this.getClass().getName() + ".checkEmailDuplicate end");
+		return res;
+	}
 	@RequestMapping(value = "doLogin", method = RequestMethod.POST)
 	@ResponseBody
 	public String doLogin(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
@@ -63,6 +98,7 @@ public class MainController {
 			return "1";
 		}
 		log.info("user_seq : " + rDTO.getUSER_SEQ());
+		log.info("rDTO.getUSER_NICK : " + rDTO.getUSER_NICK());
 		session.setAttribute("user_seq", rDTO.getUSER_SEQ());
 		session.setAttribute("user_nick", rDTO.getUSER_NICK());
 		session.setAttribute("user_lvl", rDTO.getUSER_LVL());
@@ -82,6 +118,31 @@ public class MainController {
 		model.addAttribute("url", url);
 		model.addAttribute("msg", msg);
 		log.info(this.getClass().getName() + ".logout end");
+		return "/redirect";
+	}
+	
+	@RequestMapping(value = "doRegister", method = RequestMethod.POST)
+	public String doRegister(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".doRegister start");
+		String user_nick = request.getParameter("nick");
+		String user_email = request.getParameter("email");
+		String pw = request.getParameter("pw");
+		UserDTO pDTO = new UserDTO();
+		pDTO.setUSER_NICK(user_nick);
+		pDTO.setUSER_EMAIL(user_email);
+		pDTO.setUSER_PW(pw);
+		int res = userService.insertUser(pDTO);
+		String url = "/login.do";
+		String msg = "회원가입에 실패했습니다.";
+		if(res!=0) {
+			msg = "회원가입에 성공했습니다.";
+		}
+		
+		model.addAttribute("url", url);
+		model.addAttribute("msg", msg);
+		
+		log.info(this.getClass().getName() + ".doRegister end");
 		return "/redirect";
 	}
 	 

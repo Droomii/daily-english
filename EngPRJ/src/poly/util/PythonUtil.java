@@ -20,7 +20,7 @@ import it.sauronsoftware.jave.AudioAttributes;
 public class PythonUtil {
 	public static void main(String[] args) throws IOException {
 		
-		String requestURL = "http://192.168.88.129:5000/score";
+		String requestURL = "http://127.0.0.1:5000/score";
 		
 		HttpClient httpClient = new DefaultHttpClient();
 		

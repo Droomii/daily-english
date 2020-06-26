@@ -9,7 +9,7 @@
 		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 	
     <!-- oracle Connection Pool -->
-    <mongo:mongo-client host="192.168.88.129" port="27017" credentials="" id="mongo">
+    <mongo:mongo-client host="localhost" port="27017" credentials="" id="mongo">
     </mongo:mongo-client>
     <mongo:db-factory dbname="MyDB" mongo-ref="mongo" id="mongoDbFactory"/>
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">

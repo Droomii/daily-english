@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.WordQuizDTO;
 import poly.service.INewsWordService;
+import poly.util.SessionUtil;
 
 
 @Controller
@@ -32,7 +33,21 @@ public class QuizController {
 	public String todayQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".todayQuiz start");
-
+		ModelMap sessionModel = SessionUtil.verify(session, model);
+		if(sessionModel != null) {
+			model = sessionModel;
+			return "/redirect";
+		}
+		
+		String user_lvl = (String) session.getAttribute("user_lvl");
+		log.info("user_lvl : " + user_lvl);
+		if(user_lvl == null) {
+			String url = "/wordTest/takeTest.do";
+			String msg = "처음 가입 후 실력 측정 테스트가 필요합니다.";
+			model.addAttribute("url", url);
+			model.addAttribute("msg", msg);
+			return "/redirect";
+		}
 		log.info(this.getClass().getName() + ".todayQuiz end");
 		return "/today/todayQuiz";
 	}
@@ -87,10 +102,19 @@ public class QuizController {
 	public String reviewQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".reviewQuiz start");
-
 		String user_seq = (String) session.getAttribute("user_seq");
-		if(user_seq==null) {
-			user_seq="1";
+		if(user_seq == null) {
+			return "/login";
+		}
+		
+		String user_lvl = (String) session.getAttribute("user_lvl");
+		log.info("user_lvl : " + user_lvl);
+		if(user_lvl == null) {
+			String url = "/wordTest/takeTest.do";
+			String msg = "처음 가입 후 실력 측정 테스트가 필요합니다.";
+			model.addAttribute("url", url);
+			model.addAttribute("msg", msg);
+			return "/redirect";
 		}
 		newsWordService.putReviewWordToRedis(user_seq);
 		

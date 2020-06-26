@@ -65,26 +65,7 @@
 				</div>
 				</div>
 			</div>
-		</div>
-		<div class="col-6">
-			<div class="card">
-			<div class="card-body text-center pt-1 pb-0">
-			<i class="la la-check-circle" style="font-size:5rem"></i>
-			</div>
-				<div class="card-body pt-0">
-					<h4 class="card-title text-center mb-0" style="font-size:1.5rem">복습하기</h4>
-				</div>
-			</div>
-		</div>
-		<div class="col-6">
-			<div class="card">
-			<div class="card-body text-center pt-1 pb-0">
-			<i class="la la-sticky-note" style="font-size:5rem"></i>
-			</div>
-				<div class="card-body pt-0">
-					<h4 class="card-title text-center mb-0" style="font-size:1.5rem">단어장</h4>
-				</div>
-			</div>
+			
 		</div>
 		
 	</div>

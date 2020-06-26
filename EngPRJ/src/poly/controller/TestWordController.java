@@ -17,6 +17,7 @@ import poly.dto.TestWordDTO;
 import poly.persistance.mapper.IUserMapper;
 import poly.service.ITestWordService;
 import poly.service.IUserService;
+import poly.util.SessionUtil;
 
 @Controller
 public class TestWordController {
@@ -50,6 +51,21 @@ public class TestWordController {
 			throws Exception {
 		log.info(this.getClass().getName() + ".randomTest start");
 		
+		ModelMap sessionModel = SessionUtil.verify(session, model);
+		if(sessionModel != null) {
+			model = sessionModel;
+			return "/redirect";
+		}
+		String user_lvl = (String) session.getAttribute("user_lvl");
+		if(user_lvl != null) {
+			String url = "/index.do";
+			String msg = "이미 실력을 측정하였습니다.";
+			model.addAttribute("url", url);
+			model.addAttribute("msg", msg);
+			return "/redirect";
+		}
+		
+		
 		log.info(this.getClass().getName() + ".randomTest end");
 		return "/wordTest/wordTest";
 	}
@@ -60,10 +76,7 @@ public class TestWordController {
 			throws Exception {
 		log.info(this.getClass().getName() + ".randomWord start");
 		
-		String user_seq = request.getParameter("user_no");
-		if(user_seq==null) {
-			user_seq="1";
-		}
+		String user_seq = (String) session.getAttribute("user_seq");
 		
 		String index = request.getParameter("index");
 		String answer = request.getParameter("answer");
@@ -79,6 +92,9 @@ public class TestWordController {
 		}
 		
 		if(rDTO.getFinalLevel()!=null) {
+			log.info("rDTO.getFinalLevel() : " + rDTO.getFinalLevel());
+			log.info("user_seq : " + user_seq);
+			session.setAttribute("user_lvl", rDTO.getFinalLevel());
 			UserService.updateUserLvl(user_seq, rDTO.getFinalLevel());
 		}
 		

@@ -49,7 +49,7 @@ public class AudioService implements IAudioService{
 
 	@Override
 	public Map<String, Object> analyzeAudio(String data, String sentenceAudioIdx) throws Exception {
-		String requestURL = "http://18.216.111.200:5000/score";
+		String requestURL = "http://127.0.0.1:5000/score";
 		
 		HttpClient httpClient = new DefaultHttpClient();
 		
@@ -84,6 +84,16 @@ public class AudioService implements IAudioService{
 		JSONObject res = new JSONObject(sb.toString());
 		
 		return res.toMap();
+	}
+
+	@Override
+	public byte[] getAnswerAudio(String answer_temp_file) throws Exception {
+
+		File f = new File(answer_temp_file);
+		InputStream in = new FileInputStream(f);
+		byte[] res =IOUtils.toByteArray(in);
+		
+		return res;
 	}
 
 }
