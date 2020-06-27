@@ -28,7 +28,7 @@ public class TTSUtil {
 
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
 	public static final boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().startsWith("windows");
-	public static final String TTS_PATH = IS_WINDOWS ? "C:\\Users\\DATALAB_3\\tts\\" : "/daily-english/tts/";
+	public static final String TTS_PATH = IS_WINDOWS ? "C:\\Users\\dowoo\\tts\\" : "/daily-english/tts/";
 	public static final String SLASH = IS_WINDOWS ? "\\" : "/";
 	public static final String FFMPEG_PATH = IS_WINDOWS ? "C:\\ffmpeg\\bin\\ffmpeg.exe" : "ffmpeg";
 
