@@ -28,7 +28,6 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     example_snd = parselmouth.Sound('/daily-english/tts/{}/{}.wav'.format(date, example))
     answer_snd = parselmouth.Sound(answer_temp_file + '.wav')
     
-    os.remove(answer_temp_file)
     os.remove(answer_temp_file + '.wav')
     
     # get pitch of sounds
@@ -106,7 +105,7 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     score = 1 - sum(a) / np.sum(example_pitch_matrix)
     print("score : {}".format(score))
     
-    return example_normalized_xs.tolist(), example_y.tolist(), normalized_xs.tolist(), answer_y.tolist(), score, answer_temp_file+'.ogg'
+    return example_normalized_xs.tolist(), example_y.tolist(), normalized_xs.tolist(), answer_y.tolist(), score, answer_temp_file
     
 def normalize_pitch(pitch):
 

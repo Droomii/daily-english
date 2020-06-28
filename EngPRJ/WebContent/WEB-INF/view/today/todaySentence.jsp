@@ -141,6 +141,7 @@
   var sentenceList;
   var sentenceIdx = 0;
   var sentenceAudioIdx;
+  var startDiff;
   var audio = WaveSurfer.create({
 	  container:"#waveform",
 	  waveColor:"blue",
@@ -402,6 +403,27 @@
 					var data = [];
 					// add data
 					
+					// get example start time
+					var exampleStart = 0;
+					for(var i=0; i<json.example_x.length;i++){
+	        			if(json.example_y[i] * 1 > 0){
+	        				exampleStart = json.example_x[i] * 1;
+	        				break;
+	        			}
+	        		}
+					
+					// get answer start time
+					var answerStart = 0;
+					for(var i=0; i<json.answer_x.length;i++){
+	        			if(json.answer_y[i] * 1 > 0){
+	        				answerStart = json.answer_x[i] * 1;
+	        				break;
+	        			}
+	        		}
+					
+					startDiff = exampleStart - answerStart;
+					
+					
 					
 	        		for(var i=0; i<json.example_x.length;i++){
 	        			if(json.example_y[i] * 1 > 0){
@@ -412,7 +434,7 @@
 	        		
 	        		for(var i=0; i<json.answer_x.length;i++){
 	        			if(json.answer_y[i] * 1 > 0){
-	        				data.push({"answerTime":json.answer_x[i] * 1, "answerPitch":json.answer_y[i]*1})
+	        				data.push({"answerTime":(json.answer_x[i]) * 1 + startDiff, "answerPitch":json.answer_y[i]*1})
 	        			}
 	        		}
 					
@@ -465,7 +487,7 @@
 	        			audio.stop();
 	        			answerAudio.stop();
 	        			audio.seekTo(cursorX);
-	        			answerAudio.seekTo(cursorX);
+	        			answerAudio.seekTo(cursorX - startDiff);
 	        			audio.play();
 	        			answerAudio.play();
 	        		})
