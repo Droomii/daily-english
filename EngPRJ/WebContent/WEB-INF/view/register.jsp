@@ -57,7 +57,7 @@
                                 <div id="verify-pw-feedback" class='feedback pl-1' hidden=hidden>암호가 일치하지 않습니다</div>
                             </fieldset>
                             <div class="form-group text-center">
-                                <button type="submit" id="submit-btn" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1">회원가입</button>    
+                                <button type="button" id="submit-btn" onclick="doRegister();" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1">회원가입</button>    
                             </div>
                            
                         </form>
@@ -69,7 +69,7 @@
     </div>
 </section>
 <script>
-$("#registerForm").submit(function(e){
+function doRegister(){
 	
 	var email = $("#user-email");
 	var pw = $("#user-password");
@@ -154,9 +154,9 @@ $("#registerForm").submit(function(e){
 	}
 	
 	if(!allOK){
-		e.preventDefault();
+		regForm.submit();
 	}
-})
+}
 
 </script>
         </div>
