@@ -105,8 +105,11 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     a[a<0] = 0
     score = 1 - sum(a) / np.sum(example_pitch_matrix)
     print("score : {}".format(score))
-    
-    return example_normalized_xs.tolist(), example_y.tolist(), normalized_xs.tolist(), answer_y.tolist(), score, answer_temp_file+'.ogg'
+
+    dynamics_score = np.nanstd(normalized_xs) / np.nanstd(example_normalized_xs)
+
+
+    return example_normalized_xs.tolist(), example_y.tolist(), normalized_xs.tolist(), answer_y.tolist(), score, answer_temp_file+'.ogg', dynamics_score
     
 def normalize_pitch(pitch):
 
