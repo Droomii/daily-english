@@ -49,7 +49,7 @@ public class AudioService implements IAudioService{
 
 	@Override
 	public Map<String, Object> analyzeAudio(String data, String sentenceAudioIdx) throws Exception {
-		String requestURL = "http://127.0.0.1:5000/score";
+		String requestURL = "http://localhost:5000/score";
 		
 		HttpClient httpClient = new DefaultHttpClient();
 		

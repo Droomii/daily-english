@@ -60,6 +60,15 @@ public class MainController {
 		return "/login";
 	}
 	
+	@RequestMapping(value = "findPw")
+	public String findPw(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".findPw start");
+
+		log.info(this.getClass().getName() + ".findPw end");
+		return "/findPw";
+	}
+	
 	@RequestMapping(value = "register")
 	public String register(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
@@ -105,6 +114,18 @@ public class MainController {
 		
 		log.info(this.getClass().getName() + ".doLogin end");
 		return "0";
+	}
+	
+	@RequestMapping(value = "findPwOK")
+	public String findPwOK(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".findPwOK start");
+		
+		model.addAttribute("url", "/login.do");
+		model.addAttribute("msg", "가입하신 이메일로 암호 초기화 메일을 발송하였습니다.");
+		
+		log.info(this.getClass().getName() + ".findPwOK end");
+		return "/redirect";
 	}
 	
 	@RequestMapping(value = "logout")

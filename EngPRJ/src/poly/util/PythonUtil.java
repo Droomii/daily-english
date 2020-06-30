@@ -15,12 +15,10 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import it.sauronsoftware.jave.AudioAttributes;
-
 public class PythonUtil {
 	public static void main(String[] args) throws IOException {
 		
-		String requestURL = "http://127.0.0.1:5000/score";
+		String requestURL = "http://192.168.11.130:5000/score";
 		
 		HttpClient httpClient = new DefaultHttpClient();
 		

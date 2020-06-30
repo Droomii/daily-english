@@ -84,18 +84,38 @@
 							</div>
 						<div class="text-center">
 							<h1 id="timer"></h1>
-							<button id="startInterview" class="btn btn-danger">녹음 시작</button>
+							<button id="startInterview" class="mt-1 btn btn-danger">녹음 시작</button>
 							<button hidden='hidden' id="resetInterview" class="btn btn-warning">다시 녹음</button>
 							<button style="display:none" id="stopInterview" class="btn btn-danger">녹음 종료</button>
 							<button style="display:none" id="submitInterview" class="btn btn-danger">제출</button>
 						</div>
 					</div>
-				<div class="card-body p-0" id="resultBlock" hidden="hidden">
+				<div class="card-body" id="resultBlock" hidden="hidden">
 					<div class="row">
-						<div class="col-12 mt-1 mb-1 text-center">
+						<div class="col-12 mt-1 mb-1">
+						<h4 class="card-title mb-0" style="font-size:1.3rem">강세 분석 결과</h4>
 						<div id="chartdiv" style="width:100%;height:500px;"></div>
-						<button id="resetInterview2" class="btn btn-warning">다시 녹음</button>
+							<div class="row text-left">
+								<div class="col-12 text-right">
+								<div class="btn-group btn-group-sm" role="group">
+                                <button type="button" id="myVoice" style="background-color: rgba(117, 142, 255, 1); border:none" data-enabled="1" class="btn btn-info">내 목소리</button>
+                                <button type="button" id="nativeVoice" style="background-color: rgba(255,117,117, 1);border:none" data-enabled="1" class="btn btn-danger">원어민 목소리</button>
+                            	</div>
+								</div>
+							</div>
+							
 						</div>
+					</div>
+					<div class="row">
+						<div class="col-6 offset-3">
+							<h4 class="card-title mb-0" style="font-size:1.3rem">강세 명료도 분석 결과</h4>
+							<div id="dynamicsScore" style="width:100%;height:300px;"></div>
+						</div>
+					</div>
+					<div class="row">
+					<div class="col-12 text-center">
+					<button id="resetInterview2" class="btn btn-warning">다시 녹음</button>
+					</div>
 					</div>
 				</div>
 				<div class="card-body p-0">
@@ -106,13 +126,14 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-12 mb-3 text-center">
+						<div class="col-12 text-center">
 						(<span id="current">n</span> / <span id="all">n</span>)
 						</div>
-						<div class="col-12 mb-1 text-center">
-									<button type="button" id="gotoPronounce" onclick="location.href='/getLatestNews.do'" class="btn btn-info btn-icon ">뉴스 원문 보기 &gt; </button>
+						<div class="col-12 mb-1 pr-2 text-right">
+									<button type="button" id="gotoPronounce" onclick="location.href='/today/todayNews.do'" class="btn btn-info btn-icon ">뉴스 원문 보기 &gt; </button>
 								</div>
 					</div>
+					
 				</div>
 			</div>
 		</div>
@@ -164,6 +185,10 @@
   var answerSeries;
   var cursorX;
   var cursorY;
+  
+  var dynamicsChart;
+  var similarChart;
+  
   $(document).ready(function(){
   	$.ajax({
 			type : "POST",
@@ -221,6 +246,14 @@
     	}
     	audio.pause();
     	audio.currentTime = 0;
+    	if(answerAudio!=null){
+    		answerAudio.stop();
+    	}
+    	
+    	$("#myVoice").css('background-color', 'rgb(117, 142, 255)')
+		$("#myVoice").attr('data-enabled', 1)
+		$("#nativeVoice").css('background-color', 'rgb(255,117,117)')
+		$("#nativeVoice").attr('data-enabled', 1)
     }
   $("#listen").on("click", function(){
 	  if(audioIdx != sentenceAudioIdx){
@@ -254,6 +287,18 @@
 	var randQ = '';
 	$("#startInterview").on("click", function(){
 		audio.stop();
+		
+		if(audioIdx != sentenceAudioIdx){
+			  audio.destroy()
+			  audio = WaveSurfer.create({
+				  container:"#waveform",
+				  waveColor:"blue",
+				  progressColor:"purple"
+			  });
+		  	audio.load('/audio/getTodaySentenceAudio.do?idx=' + sentenceAudioIdx);
+		  	audioIdx = sentenceAudioIdx;
+		}
+		
 		$("#startInterview").attr("hidden", "hidden");
 		$("#timer").removeAttr("hidden");
 		//Countdown Timer
@@ -398,7 +443,7 @@
 	        		// Themes begin
 	        		am4core.useTheme(am4themes_animated);
 	        		// Themes end
-	
+					
 	        		chart = am4core.create("chartdiv", am4charts.XYChart);
 					var data = [];
 					// add data
@@ -455,7 +500,7 @@
 	        		exampleSeries.dataFields.valueY = "examplePitch";
 	        		exampleSeries.tooltipText = "{exampleTime}"
 	        		exampleSeries.strokeWidth = 2;
-	        		exampleSeries.stroke = am4core.color("#ff7575");
+	        		exampleSeries.stroke = am4core.color("rgba(255,117,117, 1)");
 	        		
 	        		exampleSeries.tooltip.pointerOrientation = "vertical";
 	        		
@@ -465,15 +510,12 @@
 	        		answerSeries.dataFields.valueY = "answerPitch";
 	        		answerSeries.tooltipText = "{answerTime}"
 	        		answerSeries.strokeWidth = 2;
-	        		answerSeries.stroke = am4core.color("#758eff");
+	        		answerSeries.stroke = am4core.color("rgba(117, 142, 255, 1)");
 	        		
 	        		answerSeries.tooltip.pointerOrientation = "vertical";
 	
 	        		chart.cursor = new am4charts.XYCursor();
 	        		chart.cursor.xAxis = xAxis;
-	
-	        		//chart.scrollbarY = new am4core.Scrollbar();
-	        		chart.scrollbarX = new am4core.Scrollbar();
 	        		
 	        		chart.cursor.events.on("cursorpositionchanged", function(ev) {
         			  var xAxis = ev.target.chart.xAxes.getIndex(0);
@@ -481,6 +523,42 @@
         			  cursorX = xAxis.positionToValue(xAxis.toAxisPosition(ev.target.xPosition));
         			  cursorY = yAxis.positionToValue(yAxis.toAxisPosition(ev.target.yPosition));
         			});
+	        		
+	        		// dynamics score
+	        		dynamicsChart = am4core.create("dynamicsScore", am4charts.GaugeChart);
+	        		dynamicsChart.innerRadius = -15;
+
+	        		var axis = dynamicsChart.xAxes.push(new am4charts.ValueAxis());
+	        		axis.min = 0;
+	        		axis.max = 100;
+	        		axis.strictMinMax = true;
+
+	        		var colorSet = new am4core.ColorSet();
+
+	        		var range0 = axis.axisRanges.create();
+	        		range0.value = 0;
+	        		range0.endValue = 50;
+	        		range0.axisFill.fillOpacity = 1;
+	        		range0.axisFill.fill = am4core.color("rgb(255, 79, 79)");
+
+	        		var range1 = axis.axisRanges.create();
+	        		range1.value = 50;
+	        		range1.endValue = 80;
+	        		range1.axisFill.fillOpacity = 1;
+	        		range1.axisFill.fill = am4core.color("rgb(245, 228, 0)");
+
+	        		var range2 = axis.axisRanges.create();
+	        		range2.value = 80;
+	        		range2.endValue = 100;
+	        		range2.axisFill.fillOpacity = 1;
+	        		range2.axisFill.fill = am4core.color("rgb(0, 219, 29)");
+
+	        		var hand = dynamicsChart.hands.push(new am4charts.ClockHand());
+
+	        		hand.value = json.dynamics_score * 1;
+
+	        		
+	        		
 	        		answerAudio.load('/audio/getAnswerAudio.do?file=' + json.answer_temp_file);
 	        		
 	        		chart.events.on("hit", function(e){
@@ -498,5 +576,51 @@
 	             
 	      });
 	});
+	
+	function toggleMyVoice(){
+		var el = $("#myVoice");
+		if(el.attr('data-enabled')== 1 ){
+			el.attr('data-enabled', 0)
+			el.css('background-color', 'rgb(75, 89, 153)')
+			answerAudio.setVolume(0);
+			answerSeries.stroke = am4core.color("rgba(117, 142, 255, 0.3)");
+			if($("#nativeVoice").attr('data-enabled')==0){
+				toggleNativeVoice();
+				
+			}
+		}else{
+			el.css('background-color', 'rgb(117, 142, 255)')
+			el.attr('data-enabled', 1)
+			answerAudio.setVolume(1);
+			answerSeries.stroke = am4core.color("rgba(117, 142, 255, 1)");
+		}
+	}
+	
+	function toggleNativeVoice(){
+		var el = $("#nativeVoice");
+		if(el.attr('data-enabled')== 1 ){
+			el.attr('data-enabled', 0)
+			el.css('background-color', 'rgb(148, 68, 68)')
+			audio.setVolume(0);
+			exampleSeries.stroke = am4core.color("rgba(255,117,117, 0.3)");
+			if($("#myVoice").attr('data-enabled')==0){
+				toggleMyVoice();
+			}
+		}else{
+			el.css('background-color', 'rgb(255,117,117)')
+			el.attr('data-enabled', 1)
+			exampleSeries.stroke = am4core.color("rgba(255,117,117, 1)");
+			audio.setVolume(1);
+		}
+	}
+	
+	$("#myVoice").on('click', function(){
+		toggleNativeVoice();
+	})
+	
+	$("#nativeVoice").on('click', function(){
+		
+		toggleMyVoice();
+	})
 </script>
 </html>

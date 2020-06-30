@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.NewsDTO;
+import poly.dto.WordQuizDTO;
 import poly.service.INewsService;
 import poly.service.INewsWordService;
+import poly.util.SessionUtil;
 import poly.util.TranslateUtil;
 import poly.util.WebCrawler;
 
@@ -65,22 +67,30 @@ public class NewsController {
 		return rDTO;
 	}
 	
-	@RequestMapping(value = "getLatestNews")
+	@RequestMapping(value = "today/todayNews")
 	public String getLatestNews(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".getNews start");
-		String user_seq = (String) session.getAttribute("user_seq");
-		if(user_seq == null) {
-			return "/login";
+		ModelMap sessionModel = SessionUtil.verify(session, model);
+		if(sessionModel != null) {
+			model = sessionModel;
+			return "/redirect";
 		}
-		
 		String user_lvl = (String) session.getAttribute("user_lvl");
+		String user_seq = (String) session.getAttribute("user_seq");
 		log.info("user_lvl : " + user_lvl);
 		if(user_lvl == null) {
 			String url = "/wordTest/takeTest.do";
 			String msg = "처음 가입 후 실력 측정 테스트가 필요합니다.";
 			model.addAttribute("url", url);
 			model.addAttribute("msg", msg);
+			return "/redirect";
+		}
+		
+		WordQuizDTO qDTO = newsWordService.getRandomTodayQuiz(user_seq); 
+		if(qDTO.getIdx()!=-1) {
+			model.addAttribute("url", "/index.do");
+			model.addAttribute("msg", "오늘의 퀴즈를 풀지 않았습니다.");
 			return "/redirect";
 		}
 		NewsDTO news = newsService.getLatestNews();
