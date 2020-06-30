@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import poly.dto.NewsDTO;
 import poly.dto.WordQuizDTO;
+import poly.service.INewsService;
 import poly.service.INewsWordService;
 import poly.util.SessionUtil;
 
@@ -28,6 +30,8 @@ public class QuizController {
 	@Resource(name = "NewsWordService")
 	INewsWordService newsWordService;
 	
+	@Resource(name = "NewsService")
+	INewsService newsService;
 	
 	@RequestMapping(value = "today/todayQuiz")
 	public String todayQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
@@ -92,7 +96,18 @@ public class QuizController {
 			user_seq = "1";
 		}
 		
-		WordQuizDTO qDTO = newsWordService.getRandomTodayQuiz(user_seq); 
+		WordQuizDTO qDTO = null;
+		
+		try {
+		qDTO = newsWordService.getRandomTodayQuiz(user_seq);
+		
+		}catch (IllegalArgumentException e) {
+			
+			NewsDTO news = newsService.getLatestNews();
+			newsWordService.saveTodayWordToRedis(news);
+			qDTO = newsWordService.getRandomTodayQuiz(user_seq);
+			
+		}
 		log.info("qDTO : " + qDTO);
 		log.info(this.getClass().getName() + ".getRandomTodayQuiz end");
 		return qDTO;
@@ -148,16 +163,23 @@ public class QuizController {
 	
 	@RequestMapping(value = "review/getRandomReviewQuiz", method = RequestMethod.POST)
 	@ResponseBody
-	public WordQuizDTO getRandomReviewQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
-			throws Exception {
+	public WordQuizDTO getRandomReviewQuiz(HttpServletRequest request, HttpServletResponse response,
+			HttpSession session, ModelMap model) throws Exception {
 		log.info(this.getClass().getName() + ".getRandomReviewQuiz start");
-		
+
 		String user_seq = (String) session.getAttribute("user_seq");
-		if(user_seq==null) {
+		if (user_seq == null) {
 			user_seq = "1";
 		}
-		
-		WordQuizDTO qDTO = newsWordService.getRandomReviewQuiz(user_seq); 
+
+		WordQuizDTO qDTO = null;
+		try {
+			qDTO = newsWordService.getRandomReviewQuiz(user_seq);
+		} catch (IllegalArgumentException e) {
+			WordQuizDTO rDTO = new WordQuizDTO();
+			rDTO.setIdx(-1);
+			return rDTO;
+		}
 		log.info("qDTO : " + qDTO);
 		log.info(this.getClass().getName() + ".getRandomReviewQuiz end");
 		return qDTO;
