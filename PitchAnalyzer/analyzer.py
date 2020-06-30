@@ -109,9 +109,11 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     example_dynamics_range = np.nanquantile(example_y[example_y>0], [0.1, 0.9])
     example_dynamics = np.diff(example_dynamics_range)[0]
     
+    example_dynamics = np.nanstd(example_y[example_y>0])
+    
     answer_dynamics_range = np.nanquantile(answer_y[answer_y>0], [0.1, 0.9])
     answer_dynamics = np.diff(answer_dynamics_range)[0]
-    
+    answer_dynamics = np.nanstd(answer_y[answer_y>0])
     
     dynamics_score = answer_dynamics / example_dynamics
     dynamics_score = 1 if dynamics_score > 1 else dynamics_score

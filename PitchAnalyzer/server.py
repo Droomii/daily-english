@@ -32,17 +32,7 @@ def score():
             return 'answer is null!!'
     else:
         return 'file is null!!'
-    example_normalized_xs, example_trimmed_pitch_values, normalized_xs, trimmed_pitch_values, score, answer_temp_file, dynamics_score = pitch_score(example, answer, date, pitch_sample=50, time_sample=100)
-    res = {}
-    res['example_x'] = example_normalized_xs
-    res['example_y'] = example_trimmed_pitch_values
-    res['answer_x'] = normalized_xs
-    res['answer_y'] = trimmed_pitch_values
-    res['score'] = score
-    res['answer_temp_file'] = answer_temp_file
-    res['dynamics_score'] = dynamics_score * 100
-
-    return res
+    return pitch_score(example, answer, date, pitch_sample=50, time_sample=100)
 
 @app.route('/score2', methods=['POST'])
 def score2():
