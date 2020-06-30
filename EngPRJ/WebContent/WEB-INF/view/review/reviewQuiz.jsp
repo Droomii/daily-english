@@ -152,6 +152,12 @@
 				url : "getRandomReviewQuiz.do",
 				dataType : "JSON",
 				success : function(json) {
+					if(json.idx==-1){
+						alert("복습할 단어가 없습니다.");
+						location.href = "/index.do";
+					}
+					
+					
 					$("#no").html(json.answeredQCount+1);
 					$("#no2").html(json.answeredQCount+1);
 					$("#total").html(json.totalQs);
@@ -275,9 +281,8 @@
 						$("#submit").attr("disabled", "disabled");
 						
 					}else{
-						$("#no").html(++no);
-						$("#sentence").html("You have seen all quizzes");
-						$("#translation").html("모든 단어를 보았습니다");
+						alert("모든 단어를 복습했습니다.");
+						location.href = "/index.do";
 					}
 					
 					
