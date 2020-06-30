@@ -106,10 +106,31 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     score = 1 - sum(a) / np.sum(example_pitch_matrix)
     print("score : {}".format(score))
 
-    dynamics_score = np.nanstd(normalized_xs) / np.nanstd(example_normalized_xs)
+    example_dynamics_range = np.nanquantile(example_y[example_y>0], [0.1, 0.9])
+    example_dynamics = np.diff(example_dynamics_range)[0]
+    
+    answer_dynamics_range = np.nanquantile(answer_y[answer_y>0], [0.1, 0.9])
+    answer_dynamics = np.diff(answer_dynamics_range)[0]
+    
+    
+    dynamics_score = answer_dynamics / example_dynamics
+    dynamics_score = 1 if dynamics_score > 1 else dynamics_score
+    dynamics_score *= 100
+    
+    
+    result_dict = {'example_x': example_normalized_xs.tolist(),
+                   'example_y' : example_y.tolist(),
+                   'answer_x' : normalized_xs.tolist(),
+                   'answer_y' : answer_y.tolist(),
+                   'score' : score,
+                   'answer_temp_file' : answer_temp_file+'.ogg',
+                   'dynamics_score' : dynamics_score,
+                   'example_dynamics' : example_dynamics,
+                   'answer_dynamics' : answer_dynamics,
+                   'answer_range' : answer_dynamics_range.tolist(),
+                   'example_range' : example_dynamics_range.tolist()}
 
-
-    return example_normalized_xs.tolist(), example_y.tolist(), normalized_xs.tolist(), answer_y.tolist(), score, answer_temp_file+'.ogg', dynamics_score
+    return result_dict
     
 def normalize_pitch(pitch):
 
