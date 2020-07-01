@@ -61,7 +61,7 @@ public class NewsService implements INewsService{
 	
 	
 	@Override
-	@Scheduled(cron="0 0 7 ? * *")
+	//@Scheduled(cron="0 0 7 ? * *")
 	public void scheduleCrawl() throws Exception{
 		
 		log.info(this.getClass().getName() + ".scheduleCrawl start");
