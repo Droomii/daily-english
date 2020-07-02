@@ -100,6 +100,7 @@ function doRegister(){
 						$("#email-feedback").removeAttr('hidden')
 						allOK = false;
 					}else{
+						$("#email-feedback").html('');
 						$("#email-feedback").attr('hidden', 'hidden');
 					}
 				},
@@ -153,8 +154,8 @@ function doRegister(){
 		}
 	}
 	
-	if(!allOK){
-		regForm.submit();
+	if(allOK && $("#email-feedback").html()==""){
+		$("#registerForm").submit();
 	}
 }
 
