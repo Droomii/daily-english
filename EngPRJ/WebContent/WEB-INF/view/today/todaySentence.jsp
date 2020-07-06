@@ -108,7 +108,7 @@
 					</div>
 					<div class="row">
 						<div class="col-6 offset-3">
-							<h4 class="card-title mb-0" style="font-size:1.3rem">강세 명료도 분석 결과</h4>
+							<h4 class="card-title mb-0 text-center" style="font-size:1.3rem">강세 명료도 분석 결과</h4>
 							<div id="dynamicsScore" style="width:100%;height:300px;"></div>
 						</div>
 					</div>
