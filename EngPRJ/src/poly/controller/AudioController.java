@@ -119,6 +119,7 @@ public class AudioController {
 		String answer_temp_file = request.getParameter("file");
 		log.info(this.getClass().getName() + ".getAnswerAudio end");
 		return audioService.getAnswerAudio(answer_temp_file);
+		//return audioService.getAnswerAudioFromOuter(answer_temp_file);
 		
 	}
 }
