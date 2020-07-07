@@ -9,5 +9,7 @@ public interface IAudioService {
 	Map<String, Object> analyzeAudio(String data, String sentenceAudioIdx) throws Exception;
 
 	byte[] getAnswerAudio(String answer_temp_file) throws Exception;
+
+	byte[] getAnswerAudioFromOuter(String answer_temp_file) throws Exception;
 	
 }
