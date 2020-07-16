@@ -72,7 +72,7 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
 
     #--------------- resampling example pitch --------------------
     
-    
+    # 시간에 따른 음정을 grid matrix로 변경
     example_x = np.arange(len(example_trimmed_pitch_values))
     example_new_x = np.linspace(0, len(example_trimmed_pitch_values), time_sample)
     example_resampled_pitch_values = np.round_(np.interp(example_new_x, example_x, example_trimmed_pitch_values))
@@ -107,7 +107,8 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
                     pitch_matrix[i, pv+k] = score_tolerance-k
         except ValueError:
             continue
-                    
+    
+    # 사용자 음성과 원어민 음성을 대조하여 점수 측정
     a = np.ndarray.flatten(example_pitch_matrix - pitch_matrix)
     a[a<0] = 0
     score = 1 - sum(a) / np.sum(example_pitch_matrix)
@@ -126,7 +127,7 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
     dynamics_score = 1 if dynamics_score > 1 else dynamics_score
     dynamics_score *= 100
     
-    
+    # 결과값을 저장하기 위한 딕셔너리
     result_dict = {'example_x': example_normalized_xs.tolist(),
                    'example_y' : example_y.tolist(),
                    'answer_x' : normalized_xs.tolist(),
@@ -140,37 +141,41 @@ def pitch_score(example, answer, date, pitch_sample=20, time_sample=20, toleranc
                    'example_range' : example_dynamics_range.tolist()}
 
     return result_dict
-    
-def normalize_pitch(pitch):
 
+# 음정을 정규화 시키는 함수
+def normalize_pitch(pitch):
+    
+    # 음정값 불러오기
     pitch_values = pitch.selected_array['frequency']
     pitch_values[pitch_values==0] = np.nan
 
-    # remove outlier
+    # 음정의 중앙값 계산
     median = np.nanmedian(pitch_values)
+    
+    # 1옥타브 이하 음정, 1옥타브 이상의 음정을 아웃라이어로 지정
     low_outlier = median / 2
     high_outlier = median * 2
+    
+    # 기준에 따른 아웃라이어 제거
     pitch_values[pitch_values > high_outlier] = np.nan
     pitch_values[pitch_values < low_outlier] = np.nan
 
-    #get start and end pitch value index
+    # 목소리 시작점과 종료점 찾기
     pitch_start_index = np.where(~np.isnan(pitch_values))[0][0]
     pitch_end_index = np.where(~np.isnan(pitch_values))[0][-1]
 
-    # trim pitch values by start and end
+    # 목소리 시작점 이전과 종료점 이후 잘라내기
     trimmed_pitch_values = pitch_values[pitch_start_index:pitch_end_index+1]
 
-
-
-    # divide pitch values by pitch median(to get relational values)
+    # 음정을 중앙값으로 나누기(중앙값과 가까울 수록 1에 수렴)
     trimmed_pitch_values /= np.nanmedian(trimmed_pitch_values)
     
-    # remove outliers
+    # 오인식으로 인해 급격히 변화하는 음정 아웃라이어 제거
     needs_more_removal = True
     while needs_more_removal:
         
         needs_more_removal = False
-        # remove abnormal pitch change
+        
         time_step = pitch.get_time_step()
         last_pitch = None
         for i in range(len(trimmed_pitch_values)):
@@ -189,13 +194,12 @@ def normalize_pitch(pitch):
                         needs_more_removal = True
                     last_pitch = current_pitch
 
-        # linear interpolation of nans
         trimmed_pitch_values = fill_nan(trimmed_pitch_values)
     
-    # insert trimmed pitch values
+    # 가공된 값을 원본에 덮어씌우기
     pitch_values[pitch_start_index:pitch_end_index+1] = trimmed_pitch_values
     
-    # trim time and normalize
+    # 값 정규화
     xs = pitch.xs()
     xs -= np.min(xs)
     normalized_xs = xs / np.max(xs)
@@ -204,11 +208,8 @@ def normalize_pitch(pitch):
 
 
 
-    
+# 음정이 없는 구간을 보간하는 함수
 def fill_nan(A):
-    '''
-    interpolate to fill nan values
-    '''
     inds = np.arange(A.shape[0])
     good = np.where(np.isfinite(A))
     f = interpolate.interp1d(inds[good], A[good],bounds_error=False)
