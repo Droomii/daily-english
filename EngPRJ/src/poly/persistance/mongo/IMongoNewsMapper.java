@@ -1,5 +1,7 @@
 package poly.persistance.mongo;
 
+import java.util.List;
+
 import poly.dto.NewsDTO;
 
 public interface IMongoNewsMapper {
@@ -12,6 +14,7 @@ public interface IMongoNewsMapper {
 
 	NewsDTO getNews(int i) throws Exception;
 
+	List<NewsDTO> getAllArticles() throws Exception;
 
 
 }

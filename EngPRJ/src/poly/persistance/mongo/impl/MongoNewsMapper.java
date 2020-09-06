@@ -1,5 +1,10 @@
 package poly.persistance.mongo.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -72,6 +77,11 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 			cursor.next();
 		}
 		return new NewsDTO(cursor.next());
+	}
+
+	@Override
+	public List<NewsDTO> getAllArticles() throws Exception {
+		return StreamSupport.stream(mongodb.getCollection(COL_NM).find().spliterator(), false).map(NewsDTO::new).collect(Collectors.toList());
 	}
 
 }
