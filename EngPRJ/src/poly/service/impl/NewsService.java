@@ -30,20 +30,8 @@ public class NewsService implements INewsService{
 	@Override
 	public NewsDTO nlpAndSaveNews(String newsTitle, String inputText, String newsUrl) throws Exception {
 		
-		// set up pipeline properties
-	    Properties props = new Properties();
-	    // set the list of annotators to run
-	    props.setProperty("annotators", "tokenize,ssplit,pos,lemma");
-	    // set a property for an annotator, in this case the coref annotator is being set to use the neural algorithm
-	    props.setProperty("coref.algorithm", "neural");
-	    // build pipeline
-	    StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-	    // create a document object
-	    CoreDocument document = new CoreDocument(inputText);
-	    // annnotate the document
-	    pipeline.annotate(document);
-	    
-	    NewsDTO rDTO = new NewsDTO(newsTitle, document, newsUrl);
+
+	    NewsDTO rDTO = new NewsDTO(newsTitle, inputText, newsUrl);
 	    boolean saved = mongoNewsMapper.insertNews(rDTO);
 	    if(saved) {
 	    	newsWordService.saveTodayWordToRedis(rDTO);

@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -18,6 +19,7 @@ import com.mongodb.DBObject;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreSentence;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import poly.util.TranslateUtil;
 
 public class NewsDTO {
@@ -35,12 +37,24 @@ public class NewsDTO {
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
-	public NewsDTO() {
-	}
+	public NewsDTO() {}
 
-	public NewsDTO(String newsTitle, CoreDocument doc, String newsUrl) throws Exception {
-
-		this.newsTitle = newsTitle;
+	
+	public NewsDTO(String newsTitle, String article, String newsUrl) throws Exception {
+		// set up pipeline properties
+	    Properties props = new Properties();
+	    // set the list of annotators to run
+	    props.setProperty("annotators", "tokenize,ssplit,pos,lemma");
+	    // set a property for an annotator, in this case the coref annotator is being set to use the neural algorithm
+	    props.setProperty("coref.algorithm", "neural");
+	    // build pipeline
+	    StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+	    // create a document object
+	    CoreDocument document = new CoreDocument(article);
+	    // annnotate the document
+	    pipeline.annotate(document);
+	    
+	    this.newsTitle = newsTitle;
 		this.newsUrl = newsUrl;
 
 		// attributes initialization
@@ -50,7 +64,7 @@ public class NewsDTO {
 		this.lemmas = new ArrayList<List<String>>();
 
 		// iterating through sentence
-		for (Iterator<CoreSentence> it = doc.sentences().iterator(); it.hasNext();) {
+		for (Iterator<CoreSentence> it = document.sentences().iterator(); it.hasNext();) {
 			CoreSentence sentence = it.next();
 			originalSentences.add(sentence.text());
 
@@ -72,12 +86,19 @@ public class NewsDTO {
 			pos.add(posBySent);
 			lemmas.add(lemma);
 		}
+		translate();
+		
 		this.insertDate = new Date();
 	}
+	
+	
 
 	public void translate() throws Exception {
-		this.translation = TranslateUtil.translateNews(this.originalSentences);
-		this.translatedTitle = TranslateUtil.translateTitle(this.newsTitle);
+		this.translation = new ArrayList<>();
+		for(String origSent : this.originalSentences) {
+			this.translation.add(TranslateUtil.translateKakao(origSent));
+		}
+		this.translatedTitle = TranslateUtil.translateKakao(this.newsTitle);
 	}
 
 	@SuppressWarnings("unchecked")
