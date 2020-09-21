@@ -6,7 +6,7 @@ import poly.dto.NewsDTO;
 
 public interface IMongoNewsMapper {
 
-	boolean insertNews(NewsDTO rDTO) throws Exception;
+	boolean insertNews(NewsDTO rDTO, boolean translate) throws Exception;
 	
 	void createCollection() throws Exception;
 

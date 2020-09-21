@@ -12,4 +12,6 @@ public interface INewsService {
 
 	NewsDTO getNews(int i) throws Exception;
 
+	void insertNews(NewsDTO nDTO) throws Exception;
+
 }

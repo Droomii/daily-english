@@ -31,8 +31,8 @@ public class NewsService implements INewsService{
 	public NewsDTO nlpAndSaveNews(String newsTitle, String inputText, String newsUrl) throws Exception {
 		
 
-	    NewsDTO rDTO = new NewsDTO(newsTitle, inputText, newsUrl);
-	    boolean saved = mongoNewsMapper.insertNews(rDTO);
+	    NewsDTO rDTO = new NewsDTO(newsTitle, inputText, newsUrl, true);
+	    boolean saved = mongoNewsMapper.insertNews(rDTO, true);
 	    if(saved) {
 	    	newsWordService.saveTodayWordToRedis(rDTO);
 	    }
@@ -66,6 +66,12 @@ public class NewsService implements INewsService{
 	public NewsDTO getNews(int i) throws Exception {
 		NewsDTO rDTO = mongoNewsMapper.getNews(i);
 		return rDTO;
+	}
+
+	@Override
+	public void insertNews(NewsDTO nDTO) throws Exception {
+		mongoNewsMapper.insertNews(nDTO, false);
+		
 	}
 	
 }

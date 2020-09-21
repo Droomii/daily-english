@@ -1,9 +1,12 @@
 package poly.service.impl;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -30,7 +33,7 @@ public class TfIdfService implements ITfIdfService {
 	@Override
 	public List<Map<String, Double>> getAllArticles() throws Exception {
 		List<NewsDTO> articles = mongoNewsMapper.getAllArticles();
-
+		log.info("article size : " + articles.size());
 		int docCnt = articles.size();
 		// 기사별 단어 빈도수 계산
 		List<Map<String, Integer>> wordCount = articles.stream().map(a -> {
@@ -45,7 +48,6 @@ public class TfIdfService implements ITfIdfService {
 			}
 			return wc;
 		}).collect(Collectors.toList());
-
 		// TF 계산
 		List<Map<String, Double>> tf = wordCount.stream().map(a->{
 			Map<String, Double> tfMap = new HashMap<>();
@@ -55,30 +57,37 @@ public class TfIdfService implements ITfIdfService {
 			});
 			return tfMap;
 		}).collect(Collectors.toList());
+		Map<String, Double> last = tf.get(0); 
+		System.out.println(last);
 		
 		// Document Frequency
-		Map<String, Integer> df = new HashMap<>();
+		SortedMap<String, Integer> df = new TreeMap<>();
 		wordCount.stream().flatMap(a -> a.entrySet().stream()).forEach(a -> {
 			df.compute(a.getKey(), (k, v) -> (v == null) ? 1 : v + 1);
 		});
-		
+		System.out.println("df of coronavirus : " + df.get("coronavirus"));
+//		df.forEach((k, v)->{System.out.print(k + " ");System.out.println(v);});
 		// IDF
-		Map<String, Double> idf = new HashMap<>();
+		SortedMap<String, Double> idf = new TreeMap<>();
 		df.forEach((k, v)->{
-			idf.put(k, Math.log(docCnt / v.doubleValue()));
+			idf.put(k, Math.log10(docCnt / v.doubleValue()));
 		});
-		
+		System.out.println("idf of coronavirus : " + idf.get("coronavirus"));
+		double tfIdfTest = last.get("coronavirus") * idf.get("coronavirus");
+		System.out.println("tf-idf of coronavirus : " + tfIdfTest);
+//		idf.forEach((k, v)->{System.out.print(k + " : ");System.out.println(v);});
 		// TF-IDF
 		List<Map<String, Double>> tfIdf = tf.stream().map(a ->{
 			Map<String, Double> tfIdfMap = new HashMap<>();
 			a.forEach((k, v)->{
 				tfIdfMap.put(k, v * idf.get(k));
 			});
-			tfIdfMap.entrySet().stream().sorted((o1, o2)->Double.compare(o1.getValue(), o2.getValue())).limit(tfIdfMap.size()-20).forEach(kv ->{
-				tfIdfMap.remove(kv.getKey());
-			});
 			return tfIdfMap;	
 		}).collect(Collectors.toList());
+		List<Entry<String, Double>> tfIdfLast = new ArrayList<>(tfIdf.get(0).entrySet());
+		tfIdfLast.sort((o1, o2)-> Double.compare(o2.getValue(), o1.getValue()));
+		System.out.println(tfIdfLast);
+		
 		return tfIdf;
 	}
 }

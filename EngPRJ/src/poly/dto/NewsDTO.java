@@ -2,6 +2,7 @@ package poly.dto;
 
 import static poly.util.CmmUtil.nvl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,14 +34,17 @@ public class NewsDTO {
 	private List<List<String>> pos;
 	private Date insertDate;
 	private String newsUrl;
-
+	private final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMdd");
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
 	public NewsDTO() {}
-
 	
-	public NewsDTO(String newsTitle, String article, String newsUrl) throws Exception {
+	public NewsDTO(String[] info, boolean translate) throws Exception {
+		this(info[0], info[1], info[2], translate);
+	}
+	
+	public NewsDTO(String newsTitle, String article, String newsUrl, boolean translate) throws Exception {
 		// set up pipeline properties
 	    Properties props = new Properties();
 	    // set the list of annotators to run
@@ -86,9 +90,10 @@ public class NewsDTO {
 			pos.add(posBySent);
 			lemmas.add(lemma);
 		}
-		translate();
-		
-		this.insertDate = new Date();
+		if(translate) {
+			translate();
+		}
+		this.insertDate = SDF.parse(newsUrl.substring(0, 8));
 	}
 	
 	
