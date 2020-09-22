@@ -34,7 +34,7 @@ public class TfIdfController {
 		
 		
 		log.info(this.getClass().getName() + ".getTfIdf end");
-		return articles;
+		return articles.subList(0, 10);
 	}
 	
 }

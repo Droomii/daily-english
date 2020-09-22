@@ -14,6 +14,8 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.mongodb.DBCursor;
+
 import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
 import poly.persistance.mongo.IMongoTfIdfMapper;
@@ -32,22 +34,33 @@ public class TfIdfService implements ITfIdfService {
 
 	@Override
 	public List<Map<String, Double>> getAllArticles() throws Exception {
-		List<NewsDTO> articles = mongoNewsMapper.getAllArticles();
+		log.info("service.getAllArticles start");
+		DBCursor articles = mongoNewsMapper.getAllArticles();
 		log.info("article size : " + articles.size());
 		int docCnt = articles.size();
 		// 기사별 단어 빈도수 계산
-		List<Map<String, Integer>> wordCount = articles.stream().map(a -> {
+		List<Map<String, Integer>> wordCount = new ArrayList<>();
+		// df 담을 맵
+		SortedMap<String, Long> df = new TreeMap<>();
+		int i = 1;
+		while(articles.hasNext()) {
+			NewsDTO nDTO = new NewsDTO(articles.next());
+			log.info("counting " + i++ + ": " + nDTO.getNewsTitle());
 			Map<String, Integer> wc = new HashMap<String, Integer>();
-			for (List<String> words : a.getLemmas()) {
+			for (List<String> words : nDTO.getLemmas()) {
 				for (String word : words) {
-					word = word.replaceAll("\\W+", "").replaceAll("[0-9]", "");
+					word = word.replaceAll("[^A-Za-z0-9-]", "");
 					if (word.length() > 0) {
 						wc.compute(word.toLowerCase(), (k, v) -> (v == null) ? 1 : v + 1);
 					}
 				}
 			}
-			return wc;
-		}).collect(Collectors.toList());
+			// Document Frequency
+			mongoNewsMapper.incrementDf(wc.keySet());
+			wordCount.add(wc);
+		}
+
+		/*
 		// TF 계산
 		List<Map<String, Double>> tf = wordCount.stream().map(a->{
 			Map<String, Double> tfMap = new HashMap<>();
@@ -60,11 +73,7 @@ public class TfIdfService implements ITfIdfService {
 		Map<String, Double> last = tf.get(0); 
 		System.out.println(last);
 		
-		// Document Frequency
-		SortedMap<String, Integer> df = new TreeMap<>();
-		wordCount.stream().flatMap(a -> a.entrySet().stream()).forEach(a -> {
-			df.compute(a.getKey(), (k, v) -> (v == null) ? 1 : v + 1);
-		});
+		
 		System.out.println("df of coronavirus : " + df.get("coronavirus"));
 //		df.forEach((k, v)->{System.out.print(k + " ");System.out.println(v);});
 		// IDF
@@ -90,7 +99,7 @@ public class TfIdfService implements ITfIdfService {
 		List<Entry<String, Double>> tfIdfLast = new ArrayList<>(tfIdf.get(0).entrySet());
 		tfIdfLast.sort((o1, o2)-> Double.compare(o2.getValue(), o1.getValue()));
 		System.out.println(tfIdfLast);
-		
-		return tfIdf;
+		*/
+		return null;
 	}
 }

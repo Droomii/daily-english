@@ -1,9 +1,6 @@
 package poly.persistance.mongo.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,6 @@ import com.mongodb.DBObject;
 import config.Mapper;
 import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
-import poly.util.TranslateUtil;
 
 @Mapper("MongoNewsMapper")
 public class MongoNewsMapper implements IMongoNewsMapper {
@@ -80,8 +76,8 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 	}
 
 	@Override
-	public List<NewsDTO> getAllArticles() throws Exception {
-		return StreamSupport.stream(mongodb.getCollection(COL_NM).find().spliterator(), false).map(NewsDTO::new).collect(Collectors.toList());
+	public DBCursor getAllArticles() throws Exception {
+		return mongodb.getCollection(COL_NM).find();
 	}
 
 	@Override
@@ -93,6 +89,20 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 	@Override
 	public int getNp() throws Exception {
 		return (Integer)mongodb.getCollection("np").find().sort(new BasicDBObject("np", 1)).next().get("np");
+	}
+
+	@Override
+	public void incrementDf(Set<String> keySet) throws Exception {
+		if(!mongodb.collectionExists("dfCol")) {
+			mongodb.createCollection("dfCol").createIndex(new BasicDBObject("word", 1), new BasicDBObject("unique", true));
+		}
+		for(String word : keySet) {
+			DBObject query = new BasicDBObject("word", word);
+			DBObject update = new BasicDBObject("$inc", new BasicDBObject("cnt", 1L));
+			mongodb.getCollection("dfCol").update(query, update, true, false);
+		}
+		
+		
 	}
 
 }

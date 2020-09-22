@@ -1,6 +1,8 @@
 package poly.persistance.mongo;
 
-import java.util.List;
+import java.util.Set;
+
+import com.mongodb.DBCursor;
 
 import poly.dto.NewsDTO;
 
@@ -14,11 +16,13 @@ public interface IMongoNewsMapper {
 
 	NewsDTO getNews(int i) throws Exception;
 
-	List<NewsDTO> getAllArticles() throws Exception;
+	DBCursor getAllArticles() throws Exception;
 
 	void addNp(int np) throws Exception;
 
 	int getNp() throws Exception;
+
+	void incrementDf(Set<String> keySet) throws Exception;
 
 
 }

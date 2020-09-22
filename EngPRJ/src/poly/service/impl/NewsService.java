@@ -11,6 +11,8 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.mongodb.DBCursor;
+
 import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
 import poly.service.INewsService;
@@ -78,9 +80,9 @@ public class NewsService implements INewsService{
 	@Override
 	public void crawlAll() throws Exception {
 		Set<String> articleSet = new HashSet<>();
-		List<NewsDTO> existingArticles = mongoNewsMapper.getAllArticles();
-		for(NewsDTO article : existingArticles) {
-			articleSet.add(article.getNewsUrl());
+		DBCursor existingArticles = mongoNewsMapper.getAllArticles();
+		while(existingArticles.hasNext()) {
+			articleSet.add((String)existingArticles.next().get("newsUrl"));
 		}
 		int np = 14647;
 		try {
