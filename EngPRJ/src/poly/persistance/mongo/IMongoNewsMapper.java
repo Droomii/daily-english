@@ -16,5 +16,9 @@ public interface IMongoNewsMapper {
 
 	List<NewsDTO> getAllArticles() throws Exception;
 
+	void addNp(int np) throws Exception;
+
+	int getNp() throws Exception;
+
 
 }

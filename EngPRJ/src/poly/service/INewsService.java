@@ -14,4 +14,6 @@ public interface INewsService {
 
 	void insertNews(NewsDTO nDTO) throws Exception;
 
+	void crawlAll() throws Exception;
+
 }

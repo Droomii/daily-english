@@ -84,4 +84,15 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		return StreamSupport.stream(mongodb.getCollection(COL_NM).find().spliterator(), false).map(NewsDTO::new).collect(Collectors.toList());
 	}
 
+	@Override
+	public void addNp(int np) throws Exception {
+		DBObject obj = new BasicDBObject("np", np);
+		mongodb.insert(obj, "np");
+	}
+
+	@Override
+	public int getNp() throws Exception {
+		return (Integer)mongodb.getCollection("np").find().sort(new BasicDBObject("np", 1)).next().get("np");
+	}
+
 }

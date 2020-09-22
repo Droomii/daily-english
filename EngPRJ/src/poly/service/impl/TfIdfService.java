@@ -70,12 +70,15 @@ public class TfIdfService implements ITfIdfService {
 		// IDF
 		SortedMap<String, Double> idf = new TreeMap<>();
 		df.forEach((k, v)->{
-			idf.put(k, Math.log10(docCnt / v.doubleValue()));
+			idf.put(k, Math.log(docCnt / v.doubleValue()));
 		});
 		System.out.println("idf of coronavirus : " + idf.get("coronavirus"));
 		double tfIdfTest = last.get("coronavirus") * idf.get("coronavirus");
 		System.out.println("tf-idf of coronavirus : " + tfIdfTest);
 //		idf.forEach((k, v)->{System.out.print(k + " : ");System.out.println(v);});
+		
+		mongoTfIdfMapper.insertIdf(idf);
+		
 		// TF-IDF
 		List<Map<String, Double>> tfIdf = tf.stream().map(a ->{
 			Map<String, Double> tfIdfMap = new HashMap<>();

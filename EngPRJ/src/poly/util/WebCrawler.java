@@ -2,6 +2,7 @@ package poly.util;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Queue;
@@ -106,6 +107,24 @@ public class WebCrawler {
 		}
 		return newSet;
 	}
+	
+	public static Set<String> getArticleInPage(Set<String> articleSet, int np) throws Exception{
+		String url = "http://www.koreaherald.com/list.php?ct=020000000000&np=" + np;
+		Document doc = null;
+		Set<String> newSet = new HashSet<>();
+		try {
+			doc = Jsoup.connect(url).get();
+		}catch(IOException e) {
+			return newSet;
+		}
+		String main = doc.select("div.main_sec").first().toString();
+		Matcher m = ARTICLE_P.matcher(main);
+		while (m.find()) {
+			if (articleSet.add(m.group(1)))
+				newSet.add(m.group(1));
+		}
+		return newSet;
+	}
 
 	public static Set<String> categoryBFS() throws Exception {
 		String url = "http://www.koreaherald.com/index.php";
@@ -151,7 +170,7 @@ public class WebCrawler {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(getArticles(new HashSet<>(), "20200908000808"));
+		getArticleInPage(null, 1);
 	}
 
 	public static Set<String> getArticles(Set<String> articleSet, String article) throws Exception {
@@ -170,6 +189,7 @@ public class WebCrawler {
 		}
 		return newArticle;
 	}
+	
 
 	public static String getMeaning(String word) throws IOException {
 

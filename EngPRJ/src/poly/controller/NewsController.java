@@ -134,36 +134,12 @@ public class NewsController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "bfs")
-	public String bfs(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+	@RequestMapping(value = "crawlAll")
+	public String crawlAll(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
-		log.info(this.getClass().getName() + ".bfs start");
-		Set<String> catSet = WebCrawler.categoryBFS();
-		Set<String> articleSet = new HashSet<>();
-		for (String cat : catSet) {
-			Set<String> newSet = WebCrawler.articleBFS(articleSet, cat);
-			Queue<String> articleQueue = new ArrayDeque<>();
-			articleQueue.addAll(newSet);
-			while (!articleQueue.isEmpty()) {
-				String article = articleQueue.poll();
-				Document doc = null;
-				try {
-					doc = WebCrawler.connectToArticle(article);
-				} catch (IOException e) {
-					continue;
-				}
-				NewsDTO nDTO = new NewsDTO(WebCrawler.crawlHerald(doc, article), false);
-				Pattern p = Pattern.compile("[가-힣]");
-				Matcher m = p.matcher(nDTO.getNewsTitle());
-				if(nDTO.getOriginalSentences().size()!=0 && !m.find())
-					newsService.insertNews(nDTO);
-				log.info(nDTO.getNewsTitle());
-				Set<String> newArticles = WebCrawler.getArticles(articleSet, doc);
-				System.out.println("newArticles : " + newArticles);
-				articleQueue.addAll(newArticles);
-			}
-		}
-
+		log.info(this.getClass().getName() + ".crwalAll start");
+		newsService.crawlAll();
+		
 		log.info(this.getClass().getName() + ".bfs end");
 		return "success";
 	}

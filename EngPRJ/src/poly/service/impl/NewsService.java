@@ -1,15 +1,16 @@
 package poly.service.impl;
 
-import java.util.Properties;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
 import poly.service.INewsService;
@@ -72,6 +73,45 @@ public class NewsService implements INewsService{
 	public void insertNews(NewsDTO nDTO) throws Exception {
 		mongoNewsMapper.insertNews(nDTO, false);
 		
+	}
+
+	@Override
+	public void crawlAll() throws Exception {
+		Set<String> articleSet = new HashSet<>();
+		List<NewsDTO> existingArticles = mongoNewsMapper.getAllArticles();
+		for(NewsDTO article : existingArticles) {
+			articleSet.add(article.getNewsUrl());
+		}
+		int np = 14647;
+		try {
+			np = mongoNewsMapper.getNp();
+		}catch(Exception e) {}
+		
+		log.info(np);
+		
+		for(int i = np; i > 0; i--) {
+			Set<String> newSet = WebCrawler.getArticleInPage(articleSet, i);
+			for(String newArticle : newSet) {
+				try {
+					log.info("crawling " + newArticle);
+					String[] news = WebCrawler.crawlHerald(newArticle);
+					log.info("title : " + news[0]);
+					Pattern p = Pattern.compile("[가-힣]");
+					Matcher m = p.matcher(news[0]);
+					if(m.find()) continue;
+					NewsDTO nDTO = new NewsDTO(news, false);
+					
+					if(nDTO.getOriginalSentences().isEmpty()) continue;
+					
+					mongoNewsMapper.insertNews(nDTO, false);
+					
+				}catch(Exception e){
+					log.info("deleted article");
+					continue;
+				}
+			}
+			mongoNewsMapper.addNp(i);
+		}
 	}
 	
 }
