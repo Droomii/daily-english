@@ -1,6 +1,7 @@
 package poly.persistance.mongo.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,6 +19,7 @@ import com.mongodb.DBObject;
 import config.Mapper;
 import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
+import poly.util.TfIdf;
 
 @Mapper("MongoNewsMapper")
 public class MongoNewsMapper implements IMongoNewsMapper {
@@ -143,6 +145,88 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		}
 		mongodb.getCollection("dfCol").insert(list);
 		log.info(this.getClass().getName() + ".insertDf end");
+	}
+
+	@Override
+	public void insertIdf() throws Exception {
+		long docCnt = mongodb.getCollection("news").count();
+		DBCursor dfCursor = mongodb.getCollection("dfCol").find();
+		DBCollection idfCol = mongodb.getCollection("idfCol");
+		List<DBObject> idfList = new ArrayList<>();
+		int i = 1;
+		while(dfCursor.hasNext()) {
+			
+			DBObject df =  dfCursor.next();
+			log.info(i + "/" + docCnt + " calculating idf : " + (String)df.get("word"));
+			double cnt = ((Long)df.get("cnt")).doubleValue();
+			double idf = Math.log(docCnt / cnt);
+			DBObject insertObj = new BasicDBObject()
+					.append("word", df.get("word"))
+					.append("idf", idf);
+			idfList.add(insertObj);
+			i++;
+			if(i % 1000 == 0) {
+				log.info("hit " + i + " : inserting");
+				idfCol.insert(idfList);
+				idfList.clear();
+			}
+		}
+		idfCol.insert(idfList);
+		
+	}
+
+	@Override
+	public void insertTfIdf() throws Exception {
+		final Map<String, Double> idfMap = new HashMap<>();
+		final DBCursor idfCursor = mongodb.getCollection("idfCol").find();
+		
+		if(!mongodb.collectionExists("tfIdfCol")) {
+			mongodb.createCollection("tfIdfCol").createIndex(new BasicDBObject("newsUrl", -1), new BasicDBObject("unique", true));
+		}
+		
+		final DBCollection tfIdfCol = mongodb.getCollection("tfIdfCol");
+		int idfSize = idfCursor.size();
+		int i = 1;
+		while(idfCursor.hasNext()) {
+			DBObject idf = idfCursor.next();
+			log.info(i++ + "/" + idfSize + " getting idf : " + (String)idf.get("word"));
+			idfMap.put((String)idf.get("word"), (Double)idf.get("idf"));
+		}
+		final DBCursor tfCursor = mongodb.getCollection("tfCol").find().sort(new BasicDBObject("newsUrl", -1));
+		
+		final List<DBObject> tfIdfList = new ArrayList<>();
+		
+		final int tfSize = tfCursor.size();
+		i = 1;
+		
+		while(tfCursor.hasNext()) {
+			DBObject news = tfCursor.next();
+			String newsUrl = (String)news.get("newsUrl");
+			log.info(newsUrl + " tf-idf "+ i++ + "/" + tfSize);
+			Map<String, Double> tfMap = (Map<String, Double>)news.get("tf");
+			Map<String, Double> tfIdfMap = new HashMap<>();
+			tfMap.forEach((k, v)->{
+				tfIdfMap.put(k, v * idfMap.get(k));
+			});
+			
+			
+			DBObject tfIdfObj = new BasicDBObject("newsUrl", newsUrl)
+					.append("tfIdf", tfIdfMap);
+			tfIdfList.add(tfIdfObj);
+			
+			if(i % 1000 == 0) {
+				log.info("hit " + i + " : inserting");
+				tfIdfCol.insert(tfIdfList);
+				tfIdfList.clear();
+			}
+		}
+		tfIdfCol.insert(tfIdfList);
+		
+	}
+
+	@Override
+	public DBCursor getTfIdf() throws Exception {
+		return mongodb.getCollection("tfIdfCol").find().sort(new BasicDBObject("newsUrl", -1));
 	}
 
 }

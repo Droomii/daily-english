@@ -177,4 +177,21 @@ public class TfIdfService implements ITfIdfService {
 //		mongoNewsMapper.insertDf(df);
 		
 	}
+
+	@Override
+	public void insertIdf() throws Exception {
+		mongoNewsMapper.insertIdf();
+		
+	}
+
+	@Override
+	public void getTfIdf() throws Exception {
+		mongoNewsMapper.insertTfIdf();
+	}
+
+	@Override
+	public List<DBObject> getTop10() throws Exception {
+		DBCursor top10 = mongoNewsMapper.getTfIdf().limit(10);
+		return top10.toArray();
+	}
 }

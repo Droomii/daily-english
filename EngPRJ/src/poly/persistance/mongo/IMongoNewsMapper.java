@@ -33,5 +33,11 @@ public interface IMongoNewsMapper {
 
 	void insertDf(Map<String, Long> df) throws Exception;
 
+	void insertIdf() throws Exception;
+
+	void insertTfIdf() throws Exception;
+
+	DBCursor getTfIdf() throws Exception;
+
 
 }
