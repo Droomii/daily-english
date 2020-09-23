@@ -1,5 +1,9 @@
 package poly.persistance.mongo.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -77,7 +81,7 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 
 	@Override
 	public DBCursor getAllArticles() throws Exception {
-		return mongodb.getCollection(COL_NM).find();
+		return mongodb.getCollection(COL_NM).find().sort(new BasicDBObject("newsUrl", -1));
 	}
 
 	@Override
@@ -103,6 +107,42 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		}
 		
 		
+	}
+
+	@Override
+	public void insertTf(String newsUrl, Map<String, Double> tf) throws Exception {
+		if(!mongodb.collectionExists("tfCol")) {
+			mongodb.createCollection("tfCol").createIndex(new BasicDBObject("newsUrl", 1), new BasicDBObject("unique", true));
+		}
+		DBObject insertObj = new BasicDBObject("newsUrl", newsUrl)
+				.append("tf", tf);
+		mongodb.insert(insertObj, "tfCol");
+		
+	}
+
+	@Override
+	public void insertTfAll(List<DBObject> tfList) throws Exception {
+		log.info(this.getClass().getName() + ".insertTfAll start");
+		if(!mongodb.collectionExists("tfCol")) {
+			mongodb.createCollection("tfCol").createIndex(new BasicDBObject("newsUrl", 1), new BasicDBObject("unique", true));
+		}
+		mongodb.getCollection("tfCol").insert(tfList);
+	}
+
+	@Override
+	public void insertDf(Map<String, Long> df) throws Exception {
+		log.info(this.getClass().getName() + ".insertDf start");
+		if(!mongodb.collectionExists("dfCol")) {
+			mongodb.createCollection("dfCol").createIndex(new BasicDBObject("word", 1), new BasicDBObject("unique", true));
+		}
+		List<DBObject> list = new ArrayList<>();
+		for(Entry<String, Long> word : df.entrySet()) {
+			DBObject obj = new BasicDBObject("word", word.getKey())
+					.append("cnt", word.getValue().longValue());
+			list.add(obj);
+		}
+		mongodb.getCollection("dfCol").insert(list);
+		log.info(this.getClass().getName() + ".insertDf end");
 	}
 
 }

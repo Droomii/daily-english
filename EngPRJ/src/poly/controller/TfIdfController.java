@@ -36,5 +36,17 @@ public class TfIdfController {
 		log.info(this.getClass().getName() + ".getTfIdf end");
 		return articles.subList(0, 10);
 	}
+	@ResponseBody
+	@RequestMapping(value = "getDf")
+	public String getDf(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".getTfIdf start");
+		
+		tfIdfService.getDf();
+		
+		
+		log.info(this.getClass().getName() + ".getTfIdf end");
+		return "success";
+	}
 	
 }

@@ -7,4 +7,6 @@ public interface ITfIdfService {
 
 	List<Map<String, Double>> getAllArticles() throws Exception;
 
+	void getDf() throws Exception;
+
 }
