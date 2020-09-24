@@ -1,5 +1,8 @@
 package poly.service.impl;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,6 +11,12 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +26,7 @@ import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
 import poly.service.INewsService;
 import poly.service.INewsWordService;
+import poly.util.UrlUtil;
 import poly.util.WebCrawler;
 
 @Service("NewsService")
@@ -114,6 +124,14 @@ public class NewsService implements INewsService{
 			}
 			mongoNewsMapper.addNp(i);
 		}
+	}
+
+	@Override
+	public String saveRelatedArticles() throws Exception {
+		
+		String requestURL = "http://192.168.136.132:5000/saveRelatedArticles";
+		
+		return UrlUtil.request(requestURL, false);
 	}
 	
 }

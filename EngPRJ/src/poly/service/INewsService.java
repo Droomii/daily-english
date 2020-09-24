@@ -16,4 +16,6 @@ public interface INewsService {
 
 	void crawlAll() throws Exception;
 
+	String saveRelatedArticles() throws Exception;
+
 }

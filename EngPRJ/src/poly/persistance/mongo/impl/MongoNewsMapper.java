@@ -223,6 +223,9 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		tfIdfCol.insert(tfIdfList);
 		
 	}
+	
+	
+	
 
 	@Override
 	public DBCursor getTfIdf() throws Exception {
