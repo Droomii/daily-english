@@ -29,7 +29,7 @@ public interface IMongoNewsMapper {
 
 	void insertTf(String newsUrl, Map<String, Double> tf) throws Exception;
 
-	void insertTfAll(List<DBObject> tfList) throws Exception;
+	void insertNewsTfAll(List<DBObject> tfList) throws Exception;
 
 	void insertDf(Map<String, Long> df) throws Exception;
 
@@ -38,6 +38,14 @@ public interface IMongoNewsMapper {
 	void insertTfIdf() throws Exception;
 
 	DBCursor getTfIdf() throws Exception;
+
+	void insertNews(List<NewsDTO> newArticles, boolean translate) throws Exception;
+
+	void updateDf(Map<String, Long> df) throws Exception;
+
+	Map<String, Double> getIdf(Set<String> keySet) throws Exception;
+
+	void insertNewsTfIdfAll(List<DBObject> tfList) throws Exception;;
 
 
 }

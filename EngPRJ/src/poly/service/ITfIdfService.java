@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.mongodb.DBObject;
 
+import poly.dto.NewsDTO;
+
 public interface ITfIdfService {
 	
 	void getDf() throws Exception;
@@ -14,5 +16,7 @@ public interface ITfIdfService {
 	void getTfIdf() throws Exception;
 
 	List<DBObject> getTop10() throws Exception;
+
+	void insertNewArticles(List<NewsDTO> newArticles) throws Exception;
 
 }

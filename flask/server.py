@@ -4,7 +4,11 @@ from tempfile import TemporaryFile
 from pymongo import MongoClient
 import news_recommender
 
-db = MongoClient('192.168.136.132', 27017).MyDB
+db = MongoClient('192.168.136.132',
+    username='droomii',
+    password='Data19!@',
+    authSource='admin',
+    authMechanism='SCRAM-SHA-256').MyDB
 
 app = Flask(__name__)
 
@@ -63,7 +67,8 @@ def tts():
     
 @app.route('/saveRelatedArticles')
 def save_related_articles():
-    return news_recommender.save_related_articles(db)
+    news_recommender.save_related_articles(db)
+    return 'success'
 
 if __name__=='__main__':
     app.run(host='0.0.0.0', port=5000)

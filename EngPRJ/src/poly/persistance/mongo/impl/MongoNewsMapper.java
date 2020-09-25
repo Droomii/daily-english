@@ -37,9 +37,8 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 
 
 		if (!mongodb.collectionExists(COL_NM)) {
-			mongodb.createCollection(COL_NM).createIndex(new BasicDBObject("insertDate", -1), "dateIdx");
+			mongodb.createCollection(COL_NM).createIndex(new BasicDBObject("newsUrl", -1), "newsIdx");
 		}
-
 		log.info(this.getClass().getName() + ".createCollection end");
 
 	}
@@ -62,11 +61,20 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 			return true;
 		}
 	}
+	
+	@Override
+	public void insertNews(List<NewsDTO> newArticles, boolean translate) throws Exception {
+		for(NewsDTO newArticle : newArticles) {
+			insertNews(newArticle, translate);
+		}
+	}
+	
+	
 
 	@Override
 	public NewsDTO getLatestNews() throws Exception {
 		
-		DBObject firstNews = mongodb.getCollection(COL_NM).find().sort(new BasicDBObject("insertDate", -1)).next();
+		DBObject firstNews = mongodb.getCollection(COL_NM).find().sort(new BasicDBObject("_id", -1)).next();
 		NewsDTO rDTO = new NewsDTO(firstNews);
 		log.info("rDTO.getNewsTitle : " + rDTO.getNewsTitle());
 		return rDTO;
@@ -83,7 +91,7 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 
 	@Override
 	public DBCursor getAllArticles() throws Exception {
-		return mongodb.getCollection(COL_NM).find().sort(new BasicDBObject("newsUrl", -1));
+		return mongodb.getCollection(COL_NM).find().sort(new BasicDBObject("_id", -1));
 	}
 
 	@Override
@@ -123,7 +131,7 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 	}
 
 	@Override
-	public void insertTfAll(List<DBObject> tfList) throws Exception {
+	public void insertNewsTfAll(List<DBObject> tfList) throws Exception {
 		log.info(this.getClass().getName() + ".insertTfAll start");
 		if(!mongodb.collectionExists("tfCol")) {
 			mongodb.createCollection("tfCol").createIndex(new BasicDBObject("newsUrl", 1), new BasicDBObject("unique", true));
@@ -231,5 +239,50 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 	public DBCursor getTfIdf() throws Exception {
 		return mongodb.getCollection("tfIdfCol").find().sort(new BasicDBObject("newsUrl", -1));
 	}
+
+	@Override
+	public void updateDf(Map<String, Long> df) throws Exception {
+		if(!mongodb.collectionExists("dfCol")) {
+			mongodb.createCollection("dfCol").createIndex(new BasicDBObject("word", 1), new BasicDBObject("unique", true));
+		}
+		final long totalWords = mongodb.getCollection("news").count();
+		df.forEach((k, v)->{
+			// df update
+			DBObject query = new BasicDBObject("word", k);
+			DBObject update = new BasicDBObject("$inc", new BasicDBObject("cnt", v.longValue()));
+			mongodb.getCollection("dfCol").update(query, update, true, false);
+			// idf update
+			DBObject after = mongodb.getCollection("dfCol").findOne(query);
+			double cnt = ((Long)after.get("cnt")).doubleValue();
+			double idf = Math.log(totalWords / cnt);
+			
+			update = new BasicDBObject("word", k).append("idf", idf);
+			mongodb.getCollection("idfCol").update(query, update, true, false);
+		});
+		
+		
+	}
+
+	@Override
+	public Map<String, Double> getIdf(Set<String> keySet) throws Exception {
+		Map<String, Double> rMap = new HashMap<>();
+		DBObject query = new BasicDBObject("word", new BasicDBObject("$in", keySet));
+		DBCursor cursor = mongodb.getCollection("idfCol").find(query);
+		for(DBObject res : cursor) {
+			rMap.put((String)res.get("word"), (Double)res.get("idf"));
+		}
+		return rMap;
+	}
+
+	@Override
+	public void insertNewsTfIdfAll(List<DBObject> tfList) throws Exception {
+		log.info(this.getClass().getName() + ".insertTfIdfAll start");
+		if(!mongodb.collectionExists("tfIdfCol")) {
+			mongodb.createCollection("tfIdfCol").createIndex(new BasicDBObject("newsUrl", 1), new BasicDBObject("unique", true));
+		}
+		mongodb.getCollection("tfIdfCol").insert(tfList);
+	}
+
+	
 
 }

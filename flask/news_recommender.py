@@ -4,6 +4,10 @@ from sklearn.preprocessing import Normalizer, MaxAbsScaler
 from sklearn.pipeline import make_pipeline
 
 def save_related_articles(db):
+    if 'relatedArticles' not in db.collection_names():
+        db.create_collection('relatedArticles')
+        db.relatedArticles.create_index('newsUrl')
+    
     articles = []
     index = []
     print('loading articles...', end='')
@@ -28,5 +32,17 @@ def save_related_articles(db):
     norm_features = pipeline.fit_transform(val)
     print('done')
     res = pd.DataFrame(norm_features, index=index)
-    similarities = res.dot(index[0])
-    print(similarities.nlargest(6))
+    
+    insList = []
+    for i in index:
+        print('inserting ' + i)
+        insert_obj = dict()
+        insert_obj['newsUrl'] = i
+        
+        article = res.loc[i]
+        similarities = res.dot(article)
+        
+        insert_obj['related'] = list(similarities.nlargest(6)[1:].keys())
+        insList.append(insert_obj)
+        
+    db.relatedArticles.insert_many(insList)

@@ -146,5 +146,16 @@ public class NewsController {
 		log.info(this.getClass().getName() + ".saveRelatedArticles end");
 		return "success";
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "saveLatestNews")
+	public String saveLatestNews(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".saveLatestNews start");
+
+		newsService.saveLatestNews();
+		log.info(this.getClass().getName() + ".saveLatestNews end");
+		return "success";
+	}
 
 }

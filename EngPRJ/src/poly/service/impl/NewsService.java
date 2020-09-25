@@ -1,8 +1,6 @@
 package poly.service.impl;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,21 +9,17 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.mongodb.DBCursor;
+import com.mongodb.DuplicateKeyException;
 
 import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
 import poly.service.INewsService;
 import poly.service.INewsWordService;
+import poly.service.ITfIdfService;
 import poly.util.UrlUtil;
 import poly.util.WebCrawler;
 
@@ -37,6 +31,9 @@ public class NewsService implements INewsService{
 	
 	@Resource(name = "NewsWordService")
 	INewsWordService newsWordService;
+	
+	@Resource(name = "TfIdfService")
+	ITfIdfService tfIdfService;
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
@@ -127,11 +124,55 @@ public class NewsService implements INewsService{
 	}
 
 	@Override
+	public void saveLatestNews() throws Exception {
+		log.info(this.getClass().getName() + ".saveLatestNews start");
+		Set<String> articleSet = new HashSet<>();
+
+		List<NewsDTO> newArticles = new ArrayList<>();
+		int np = 1;
+		boolean duplicate = false;
+		while(!duplicate) {
+			Set<String> newSet = WebCrawler.getArticleInPage(articleSet, np++);
+			if(newSet.isEmpty()) break;
+			for(String newArticle : newSet) {
+				try {
+					log.info("crawling " + newArticle);
+					String[] news = WebCrawler.crawlHerald(newArticle);
+					log.info("title : " + news[0]);
+					Pattern p = Pattern.compile("[가-힣]");
+					Matcher m = p.matcher(news[0]);
+					if(m.find()) continue;
+					NewsDTO nDTO = new NewsDTO(news, false);
+					
+					if(nDTO.getOriginalSentences().isEmpty()) continue;
+					
+					if(!mongoNewsMapper.insertNews(nDTO, false)) {
+						duplicate = true;
+						break;
+					}
+					
+					newArticles.add(nDTO);
+				}catch(Exception e){
+					log.info("deleted article");
+					continue;
+				}
+			}
+		}
+		if(!newArticles.isEmpty()) {
+			tfIdfService.insertNewArticles(newArticles);			
+		}
+		
+		
+	}
+	
+	@Override
 	public String saveRelatedArticles() throws Exception {
 		
 		String requestURL = "http://192.168.136.132:5000/saveRelatedArticles";
 		
 		return UrlUtil.request(requestURL, false);
 	}
+
+	
 	
 }

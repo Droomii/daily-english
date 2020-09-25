@@ -44,14 +44,14 @@ public class TfIdfService implements ITfIdfService {
 		log.info("elapsed : " + (end - start));
 		int i = 1;
 		List<NewsDTO> articleList = new ArrayList<>();
-		while(articles.hasNext()) {
+		while (articles.hasNext()) {
 //		for(int i = 0 ;i < 100; i++) {
 			DBObject obj = articles.next();
 			NewsDTO nDTO = new NewsDTO();
-			nDTO.setLemmas((List<List<String>>)obj.get("lemmas"));
-			nDTO.setNewsTitle((String)obj.get("newsTitle"));
-			nDTO.setNewsUrl((String)obj.get("newsUrl"));
-			log.info("adding "+ i++ +": " + nDTO.getNewsTitle());
+			nDTO.setLemmas((List<List<String>>) obj.get("lemmas"));
+			nDTO.setNewsTitle((String) obj.get("newsTitle"));
+			nDTO.setNewsUrl((String) obj.get("newsUrl"));
+			log.info("adding " + i++ + ": " + nDTO.getNewsTitle());
 			articleList.add(nDTO);
 		}
 		// 기사별 단어 빈도수 계산
@@ -59,7 +59,7 @@ public class TfIdfService implements ITfIdfService {
 		Map<String, Long> df = new HashMap<>();
 		// df 담을 맵
 		i = 1;
-		for(NewsDTO nDTO : articleList) {
+		for (NewsDTO nDTO : articleList) {
 			int wordTot = 0;
 			log.info("counting " + i++ + ": " + nDTO.getNewsTitle());
 			Map<String, Integer> wc = new HashMap<String, Integer>();
@@ -72,37 +72,37 @@ public class TfIdfService implements ITfIdfService {
 					}
 				}
 			}
-			if(wordTot==0) continue;
-			
+			if (wordTot == 0)
+				continue;
+
 			final int WORD_TOT = wordTot;
 			Map<String, Double> tf = new HashMap<>();
-			wc.forEach((k, v)->{
+			wc.forEach((k, v) -> {
 				tf.put(k, v.doubleValue() / WORD_TOT);
 			});
 			String newsUrl = nDTO.getNewsUrl();
-			DBObject insertObj = new BasicDBObject("newsUrl", newsUrl)
-					.append("tf", tf);
+			DBObject insertObj = new BasicDBObject("newsUrl", newsUrl).append("tf", tf);
 			tfList.add(insertObj);
 			// Document Frequency
-			for(String word : wc.keySet()) {
+			for (String word : wc.keySet()) {
 				df.compute(word, (k, v) -> (v == null) ? 1 : v + 1);
 			}
-			if(i%100 ==0) {
+			if (i % 100 == 0) {
 				log.info("hit " + i + ": inserting");
-				mongoNewsMapper.insertTfAll(tfList);
+				mongoNewsMapper.insertNewsTfAll(tfList);
 				tfList.clear();
-				
+
 			}
 		}
-		mongoNewsMapper.insertTfAll(tfList);
+		mongoNewsMapper.insertNewsTfAll(tfList);
 //		mongoNewsMapper.insertDf(df);
-		
+
 	}
 
 	@Override
 	public void insertIdf() throws Exception {
 		mongoNewsMapper.insertIdf();
-		
+
 	}
 
 	@Override
@@ -114,5 +114,65 @@ public class TfIdfService implements ITfIdfService {
 	public List<DBObject> getTop10() throws Exception {
 		DBCursor top10 = mongoNewsMapper.getTfIdf().limit(10);
 		return top10.toArray();
+	}
+
+	@Override
+	public void insertNewArticles(List<NewsDTO> newArticles) throws Exception {
+
+		// 기사별 단어 빈도수 계산
+		List<DBObject> tfList = new ArrayList<>();
+		Map<String, Long> df = new HashMap<>();
+		// df 담을 맵
+		int i = 1;
+		for (NewsDTO nDTO : newArticles) {
+			int wordTot = 0;
+			log.info("counting " + i++ + ": " + nDTO.getNewsTitle());
+			Map<String, Integer> wc = new HashMap<String, Integer>();
+			for (List<String> words : nDTO.getLemmas()) {
+				for (String word : words) {
+					word = word.replaceAll("[^A-Za-z-]", "");
+					if (word.length() > 0) {
+						wordTot++;
+						wc.compute(word.toLowerCase(), (k, v) -> (v == null) ? 1 : v + 1);
+					}
+				}
+			}
+			if (wordTot == 0)
+				continue;
+
+			final int WORD_TOT = wordTot;
+			Map<String, Double> tf = new HashMap<>();
+			wc.forEach((k, v) -> {
+				tf.put(k, v.doubleValue() / WORD_TOT);
+			});
+			String newsUrl = nDTO.getNewsUrl();
+			DBObject insertObj = new BasicDBObject("newsUrl", newsUrl).append("tf", tf);
+			tfList.add(insertObj);
+			// Document Frequency
+			for (String word : wc.keySet()) {
+				df.compute(word, (k, v) -> (v == null) ? 1 : v + 1);
+			}
+			if (i % 100 == 0) {
+				log.info("hit " + i + ": inserting");
+				mongoNewsMapper.insertNewsTfAll(tfList);
+				tfList.clear();
+
+			}
+		}
+		mongoNewsMapper.updateDf(df);
+		mongoNewsMapper.insertNewsTfAll(tfList);
+		Map<String, Double> idf = mongoNewsMapper.getIdf(df.keySet());
+		for(DBObject obj : tfList) {
+			Map<String, Double> tf = (Map<String, Double>)obj.get("tf");
+			Map<String, Double> tfIdf = new HashMap<>();
+			tf.forEach((k, v)->{
+				tfIdf.put(k, v * idf.get(k));
+			});
+			obj.put("tfIdf", tfIdf);
+			obj.removeField("tf");
+		}
+		mongoNewsMapper.insertNewsTfIdfAll(tfList);
+		
+		
 	}
 }

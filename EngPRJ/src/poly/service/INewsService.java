@@ -18,4 +18,6 @@ public interface INewsService {
 
 	String saveRelatedArticles() throws Exception;
 
+	void saveLatestNews() throws Exception;
+
 }
