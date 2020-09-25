@@ -2,6 +2,7 @@ package poly.persistance.mongo.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,7 +20,6 @@ import com.mongodb.DBObject;
 import config.Mapper;
 import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
-import poly.util.TfIdf;
 
 @Mapper("MongoNewsMapper")
 public class MongoNewsMapper implements IMongoNewsMapper {
@@ -33,16 +33,21 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 	
 	@Override
 	public void createCollection() throws Exception {
-		log.info(this.getClass().getName() + ".createCollection start");
-
-
 		if (!mongodb.collectionExists(COL_NM)) {
 			mongodb.createCollection(COL_NM).createIndex(new BasicDBObject("newsUrl", -1), "newsIdx");
 		}
-		log.info(this.getClass().getName() + ".createCollection end");
-
 	}
-
+	@Override
+	public boolean newsExists(NewsDTO nDTO) throws Exception {
+		DBCollection col = mongodb.getCollection(COL_NM);
+		BasicDBObject query = new BasicDBObject();
+		query.put("newsUrl", nDTO.getNewsUrl());
+		DBCursor res = col.find(query);
+		if(res.hasNext()) {
+			return true;
+		}
+		return false;
+	}
 	@Override
 	public boolean insertNews(NewsDTO rDTO, boolean translate) throws Exception {
 
@@ -63,10 +68,16 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 	}
 	
 	@Override
-	public void insertNews(List<NewsDTO> newArticles, boolean translate) throws Exception {
-		for(NewsDTO newArticle : newArticles) {
-			insertNews(newArticle, translate);
+	public boolean insertNews(List<NewsDTO> newArticles, boolean translate) throws Exception {
+		boolean res = true;
+		Iterator<NewsDTO> it = newArticles.iterator();
+		while(it.hasNext()) {
+			if(!insertNews(it.next(), translate)) {
+				it.remove();
+				res = false;
+			}
 		}
+		return res;
 	}
 	
 	
@@ -217,7 +228,6 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 				tfIdfMap.put(k, v * idfMap.get(k));
 			});
 			
-			
 			DBObject tfIdfObj = new BasicDBObject("newsUrl", newsUrl)
 					.append("tfIdf", tfIdfMap);
 			tfIdfList.add(tfIdfObj);
@@ -282,6 +292,8 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		}
 		mongodb.getCollection("tfIdfCol").insert(tfList);
 	}
+
+
 
 	
 

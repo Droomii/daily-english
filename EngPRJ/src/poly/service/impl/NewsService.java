@@ -1,7 +1,9 @@
 package poly.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -13,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.mongodb.DBCursor;
-import com.mongodb.DuplicateKeyException;
 
 import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
@@ -146,7 +147,8 @@ public class NewsService implements INewsService{
 					
 					if(nDTO.getOriginalSentences().isEmpty()) continue;
 					
-					if(!mongoNewsMapper.insertNews(nDTO, false)) {
+					if(mongoNewsMapper.newsExists(nDTO)) {
+						log.info("news exists");
 						duplicate = true;
 						break;
 					}
@@ -159,6 +161,8 @@ public class NewsService implements INewsService{
 			}
 		}
 		if(!newArticles.isEmpty()) {
+			Collections.reverse(newArticles);
+			mongoNewsMapper.insertNews(newArticles, false);
 			tfIdfService.insertNewArticles(newArticles);			
 		}
 		
@@ -171,6 +175,24 @@ public class NewsService implements INewsService{
 		String requestURL = "http://192.168.136.132:5000/saveRelatedArticles";
 		
 		return UrlUtil.request(requestURL, false);
+	}
+
+	@Override
+	public Set<String> findNotIn() throws Exception {
+		Set<String> articleSet = new HashSet<>();
+		DBCursor existingArticles = mongoNewsMapper.getAllArticles();
+		while(existingArticles.hasNext()) {
+			articleSet.add((String)existingArticles.next().get("newsUrl"));
+		}
+		
+		Set<String> analyzedSet = new HashSet<>();
+		DBCursor analyzedArticles = mongoNewsMapper.getTfIdf();
+		while(analyzedArticles.hasNext()) {
+			analyzedSet.add((String)analyzedArticles.next().get("newsUrl"));
+		}
+		articleSet.removeAll(analyzedSet);
+		
+		return articleSet;
 	}
 
 	

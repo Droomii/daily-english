@@ -1,5 +1,7 @@
 package poly.service;
 
+import java.util.Set;
+
 import poly.dto.NewsDTO;
 
 public interface INewsService {
@@ -19,5 +21,7 @@ public interface INewsService {
 	String saveRelatedArticles() throws Exception;
 
 	void saveLatestNews() throws Exception;
+
+	Set<String> findNotIn() throws Exception;
 
 }

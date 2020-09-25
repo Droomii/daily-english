@@ -39,13 +39,15 @@ public interface IMongoNewsMapper {
 
 	DBCursor getTfIdf() throws Exception;
 
-	void insertNews(List<NewsDTO> newArticles, boolean translate) throws Exception;
+	boolean insertNews(List<NewsDTO> newArticles, boolean translate) throws Exception;
 
 	void updateDf(Map<String, Long> df) throws Exception;
 
 	Map<String, Double> getIdf(Set<String> keySet) throws Exception;
 
-	void insertNewsTfIdfAll(List<DBObject> tfList) throws Exception;;
+	void insertNewsTfIdfAll(List<DBObject> tfList) throws Exception;
+
+	boolean newsExists(NewsDTO nDTO) throws Exception;
 
 
 }

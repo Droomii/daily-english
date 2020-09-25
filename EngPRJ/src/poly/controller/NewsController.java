@@ -1,6 +1,7 @@
 package poly.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -156,6 +157,18 @@ public class NewsController {
 		newsService.saveLatestNews();
 		log.info(this.getClass().getName() + ".saveLatestNews end");
 		return "success";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "notIn")
+	public Set<String> notIn(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".notIn start");
+
+		Set<String> notIn = newsService.findNotIn();
+		
+		log.info(this.getClass().getName() + ".notIn end");
+		return notIn;
 	}
 
 }
