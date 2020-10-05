@@ -4,6 +4,7 @@ from tempfile import TemporaryFile
 from pymongo import MongoClient
 import news_recommender
 
+# test
 db = MongoClient('192.168.136.132',
     username='droomii',
     password='Data19!@',
