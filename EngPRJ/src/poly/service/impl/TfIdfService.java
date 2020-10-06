@@ -160,12 +160,15 @@ public class TfIdfService implements ITfIdfService {
 			}
 		}
 		mongoNewsMapper.updateDf(df);
+		log.info("inserting remaining tf");
 		mongoNewsMapper.insertNewsTfAll(tfList);
+		log.info("inserting remaining tf done");
 		Map<String, Double> idf = mongoNewsMapper.getIdf(df.keySet());
 		for(DBObject obj : tfList) {
 			Map<String, Double> tf = (Map<String, Double>)obj.get("tf");
 			Map<String, Double> tfIdf = new HashMap<>();
 			tf.forEach((k, v)->{
+				log.info("calc tfidf : " + k);
 				tfIdf.put(k, v * idf.get(k));
 			});
 			obj.put("tfIdf", tfIdf);

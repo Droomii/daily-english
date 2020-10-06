@@ -255,13 +255,16 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		if(!mongodb.collectionExists("dfCol")) {
 			mongodb.createCollection("dfCol").createIndex(new BasicDBObject("word", 1), new BasicDBObject("unique", true));
 		}
+		log.info("update df start");
 		final long totalWords = mongodb.getCollection("news").count();
 		df.forEach((k, v)->{
 			// df update
 			DBObject query = new BasicDBObject("word", k);
+			log.info("incrementing : " + k);
 			DBObject update = new BasicDBObject("$inc", new BasicDBObject("cnt", v.longValue()));
 			mongodb.getCollection("dfCol").update(query, update, true, false);
 			// idf update
+			log.info("updating idf : " + k);
 			DBObject after = mongodb.getCollection("dfCol").findOne(query);
 			double cnt = ((Long)after.get("cnt")).doubleValue();
 			double idf = Math.log(totalWords / cnt);
@@ -275,11 +278,13 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 
 	@Override
 	public Map<String, Double> getIdf(Set<String> keySet) throws Exception {
+		log.info(this.getClass().getName() + ".getIdf start");
 		Map<String, Double> rMap = new HashMap<>();
 		DBObject query = new BasicDBObject("word", new BasicDBObject("$in", keySet));
 		DBCursor cursor = mongodb.getCollection("idfCol").find(query);
 		for(DBObject res : cursor) {
 			rMap.put((String)res.get("word"), (Double)res.get("idf"));
+			log.info("getting idf : " + (String)res.get("word"));
 		}
 		return rMap;
 	}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.IUserMapper">
+
+	<!-- 사용자 실력 레벨 수정-->
+	<update id="updateUserLvl" parameterType="String">
+		UPDATE USER_INFO SET
+			USER_LVL = #{1}
+		WHERE
+			USER_SEQ = #{0}
+	</update>
+	<select id="checkLogin" parameterType="String" resultType="UserDTO">
+		SELECT
+			USER_SEQ,
+			USER_LVL,
+			USER_NICK
+		FROM
+			USER_INFO
+		WHERE
+			USER_EMAIL = #{0}
+		AND
+			USER_PW = #{1}
+	</select>
+	
+	<select id="checkEmailDuplicate" parameterType="String" resultType="String">
+		SELECT
+			COUNT(1)
+		FROM
+			USER_INFO
+		WHERE
+			USER_EMAIL = #{0}
+	</select>
+	<insert id="insertUser" parameterType="UserDTO">
+	INSERT INTO USER_INFO(
+		USER_EMAIL,
+		USER_NICK,
+		USER_PW
+	)VALUES(
+		#{USER_EMAIL},
+		#{USER_NICK},
+		#{USER_PW}
+	)
+	</insert>
+</mapper>
