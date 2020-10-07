@@ -7,7 +7,7 @@ import poly.dto.WordQuizDTO;
 
 public interface IRedisNewsWordMapper {
 
-	void saveTodayWordToRedis(List<WordQuizDTO> rList) throws Exception;
+	void saveTodayWordToRedis(List<WordQuizDTO> rList, String newsUrl) throws Exception;
 
 	WordQuizDTO getTodayQuiz(String user_seq) throws Exception;
 	

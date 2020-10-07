@@ -52,7 +52,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 	}
 	
 	@Override
-	public void saveTodayWordToRedis(List<WordQuizDTO> pList) throws Exception {
+	public void saveTodayWordToRedis(List<WordQuizDTO> pList, String newsUrl) throws Exception {
 
 		redisDB.setKeySerializer(new StringRedisSerializer());
 		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
@@ -61,7 +61,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 			log.info("todayQuiz key exists!!");
 			redisDB.delete(COL_NM);
 		}
-
+		
 		quizList = pList;
 		Iterator<WordQuizDTO> quiz = pList.iterator();
 
@@ -73,6 +73,16 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 			redisDB.opsForList().rightPush(COL_NM, wDTO);
 		}
 
+		// url 레디스에 넣기
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new StringRedisSerializer());
+		
+		if (redisDB.hasKey("todayNewsUrl")) {
+			redisDB.delete("todayNewsUrl");
+		}
+		
+		redisDB.opsForValue().getAndSet("todayNewsUrl", newsUrl);
+		
 		Calendar c = Calendar.getInstance();
 
 		// to tomorrow
@@ -82,6 +92,8 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.MILLISECOND, 0);
 
+		
+		
 		redisDB.expireAt(COL_NM, c.getTime());
 
 	}
