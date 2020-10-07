@@ -5,7 +5,7 @@ from pymongo import MongoClient
 import news_recommender
 
 # test
-db = MongoClient('192.168.136.132',
+db = MongoClient('127.0.0.1',
     username='droomii',
     password='Data19!@',
     authSource='admin',

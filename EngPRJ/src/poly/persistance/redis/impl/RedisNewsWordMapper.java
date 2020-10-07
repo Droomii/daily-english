@@ -363,17 +363,19 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 			redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(WordQuizDTO.class));
 			quizList = (List) redisDB.opsForList().range(COL_NM, 0, -1);
 		}
+		
+		String newsUrl = getTodayNewsUrl();
+		
 		int i = 0;
 		String lastSentence = "";
 		for(WordQuizDTO wqDTO : quizList) {
 			String sentence = wqDTO.getOriginalSentence();
 			if(!sentence.equals(lastSentence)) {
-				TTSUtil.saveTTS(i, sentence);
+				TTSUtil.saveTTS(i, sentence, newsUrl);
 			}
 			lastSentence = sentence;
 			i++;
 		}
-		
 	}
 
 	@Override
@@ -398,6 +400,13 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		};
 		
 		return rList;
+	}
+
+	@Override
+	public String getTodayNewsUrl() throws Exception {
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new StringRedisSerializer());
+		return (String)redisDB.opsForValue().get("todayNewsUrl");
 	}
 
 }

@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -26,6 +28,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import poly.persistance.redis.IRedisNewsWordMapper;
 import poly.service.IAudioService;
 import poly.util.TTSUtil;
 
@@ -34,14 +37,18 @@ public class AudioService implements IAudioService{
 
 	Logger log = Logger.getLogger(this.getClass());
 	
+	@Resource(name = "RedisNewsWordMapper")
+	IRedisNewsWordMapper redisNewsWordMapper;
+	
 	@Override
 	public byte[] getTodaySentenceAudio(String idx) throws Exception {
 		
-		String today = TTSUtil.sdf.format(new Date());
+		
+		String newsUrl = redisNewsWordMapper.getTodayNewsUrl();
 		
 		// fixed date to 200619 for development purpose
 		// String finalPath = TTSUtil.TTS_PATH + today + TTSUtil.SLASH + idx + ".ogg";
-		String finalPath = TTSUtil.TTS_PATH + today + TTSUtil.SLASH + idx + ".ogg";
+		String finalPath = TTSUtil.TTS_PATH + newsUrl + TTSUtil.SLASH + idx + ".ogg";
 		
 		File f = new File(finalPath);
 		InputStream in = new FileInputStream(f);

@@ -27,4 +27,6 @@ public interface IRedisNewsWordMapper {
 
 	List<Map<String, Object>> getTodaySentences() throws Exception;
 
+	String getTodayNewsUrl() throws Exception;
+
 }
