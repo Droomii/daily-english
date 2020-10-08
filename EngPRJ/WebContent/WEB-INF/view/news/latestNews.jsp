@@ -1,3 +1,5 @@
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.List"%>
 <%@page import="poly.dto.NewsDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -5,6 +7,10 @@
 
 	String pageTitle = "뉴스 원문";
 	NewsDTO rDTO = (NewsDTO)request.getAttribute("news");
+	List<NewsDTO> relatedArticles = (List<NewsDTO>)request.getAttribute("relatedArticles");
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	SimpleDateFormat sdfOut = new SimpleDateFormat("yyyy-MM-dd");
+	
 
 %>
 <!DOCTYPE html>
@@ -15,6 +21,17 @@
   .hl{
   	background-color: #FFFF00;
   	font-weight:700;
+  }
+  .related-content{
+  	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+  }
+  
+  .related-card:hover{
+  	background-color:rgb(245,245,245);
   }
   
   </style>
@@ -45,7 +62,7 @@
 				</div>
 				<div class="card-body">
 				<div class="card-text">
-				<h4 style="font-weight:700"><%=rDTO.getNewsTitle() %></h4>
+				<h2 style="font-weight:700"><%=rDTO.getNewsTitle() %></h2>
 				<h4><%="("+rDTO.getTranslatedTitle() + ")"%></h4>
 				<br>
 				</div>
@@ -63,6 +80,18 @@
 				<br>
 				<%i++;} %>
 				</div>
+				<hr>
+				<h3 style="font-weight:700">비슷한 영문기사 더 보기</h3>
+				<%for(NewsDTO related : relatedArticles){ %>
+				<a href="http://www.koreaherald.com/view.php?ud=<%=related.getNewsUrl()%>" target='_blank'>
+				<div class='card-text p-1 mt-1 shadow-sm rounded related-card' style='border:1px solid rgb(240,240,240)'>
+				<h4 class='related-title' style="font-weight:700"><%=related.getNewsTitle() %></h4>
+				<div class='related-content' style='color:grey'><%=String.join(" ", related.getOriginalSentences().subList(0, 2)) %></div>
+				<div class='mt-1' style='color:rgb(200,200,200)'><%=sdfOut.format(sdf.parse(related.getNewsUrl().substring(0,8))) %></div>
+				</div>
+				</a>
+				<%} %>
+				<hr>
 				</div>
 			</div>
 			

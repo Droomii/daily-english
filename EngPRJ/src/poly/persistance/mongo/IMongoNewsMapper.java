@@ -49,7 +49,9 @@ public interface IMongoNewsMapper {
 
 	boolean newsExists(NewsDTO nDTO) throws Exception;
 
-	NewsDTO getNews(String todayNewsUrl) throws Exception; 
+	NewsDTO getNews(String todayNewsUrl) throws Exception;
+
+	List<NewsDTO> getRelatedArticles(String newsUrl) throws Exception; 
 
 
 }

@@ -23,6 +23,7 @@
 hs_err_pid*
 
 /Servers
+/flask/__pycache__
 /.metadata
 /EngPRJ/target/
 /EngPRJ/.classpath
