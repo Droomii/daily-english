@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 
@@ -91,7 +92,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		c.set(Calendar.MINUTE, 0);
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.MILLISECOND, 0);
-
+		c.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 		
 		redisDB.expireAt("todayNewsUrl", c.getTime());
 		redisDB.expireAt(COL_NM, c.getTime());

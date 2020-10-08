@@ -33,6 +33,13 @@ public class TTSUtil {
 	public static final String FFMPEG_PATH = IS_WINDOWS ? "C:\\ffmpeg\\bin\\ffmpeg.exe" : "ffmpeg";
 
 	public static void saveTTS(int index, String sentence, String newsUrl) throws IOException, UnsupportedAudioFileException {
+		File dir = new File(TTS_PATH + newsUrl + SLASH);
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}else {
+			return;
+		}
+		
 		try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
 			// Set the text input to be synthesized
 			SynthesisInput input = SynthesisInput.newBuilder().setText(sentence).build();
@@ -54,10 +61,7 @@ public class TTSUtil {
 			// Get the audio contents from the response
 			ByteString audioContents = response.getAudioContent();
 
-			File dir = new File(TTS_PATH + newsUrl + SLASH);
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
+			
 			String finalDir = dir + SLASH + Integer.toString(index);
 
 			// Write the response to the output file.
