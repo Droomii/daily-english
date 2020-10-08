@@ -42,29 +42,7 @@ public class NewsController {
 		return "/nlpForm";
 	}
 
-	@RequestMapping(value = "saveNews")
-	@ResponseBody
-	public NewsDTO doNLP(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
-			throws Exception {
-		log.info(this.getClass().getName() + ".lemmatize start");
 
-		String title = null;
-		String inputText = request.getParameter("inputText");
-		String newsUrl = null;
-		if (inputText == null) {
-			String[] crawlRes = WebCrawler.crawlHerald();
-			title = crawlRes[0];
-			inputText = crawlRes[1];
-			newsUrl = crawlRes[2];
-			log.info("inputText : " + inputText);
-		}
-
-		NewsDTO rDTO = newsService.nlpAndSaveNews(title, inputText, newsUrl);
-		newsWordService.saveTodayTTS();
-
-		log.info(this.getClass().getName() + ".lemmatize end");
-		return rDTO;
-	}
 
 	@RequestMapping(value = "today/todayNews")
 	public String getLatestNews(HttpServletRequest request, HttpServletResponse response, HttpSession session,
@@ -94,9 +72,10 @@ public class NewsController {
 		}
 		NewsDTO news = newsService.getLatestNews();
 		newsWordService.highlightWords(news);
-
+		List<NewsDTO> relatedArticles = newsService.getRelatedArticles(news.getNewsUrl());
 		model.addAttribute("news", news);
-
+		model.addAttribute("relatedArticles", relatedArticles);
+		log.info("relatedArticles.size() : " + relatedArticles.size());
 		log.info(this.getClass().getName() + ".getNews end");
 		return "/news/latestNews";
 	}
@@ -148,6 +127,31 @@ public class NewsController {
 		return "success";
 	}
 	
+	@RequestMapping(value = "saveNews")
+	@ResponseBody
+	public NewsDTO doNLP(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".lemmatize start");
+
+		String title = null;
+		String inputText = request.getParameter("inputText");
+		String newsUrl = null;
+		if (inputText == null) {
+			String[] crawlRes = WebCrawler.crawlHerald();
+			title = crawlRes[0];
+			inputText = crawlRes[1];
+			newsUrl = crawlRes[2];
+			log.info("inputText : " + inputText);
+		}
+
+		NewsDTO rDTO = newsService.nlpAndSaveNews(title, inputText, newsUrl);
+		newsWordService.saveTodayTTS();
+
+		log.info(this.getClass().getName() + ".lemmatize end");
+		return rDTO;
+	}
+	
+	
 	@ResponseBody
 	@RequestMapping(value = "saveLatestNews")
 	public String saveLatestNews(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
@@ -155,6 +159,7 @@ public class NewsController {
 		log.info(this.getClass().getName() + ".saveLatestNews start");
 
 		newsService.saveLatestNews();
+		newsWordService.saveTodayTTS();
 		log.info(this.getClass().getName() + ".saveLatestNews end");
 		return "success";
 	}

@@ -29,4 +29,6 @@ public interface IRedisNewsWordMapper {
 
 	String getTodayNewsUrl() throws Exception;
 
+	void saveTodayNewsUrl(String headlineUrl) throws Exception;
+
 }

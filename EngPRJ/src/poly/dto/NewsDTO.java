@@ -34,7 +34,6 @@ public class NewsDTO {
 	private List<List<String>> pos;
 	private Date insertDate;
 	private String newsUrl;
-	private final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMdd");
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
@@ -93,7 +92,7 @@ public class NewsDTO {
 		if(translate) {
 			translate();
 		}
-		this.insertDate = SDF.parse(newsUrl.substring(0, 8));
+		this.insertDate = new Date();
 	}
 	
 	

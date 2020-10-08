@@ -310,10 +310,21 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		}
 		mongodb.getCollection("tfIdfCol").insert(tfList);
 	}
-	
-
-
-
-	
-
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<NewsDTO> getRelatedArticles(String newsUrl) throws Exception {
+		DBObject query = new BasicDBObject("newsUrl", newsUrl);
+		List<String> related = (List<String>)mongodb.getCollection("relatedArticles").findOne(query)
+				.get("related");
+		
+		log.info("related : " + related);
+		query = new BasicDBObject("newsUrl", new BasicDBObject("$in", related));
+		
+		DBCursor relatedArticlesCursor = mongodb.getCollection("news").find(query);
+		
+		List<NewsDTO> rList = new ArrayList<>();
+		relatedArticlesCursor.forEach(a -> rList.add(new NewsDTO(a)));
+		
+		return rList;
+	}
 }

@@ -1,5 +1,6 @@
 package poly.service;
 
+import java.util.List;
 import java.util.Set;
 
 import poly.dto.NewsDTO;
@@ -25,5 +26,7 @@ public interface INewsService {
 	Set<String> findNotIn() throws Exception;
 
 	void tfIdfTodayNews() throws Exception;
+
+	List<NewsDTO> getRelatedArticles(String newsUrl) throws Exception;
 
 }

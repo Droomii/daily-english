@@ -400,4 +400,20 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		return (String)redisDB.opsForValue().get("todayNewsUrl");
 	}
 
+	@Override
+	public void saveTodayNewsUrl(String headlineUrl) throws Exception {
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new StringRedisSerializer());
+		
+		if (redisDB.hasKey("todayNewsUrl")) {
+			redisDB.delete("todayNewsUrl");
+		}
+		
+		redisDB.opsForValue().getAndSet("todayNewsUrl", headlineUrl);
+
+		redisDB.expireAt("todayNewsUrl", getTomorrow());
+		redisDB.expireAt(COL_NM, getTomorrow());
+		
+	}
+
 }

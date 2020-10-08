@@ -59,7 +59,8 @@ public class NewsService implements INewsService{
 
 	@Override
 	public NewsDTO getLatestNews() throws Exception {
-		NewsDTO rDTO = mongoNewsMapper.getLatestNews();
+		String todayNewsUrl = redisNewsWordMapper.getTodayNewsUrl();
+		NewsDTO rDTO = mongoNewsMapper.getNews(todayNewsUrl);
 		return rDTO;
 	}
 	
@@ -133,7 +134,8 @@ public class NewsService implements INewsService{
 	public void saveLatestNews() throws Exception {
 		log.info(this.getClass().getName() + ".saveLatestNews start");
 		Set<String> articleSet = new HashSet<>();
-
+		String headlineUrl = WebCrawler.crawlHerald()[2];
+		redisNewsWordMapper.saveTodayNewsUrl(headlineUrl);
 		List<NewsDTO> newArticles = new ArrayList<>();
 		int np = 1;
 		boolean duplicate = false;
@@ -148,7 +150,11 @@ public class NewsService implements INewsService{
 					Pattern p = Pattern.compile("[가-힣]");
 					Matcher m = p.matcher(news[0]);
 					if(m.find()) continue;
-					NewsDTO nDTO = new NewsDTO(news, false);
+					NewsDTO nDTO = new NewsDTO(news, newArticle.equals(headlineUrl));
+					if(newArticle.equals(headlineUrl)) {
+						log.info(newArticle + " is headline");
+						newsWordService.saveTodayWordToRedis(nDTO);
+					}
 					
 					if(nDTO.getOriginalSentences().isEmpty()) continue;
 					
@@ -210,6 +216,12 @@ public class NewsService implements INewsService{
 		
 		log.info(this.getClass().getName() + ".tfIdfTodayNews end");
 		
+	}
+
+	@Override
+	public List<NewsDTO> getRelatedArticles(String newsUrl) throws Exception {
+		
+		return mongoNewsMapper.getRelatedArticles(newsUrl);
 	}
 
 	
