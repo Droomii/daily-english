@@ -83,19 +83,9 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		}
 		
 		redisDB.opsForValue().getAndSet("todayNewsUrl", newsUrl);
-		
-		Calendar c = Calendar.getInstance();
 
-		// to tomorrow
-		c.add(Calendar.DATE, 1);
-		c.set(Calendar.HOUR_OF_DAY, 7);
-		c.set(Calendar.MINUTE, 0);
-		c.set(Calendar.SECOND, 0);
-		c.set(Calendar.MILLISECOND, 0);
-		c.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-		
-		redisDB.expireAt("todayNewsUrl", c.getTime());
-		redisDB.expireAt(COL_NM, c.getTime());
+		redisDB.expireAt("todayNewsUrl", getTomorrow());
+		redisDB.expireAt(COL_NM, getTomorrow());
 
 	}
 
@@ -230,7 +220,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		c.set(Calendar.MINUTE, 0);
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.MILLISECOND, 0);
-
+		c.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 		return c.getTime();
 	}
 
