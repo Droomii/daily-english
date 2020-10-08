@@ -159,6 +159,17 @@ public class NewsController {
 		return "success";
 	}
 	
+	@RequestMapping(value = "tfIdfTodayNews")
+	@ResponseBody
+	public String tfIdfTodayNews(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".tfIdfTodayNews start");
+		newsService.tfIdfTodayNews();
+		
+		log.info(this.getClass().getName() + ".tfIdfTodayNews end");
+		return "success";
+	}
+	
 	@ResponseBody
 	@RequestMapping(value = "notIn")
 	public Set<String> notIn(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)

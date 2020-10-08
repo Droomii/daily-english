@@ -1,9 +1,9 @@
 package poly.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -15,9 +15,11 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.mongodb.DBCursor;
+import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
 import poly.dto.NewsDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
+import poly.persistance.redis.IRedisNewsWordMapper;
 import poly.service.INewsService;
 import poly.service.INewsWordService;
 import poly.service.ITfIdfService;
@@ -35,6 +37,9 @@ public class NewsService implements INewsService{
 	
 	@Resource(name = "TfIdfService")
 	ITfIdfService tfIdfService;
+	
+	@Resource(name = "RedisNewsWordMapper")
+	IRedisNewsWordMapper redisNewsWordMapper;
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
@@ -172,7 +177,7 @@ public class NewsService implements INewsService{
 	@Override
 	public String saveRelatedArticles() throws Exception {
 		
-		String requestURL = "http://192.168.136.132:5000/saveRelatedArticles";
+		String requestURL = "http://localhost:5000/saveRelatedArticles";
 		
 		return UrlUtil.request(requestURL, false);
 	}
@@ -193,6 +198,18 @@ public class NewsService implements INewsService{
 		articleSet.removeAll(analyzedSet);
 		
 		return articleSet;
+	}
+
+	@Override
+	public void tfIdfTodayNews() throws Exception {
+		log.info(this.getClass().getName() + ".tfIdfTodayNews start");
+		String todayNewsUrl = redisNewsWordMapper.getTodayNewsUrl();
+		log.info("todayNewsUrl : " + todayNewsUrl);
+		NewsDTO todayNews = mongoNewsMapper.getNews(todayNewsUrl);
+		tfIdfService.insertNewArticles(Arrays.asList(todayNews));
+		
+		log.info(this.getClass().getName() + ".tfIdfTodayNews end");
+		
 	}
 
 	

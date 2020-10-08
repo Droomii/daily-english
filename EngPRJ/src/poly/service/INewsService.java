@@ -24,4 +24,6 @@ public interface INewsService {
 
 	Set<String> findNotIn() throws Exception;
 
+	void tfIdfTodayNews() throws Exception;
+
 }

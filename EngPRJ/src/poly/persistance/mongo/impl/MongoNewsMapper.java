@@ -101,6 +101,12 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 	}
 
 	@Override
+	public NewsDTO getNews(String todayNewsUrl) throws Exception {
+		return new NewsDTO(mongodb.getCollection(COL_NM).findOne(new BasicDBObject("newsUrl", todayNewsUrl)));
+	}
+	
+	
+	@Override
 	public DBCursor getAllArticles() throws Exception {
 		return mongodb.getCollection(COL_NM).find().sort(new BasicDBObject("_id", -1));
 	}
@@ -257,21 +263,26 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		}
 		log.info("update df start");
 		final long totalWords = mongodb.getCollection("news").count();
-		df.forEach((k, v)->{
+		
+		int size = df.size();
+		int i = 1;
+		for(String k : df.keySet()) {
+			Long v = df.get(k);
+			
 			// df update
 			DBObject query = new BasicDBObject("word", k);
 			log.info("incrementing : " + k);
 			DBObject update = new BasicDBObject("$inc", new BasicDBObject("cnt", v.longValue()));
 			mongodb.getCollection("dfCol").update(query, update, true, false);
 			// idf update
-			log.info("updating idf : " + k);
+			log.info(i++ + "/" + size + "updating idf : " + k);
 			DBObject after = mongodb.getCollection("dfCol").findOne(query);
 			double cnt = ((Long)after.get("cnt")).doubleValue();
 			double idf = Math.log(totalWords / cnt);
 			
 			update = new BasicDBObject("word", k).append("idf", idf);
 			mongodb.getCollection("idfCol").update(query, update, true, false);
-		});
+		}
 		
 		
 	}
@@ -282,9 +293,11 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		Map<String, Double> rMap = new HashMap<>();
 		DBObject query = new BasicDBObject("word", new BasicDBObject("$in", keySet));
 		DBCursor cursor = mongodb.getCollection("idfCol").find(query);
+		int size = cursor.size();
+		int i = 1;
 		for(DBObject res : cursor) {
 			rMap.put((String)res.get("word"), (Double)res.get("idf"));
-			log.info("getting idf : " + (String)res.get("word"));
+			log.info(i++ + "/" + size + " getting idf : " + (String)res.get("word"));
 		}
 		return rMap;
 	}
@@ -297,6 +310,7 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		}
 		mongodb.getCollection("tfIdfCol").insert(tfList);
 	}
+	
 
 
 
