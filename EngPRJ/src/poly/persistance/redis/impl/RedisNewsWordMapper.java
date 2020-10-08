@@ -93,7 +93,7 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		c.set(Calendar.MILLISECOND, 0);
 
 		
-		
+		redisDB.expireAt("todayNewsUrl", c.getTime());
 		redisDB.expireAt(COL_NM, c.getTime());
 
 	}

@@ -57,7 +57,7 @@ public class AudioService implements IAudioService{
 
 	@Override
 	public Map<String, Object> analyzeAudio(String data, String sentenceAudioIdx) throws Exception {
-		String requestURL = "http://192.168.11.128:5000/score";
+		String requestURL = "http://localhost:5000/score";
 		
 		HttpClient httpClient = new DefaultHttpClient();
 		
@@ -106,7 +106,7 @@ public class AudioService implements IAudioService{
 
 	@Override
 	public byte[] getAnswerAudioFromOuter(String answer_temp_file) throws Exception {
-		String requestURL = "http://192.168.11.128:8080/audio/getAnswerAudio.do";
+		String requestURL = "http://localhost:8080/audio/getAnswerAudio.do";
 		
 		HttpClient httpClient = new DefaultHttpClient();
 		
