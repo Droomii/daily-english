@@ -42,6 +42,10 @@ public class QuizController {
 			model = sessionModel;
 			return "/redirect";
 		}
+		String user_seq = (String) session.getAttribute("user_seq");
+		if(user_seq==null) {
+			user_seq = "1";
+		}
 		
 		String user_lvl = (String) session.getAttribute("user_lvl");
 		log.info("user_lvl : " + user_lvl);
@@ -52,6 +56,28 @@ public class QuizController {
 			model.addAttribute("msg", msg);
 			return "/redirect";
 		}
+		
+		WordQuizDTO qDTO = null;
+		
+		try {
+			qDTO = newsWordService.getRandomTodayQuiz(user_seq);
+			
+			}catch (IllegalArgumentException e) {
+				
+				NewsDTO news = newsService.getLatestNews();
+				newsWordService.saveTodayWordToRedis(news);
+				qDTO = newsWordService.getRandomTodayQuiz(user_seq);
+				
+			}
+		
+		if(qDTO.getIdx()==-1) {
+			String url = "/today/todayNews.do";
+			String msg = "오늘의 퀴즈를 이미 풀었습니다.";
+			model.addAttribute("url", url);
+			model.addAttribute("msg", msg);
+			return "/redirect";
+		}
+		
 		log.info(this.getClass().getName() + ".todayQuiz end");
 		return "/today/todayQuiz";
 	}
