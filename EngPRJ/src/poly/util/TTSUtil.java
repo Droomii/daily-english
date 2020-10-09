@@ -36,9 +36,12 @@ public class TTSUtil {
 		File dir = new File(TTS_PATH + newsUrl + SLASH);
 		if (!dir.exists()) {
 			dir.mkdirs();
-		}else {
-			return;
 		}
+		
+		String finalDir = dir + SLASH + index;
+		
+		File existCheck = new File(finalDir + ".wav");
+		if(existCheck.exists()) return;
 		
 		try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
 			// Set the text input to be synthesized
@@ -62,7 +65,7 @@ public class TTSUtil {
 			ByteString audioContents = response.getAudioContent();
 
 			
-			String finalDir = dir + SLASH + Integer.toString(index);
+			
 
 			// Write the response to the output file.
 			try (OutputStream out = new FileOutputStream(finalDir + ".wav")) {

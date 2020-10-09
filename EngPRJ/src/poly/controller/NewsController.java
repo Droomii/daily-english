@@ -159,6 +159,7 @@ public class NewsController {
 		log.info(this.getClass().getName() + ".saveLatestNews start");
 
 		newsService.saveLatestNews();
+		newsService.saveRelatedArticles();
 		newsWordService.saveTodayTTS();
 		log.info(this.getClass().getName() + ".saveLatestNews end");
 		return "success";

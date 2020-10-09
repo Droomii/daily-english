@@ -150,11 +150,7 @@ public class NewsService implements INewsService{
 					Pattern p = Pattern.compile("[가-힣]");
 					Matcher m = p.matcher(news[0]);
 					if(m.find()) continue;
-					NewsDTO nDTO = new NewsDTO(news, newArticle.equals(headlineUrl));
-					if(newArticle.equals(headlineUrl)) {
-						log.info(newArticle + " is headline");
-						newsWordService.saveTodayWordToRedis(nDTO);
-					}
+					NewsDTO nDTO = new NewsDTO(news, false);
 					
 					if(nDTO.getOriginalSentences().isEmpty()) continue;
 					
