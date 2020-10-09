@@ -4,9 +4,12 @@ from sklearn.preprocessing import Normalizer, MaxAbsScaler
 from sklearn.pipeline import make_pipeline
 
 def save_related_articles(db):
-    if 'relatedArticles' not in db.collection_names():
-        db.create_collection('relatedArticles')
-        db.relatedArticles.create_index('newsUrl')
+
+    if 'relatedArticles' in db.collection_names():
+        db.drop_collection('relatedArticles')
+    
+    db.create_collection('relatedArticles')
+    db.relatedArticles.create_index('newsUrl')
     
     articles = []
     index = []
