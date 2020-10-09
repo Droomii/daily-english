@@ -54,8 +54,8 @@
 
 <!-- Header footer section start -->
 <section id="header-footer">
-	<div class="row match-height">
-		<div class="col-lg-6 offset-lg-3 col-md-12">
+	<div class="row match-height justify-content-center">
+		<div style="max-width:50rem">
 			<div class="card">
 				<div class="card-header">
 					<h4 class="card-title text-center mb-0" style="font-size:1.5rem;"><i class="la la-book" style="font-size:2rem;vertical-align:center;"></i><span style="font-size:2rem">오늘의 뉴스</span></h4>

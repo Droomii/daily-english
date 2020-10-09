@@ -62,8 +62,8 @@
 
 <!-- Header footer section start -->
 <section id="header-footer">
-	<div class="row match-height">
-		<div class="col-lg-12 col-md-12">
+	<div class="row match-height justify-content-center">
+		<div style="max-width:50rem">
 			<div class="card">
 				<div class="card-header">
 					<h4 class="card-title mb-0" style="font-size:1.5rem">오늘의 문장 따라하기</h4>
