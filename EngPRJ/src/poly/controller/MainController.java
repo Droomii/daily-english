@@ -1,7 +1,8 @@
 package poly.controller;
 
-import javax.annotation.Resource;
 import static poly.util.CmmUtil.nvl;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -13,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import poly.dto.NewsDTO;
 import poly.dto.UserDTO;
+import poly.service.INewsService;
 import poly.service.IUserService;
+import poly.util.WebCrawler;
 
 @Controller
 public class MainController {
@@ -23,6 +27,10 @@ public class MainController {
 	
 	@Resource(name = "UserService")
 	IUserService userService;
+	
+	@Resource(name = "NewsService")
+	INewsService newsService;
+	
 	
 	@RequestMapping(value = "index")
 	public String index(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
@@ -44,6 +52,10 @@ public class MainController {
 			return "/redirect";
 		}
 		
+		NewsDTO nDTO = newsService.getLatestNews();
+		String imgUrl = WebCrawler.getImageUrl(nDTO.getNewsUrl());
+		model.addAttribute("imgUrl", imgUrl);
+		model.addAttribute("nDTO", nDTO);
 		log.info(this.getClass().getName() + ".index end");
 		return "/index";
 	}

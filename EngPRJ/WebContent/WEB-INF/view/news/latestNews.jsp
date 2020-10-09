@@ -30,8 +30,8 @@
 	-webkit-box-orient: vertical;
   }
   
-  .related-card:hover{
-  	background-color:rgb(245,245,245);
+  .related-card:hover .related-content{
+  	text-decoration: underline;
   }
   
   </style>
@@ -66,6 +66,7 @@
 				<h4><%="("+rDTO.getTranslatedTitle() + ")"%></h4>
 				<br>
 				</div>
+				<img class="img-fluid mb-3" src="http://res.heraldm.com/content/image/2020/10/09/20201009000058_0.jpg" alt="Card image cap">
 				<div class="card-text">
 				<%
 				int i = 0;
