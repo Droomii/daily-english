@@ -2,6 +2,7 @@ from flask import Flask, request
 from analyzer import pitch_score
 from tempfile import TemporaryFile
 from pymongo import MongoClient
+from redis import Redis
 import news_recommender
 
 # test
@@ -10,6 +11,8 @@ db = MongoClient('127.0.0.1',
     password='Data19!@',
     authSource='admin',
     authMechanism='SCRAM-SHA-256').MyDB
+
+rd = Redis(host='localhost', password='Data19!@')
 
 app = Flask(__name__)
 
@@ -32,7 +35,7 @@ def score():
     if request.form:
         example = request.form['idx']
         answer = request.form['data']
-        date = request.form['date']
+        date = rd.get('todayNewsUrl').decode('utf-8')
         if example is None:
             return 'example is null!!'
         if answer is None:
