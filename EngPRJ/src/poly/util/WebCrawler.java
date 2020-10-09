@@ -48,6 +48,14 @@ public class WebCrawler {
 		return crawlHerald(href);
 
 	}
+	
+	public static String getImageUrl(String newsUrl) throws Exception{
+		Document article = connectToArticle(newsUrl);
+		Element articleText = article.selectFirst("div#articleText");
+		Element img = articleText.selectFirst("img");
+		String url = img.attr("src");
+		return url;
+	}
 
 	public static String[] crawlHerald(String article) throws Exception {
 		return crawlHerald(connectToArticle(article), article);
