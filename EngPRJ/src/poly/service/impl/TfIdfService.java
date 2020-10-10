@@ -43,23 +43,20 @@ public class TfIdfService implements ITfIdfService {
 		long end = System.currentTimeMillis();
 		log.info("elapsed : " + (end - start));
 		int i = 1;
-		List<NewsDTO> articleList = new ArrayList<>();
-		while (articles.hasNext()) {
-//		for(int i = 0 ;i < 100; i++) {
+
+		// 기사별 단어 빈도수 계산
+		
+		// df 담을 맵
+		List<DBObject> tfList = new ArrayList<>();
+		Map<String, Long> df = new HashMap<>();
+		
+		while(articles.hasNext()) {
 			DBObject obj = articles.next();
 			NewsDTO nDTO = new NewsDTO();
 			nDTO.setLemmas((List<List<String>>) obj.get("lemmas"));
 			nDTO.setNewsTitle((String) obj.get("newsTitle"));
 			nDTO.setNewsUrl((String) obj.get("newsUrl"));
-			log.info("adding " + i++ + ": " + nDTO.getNewsTitle());
-			articleList.add(nDTO);
-		}
-		// 기사별 단어 빈도수 계산
-		List<DBObject> tfList = new ArrayList<>();
-		Map<String, Long> df = new HashMap<>();
-		// df 담을 맵
-		i = 1;
-		for (NewsDTO nDTO : articleList) {
+			
 			int wordTot = 0;
 			log.info("counting " + i++ + ": " + nDTO.getNewsTitle());
 			Map<String, Integer> wc = new HashMap<String, Integer>();
@@ -95,7 +92,7 @@ public class TfIdfService implements ITfIdfService {
 			}
 		}
 		mongoNewsMapper.insertNewsTfAll(tfList);
-//		mongoNewsMapper.insertDf(df);
+		mongoNewsMapper.insertDf(df);
 
 	}
 
