@@ -29,3 +29,4 @@ hs_err_pid*
 /EngPRJ/.classpath
 .DS_Store
 /RemoteSystemsTempFiles/
+/EngPRJ/WebContent/WEB-INF/classes/
