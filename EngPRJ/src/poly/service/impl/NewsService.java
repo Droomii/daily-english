@@ -60,8 +60,14 @@ public class NewsService implements INewsService{
 	@Override
 	public NewsDTO getLatestNews() throws Exception {
 		String todayNewsUrl = redisNewsWordMapper.getTodayNewsUrl();
-		NewsDTO rDTO = mongoNewsMapper.getNews(todayNewsUrl);
-		return rDTO;
+		log.info("todayNewsUrl : " + todayNewsUrl);
+		try {
+			NewsDTO rDTO = mongoNewsMapper.getNews(todayNewsUrl);
+			return rDTO;
+		}catch(NullPointerException e) {
+			return null;
+		}
+		
 	}
 	
 	
@@ -218,6 +224,24 @@ public class NewsService implements INewsService{
 	public List<NewsDTO> getRelatedArticles(String newsUrl) throws Exception {
 		
 		return mongoNewsMapper.getRelatedArticles(newsUrl);
+	}
+
+	@Override
+	public void saveHeadlineNews() throws Exception {
+		
+		String todayNewsUrl = redisNewsWordMapper.getTodayNewsUrl();
+		NewsDTO headline = new NewsDTO();
+		headline.setNewsUrl(todayNewsUrl);
+		if(mongoNewsMapper.newsExists(headline)) {
+			headline = mongoNewsMapper.getNews(todayNewsUrl);
+			headline.translate();
+			mongoNewsMapper.updateNews(headline);
+			newsWordService.saveTodayWordToRedis(headline);
+		}
+		
+		
+		
+		
 	}
 
 	

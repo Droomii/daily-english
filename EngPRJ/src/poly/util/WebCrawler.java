@@ -50,11 +50,15 @@ public class WebCrawler {
 	}
 	
 	public static String getImageUrl(String newsUrl) throws Exception{
-		Document article = connectToArticle(newsUrl);
-		Element articleText = article.selectFirst("div#articleText");
-		Element img = articleText.selectFirst("img");
-		String url = img.attr("src");
-		return url;
+		try {
+			Document article = connectToArticle(newsUrl);
+			Element articleText = article.selectFirst("div#articleText");
+			Element img = articleText.selectFirst("img");
+			String url = img.attr("src");
+			return url;
+		}catch(Exception e) {
+			return "";
+		}
 	}
 
 	public static String[] crawlHerald(String article) throws Exception {

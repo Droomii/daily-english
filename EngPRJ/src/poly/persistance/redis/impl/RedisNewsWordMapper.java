@@ -348,6 +348,8 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 
 	@Override
 	public void saveTodayTTS() throws Exception {
+		
+		log.info(this.getClass().getName() + ".saveTodayTTS start");
 		redisDB.setKeySerializer(new StringRedisSerializer());
 
 		if (quizList == null) {

@@ -74,6 +74,10 @@ public class NewsController {
 		newsWordService.highlightWords(news);
 		List<NewsDTO> relatedArticles = newsService.getRelatedArticles(news.getNewsUrl());
 		model.addAttribute("news", news);
+		
+		String imgUrl = WebCrawler.getImageUrl(news.getNewsUrl());
+		model.addAttribute("imgUrl", imgUrl);
+		
 		model.addAttribute("relatedArticles", relatedArticles);
 		log.info("relatedArticles.size() : " + relatedArticles.size());
 		log.info(this.getClass().getName() + ".getNews end");
@@ -159,9 +163,21 @@ public class NewsController {
 		log.info(this.getClass().getName() + ".saveLatestNews start");
 
 		newsService.saveLatestNews();
+		newsService.saveHeadlineNews();
 		newsService.saveRelatedArticles();
 		newsWordService.saveTodayTTS();
 		log.info(this.getClass().getName() + ".saveLatestNews end");
+		return "success";
+	}
+	
+	@RequestMapping(value = "saveHeadline")
+	@ResponseBody
+	public String saveHeadline(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".saveHeadline start");
+
+		newsService.saveHeadlineNews();
+		log.info(this.getClass().getName() + ".saveHeadline end");
 		return "success";
 	}
 	
