@@ -327,4 +327,10 @@ public class MongoNewsMapper implements IMongoNewsMapper {
 		
 		return rList;
 	}
+	@Override
+	public void updateNews(NewsDTO headline) throws Exception {
+		DBObject query = new BasicDBObject("newsUrl", headline.getNewsUrl());
+		mongodb.getCollection("news").update(query, new BasicDBObject(headline.toMap()));
+		
+	}
 }

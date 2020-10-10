@@ -51,7 +51,9 @@ public interface IMongoNewsMapper {
 
 	NewsDTO getNews(String todayNewsUrl) throws Exception;
 
-	List<NewsDTO> getRelatedArticles(String newsUrl) throws Exception; 
+	List<NewsDTO> getRelatedArticles(String newsUrl) throws Exception;
+
+	void updateNews(NewsDTO headline) throws Exception; 
 
 
 }

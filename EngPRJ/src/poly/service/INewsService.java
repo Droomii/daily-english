@@ -29,4 +29,6 @@ public interface INewsService {
 
 	List<NewsDTO> getRelatedArticles(String newsUrl) throws Exception;
 
+	void saveHeadlineNews() throws Exception;
+
 }

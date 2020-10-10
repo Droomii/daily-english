@@ -10,7 +10,7 @@
 	List<NewsDTO> relatedArticles = (List<NewsDTO>)request.getAttribute("relatedArticles");
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 	SimpleDateFormat sdfOut = new SimpleDateFormat("yyyy-MM-dd");
-	
+	String imgUrl = (String)request.getAttribute("imgUrl");
 
 %>
 <!DOCTYPE html>
@@ -66,7 +66,7 @@
 				<h4><%="("+rDTO.getTranslatedTitle() + ")"%></h4>
 				<br>
 				</div>
-				<img class="img-fluid mb-3" src="http://res.heraldm.com/content/image/2020/10/09/20201009000058_0.jpg" alt="Card image cap">
+				<img class="img-fluid mb-3" src="<%=imgUrl %>" alt="Card image cap">
 				<div class="card-text">
 				<%
 				int i = 0;
