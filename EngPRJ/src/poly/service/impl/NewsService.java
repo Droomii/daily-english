@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.mongodb.DBCursor;
@@ -72,15 +73,14 @@ public class NewsService implements INewsService{
 	
 	
 	@Override
-	//@Scheduled(cron="0 0 7 ? * *")
+	@Scheduled(cron="0 0 7 ? * *")
 	public void scheduleCrawl() throws Exception{
 		
 		log.info(this.getClass().getName() + ".scheduleCrawl start");
-		String[] crawlRes = WebCrawler.crawlHerald();
-		String title = crawlRes[0];
-		String inputText = crawlRes[1];
-		String newsUrl = crawlRes[2];
-		nlpAndSaveNews(title, inputText, newsUrl);
+		saveLatestNews();
+		saveHeadlineNews();
+		saveRelatedArticles();
+		newsWordService.saveTodayTTS();
 		log.info(this.getClass().getName() + ".scheduleCrawl end");
 		
 	}
