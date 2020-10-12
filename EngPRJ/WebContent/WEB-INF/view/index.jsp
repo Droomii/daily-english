@@ -27,12 +27,12 @@
 <head>
   <%@ include file="/WEB-INF/view/header.jsp" %>
   <style>
-  /*
-  .card:hover{
+  
+  .card-button:hover{
   	background-color:rgb(230,230,230);
   	cursor: pointer;
   }
-  */
+  
   
   .headline-card:hover{
   	cursor: pointer;
@@ -131,6 +131,8 @@
 			</div>
 		</div>
 		<div class="col-lg-6 col-md-12">
+		<div class="row">
+		<div class="col-12">
 			<div class="card">
 				<div class="card-header">
 					<h4 class="card-title mb-0" style="font-size:1.5rem">출석 현황</h4>
@@ -169,31 +171,34 @@
 					</div>
 				</div>
 			</div>
+			</div>
+			</div>
+			<div class="row match-height">
+				<div class="col-6">
+					<div class="card card-button" style="color:royalblue" onclick="location.href='/review/reviewQuiz.do'" >
+					<div class="card-body text-center pt-1 pb-0">
+					<i class="la la-check-circle" style="font-size:5rem"></i>
+					</div>
+						<div class="card-body pt-0">
+							<h4 class="card-title text-center mb-0" style="font-size:1.5rem">복습하기</h4>
+						</div>
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="card card-button" style="color:firebrick" onclick="location.href='/today/todaySentence.do'" >
+					<div class="card-body text-center pt-1 pb-0">
+					<i class="la la-volume-up" style="font-size:5rem"></i>
+					</div>
+						<div class="card-body pt-0">
+							<h4 class="card-title text-center mb-0" style="font-size:1.5rem">발음연습</h4>
+						</div>
+					</div>
+				</div>
+				
+			</div>
 		</div>
 	</div>
-	<div class="row match-height">
-		<div class="col-6">
-			<div class="card" onclick="location.href='/review/reviewQuiz.do'" >
-			<div class="card-body text-center pt-1 pb-0">
-			<i class="la la-check-circle" style="font-size:5rem"></i>
-			</div>
-				<div class="card-body pt-0">
-					<h4 class="card-title text-center mb-0" style="font-size:1.5rem">복습하기</h4>
-				</div>
-			</div>
-		</div>
-		<div class="col-6">
-			<div class="card" onclick="location.href='/today/todaySentence.do'" >
-			<div class="card-body text-center pt-1 pb-0">
-			<i class="la la-volume-up" style="font-size:5rem"></i>
-			</div>
-				<div class="card-body pt-0">
-					<h4 class="card-title text-center mb-0" style="font-size:1.5rem">발음연습</h4>
-				</div>
-			</div>
-		</div>
-		
-	</div>
+	
 </section>
 <!-- Header footer section End -->
 
