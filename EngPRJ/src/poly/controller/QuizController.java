@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.NewsDTO;
 import poly.dto.WordQuizDTO;
+import poly.persistance.mongo.IMongoUserMapper;
 import poly.service.INewsService;
 import poly.service.INewsWordService;
 import poly.util.SessionUtil;
@@ -32,6 +33,9 @@ public class QuizController {
 	
 	@Resource(name = "NewsService")
 	INewsService newsService;
+	
+	@Resource(name = "MongoUserMapper")
+	IMongoUserMapper mongoUserMapper;
 	
 	@RequestMapping(value = "today/todayQuiz")
 	public String todayQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
@@ -126,6 +130,11 @@ public class QuizController {
 		
 		try {
 		qDTO = newsWordService.getRandomTodayQuiz(user_seq);
+		
+		if(qDTO.getIdx()==-1) {
+			mongoUserMapper.insertAttend(user_seq);
+		}
+		
 		
 		}catch (IllegalArgumentException e) {
 			

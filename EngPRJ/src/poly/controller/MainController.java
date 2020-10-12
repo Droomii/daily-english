@@ -2,6 +2,8 @@ package poly.controller;
 
 import static poly.util.CmmUtil.nvl;
 
+import java.util.Set;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.NewsDTO;
 import poly.dto.UserDTO;
+import poly.persistance.mongo.IMongoUserMapper;
 import poly.service.INewsService;
 import poly.service.IUserService;
 import poly.util.WebCrawler;
@@ -31,6 +34,8 @@ public class MainController {
 	@Resource(name = "NewsService")
 	INewsService newsService;
 	
+	@Resource(name = "MongoUserMapper")
+	IMongoUserMapper mongoUserMapper;
 	
 	@RequestMapping(value = "index")
 	public String index(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
@@ -42,6 +47,8 @@ public class MainController {
 			return "/login";
 		}
 		
+		Set<Integer> attendDaySet = mongoUserMapper.getAttend(user_seq);
+		model.addAttribute("attendDaySet", attendDaySet);
 		String user_lvl = (String) session.getAttribute("user_lvl");
 		log.info("user_lvl : " + user_lvl);
 		if(user_lvl == null) {
@@ -177,6 +184,15 @@ public class MainController {
 		
 		log.info(this.getClass().getName() + ".doRegister end");
 		return "/redirect";
+	}
+	
+	@RequestMapping(value = "attend")
+	public String attend(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".attend start");
+
+		log.info(this.getClass().getName() + ".attend end");
+		return "/attend";
 	}
 	 
 }

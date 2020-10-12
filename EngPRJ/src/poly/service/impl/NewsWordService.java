@@ -16,6 +16,7 @@ import poly.dto.WordDTO;
 import poly.dto.WordQuizDTO;
 import poly.persistance.mongo.IMongoNewsMapper;
 import poly.persistance.mongo.IMongoNewsWordMapper;
+import poly.persistance.mongo.IMongoUserMapper;
 import poly.persistance.redis.IRedisNewsWordMapper;
 import poly.service.INewsWordService;
 
@@ -30,6 +31,9 @@ public class NewsWordService implements INewsWordService{
 
 	@Resource(name = "RedisNewsWordMapper")
 	IRedisNewsWordMapper redisNewsWordMapper;
+	
+	@Resource(name = "MongoUserMapper")
+	IMongoUserMapper mongoUserMapper;
 	
 	private Map<String, List<String>> WORD_POOL = new HashMap<>();
 	
@@ -119,8 +123,8 @@ public class NewsWordService implements INewsWordService{
 	@Override
 	public WordQuizDTO getRandomTodayQuiz(String user_seq) throws Exception {
 		log.info(this.getClass().getName() + ".getTodayQuiz start");
-		
-		return redisNewsWordMapper.getTodayQuiz(user_seq);
+		WordQuizDTO rDTO = redisNewsWordMapper.getTodayQuiz(user_seq);
+		return rDTO;
 	}
 
 

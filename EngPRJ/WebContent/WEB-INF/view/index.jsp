@@ -1,3 +1,5 @@
+<%@page import="java.util.Set"%>
+<%@page import="java.util.Calendar"%>
 <%@page import="poly.dto.NewsDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -6,6 +8,18 @@
 	String pageTitle = "pageTemplate";
 	NewsDTO nDTO = (NewsDTO)request.getAttribute("nDTO");
 	String imgUrl = (String)request.getAttribute("imgUrl");
+	Set<Integer> attendDaySet = (Set<Integer>)request.getAttribute("attendDaySet");
+	
+	
+	Calendar c = Calendar.getInstance();
+	int today = c.get(Calendar.DAY_OF_MONTH);
+	c.set(Calendar.DAY_OF_MONTH, 1);
+	int dayOfWeek = c.get(Calendar.DAY_OF_WEEK)-1;
+	Calendar lastDay = Calendar.getInstance();
+	lastDay.set(Calendar.DAY_OF_MONTH, lastDay.getActualMaximum(Calendar.DAY_OF_MONTH));
+	int lastDayOfWeek = lastDay.get(Calendar.DAY_OF_WEEK); 
+	
+	
 
 %>
 <!DOCTYPE html>
@@ -33,6 +47,52 @@
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical;
   }
+  
+  	/* 출첵 관련 css*/
+  	.calendar {
+		display:table;
+		width:100%;
+		height:100%;
+	}
+	.calendar-row{
+		display:flex;
+		width:100%;
+	}
+	.calendar-cell{
+		font-size:100%;
+		width:100%;
+		height:4rem;
+		display:inline-block;
+		background-color:beige;
+		margin: 1px 1px 1px 1px;
+		border-radius: 10%;
+		
+	}
+	.calendar-head{
+		color:white;
+		background-color:goldenrod;
+		width:100%;
+		display:inline-block;
+		text-align:center;
+		border:0;
+		
+	}
+	
+	.not-current-month{
+		background-color:azure;
+	}
+	.attended{
+		background-image: url("/resources/img/attend.png");
+		background-size:contain;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+	.today{
+		background-color:lightpink;
+		color:white;
+	}
+
+  
   
   </style>
   </head>
@@ -67,6 +127,46 @@
 				</div>
 				<div class="card-footer info text-right">
 				퀴즈 풀러가기 &gt;
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6 col-md-12">
+			<div class="card">
+				<div class="card-header">
+					<h4 class="card-title mb-0" style="font-size:1.5rem">출석 현황</h4>
+				</div>
+				<div class="card-body pt-0">
+				<div style="font-size: 1.5rem; font-weight:700; text-align:center; background-color:sienna;color:white"><%=c.get(Calendar.MONTH)+1 %>월</div>
+				
+				<div class="calendar">
+					<div class="calendar-row">
+						<div class="calendar-head" style="background-color:tomato">일</div>
+						<div class="calendar-head">월</div>
+						<div class="calendar-head">화</div>
+						<div class="calendar-head">수</div>
+						<div class="calendar-head">목</div>
+						<div class="calendar-head">금</div>
+						<div class="calendar-head">토</div>
+					</div>
+					<div class="calendar-row">
+					<%for(int i = 0; i < dayOfWeek; i++){ %>
+						<div class="calendar-cell not-current-month"></div>
+					<%} %>
+					<%for(int i = 0; i < c.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {%>
+						<%if(dayOfWeek==0) {%>
+							</div>
+							<div class="calendar-row">
+						<%} %>
+						<div class="calendar-cell <%=(i+1)==today ? "today" : ""%> <%=attendDaySet.contains(i+1) ? "attended" : ""%>">
+							<%=i+1 %>
+						</div>
+						<%dayOfWeek = (dayOfWeek+1)%7; %>
+					<%} %>
+					<%for(int i = lastDayOfWeek; i < 7; i++){ %>
+						<div class="calendar-cell not-current-month"></div>
+					<%} %>
+					</div>
+					</div>
 				</div>
 			</div>
 		</div>
