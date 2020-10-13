@@ -129,11 +129,11 @@
 						<div class="col-12 text-center">
 						(<span id="current">n</span> / <span id="all">n</span>)
 						</div>
-						<div class="col-12 mb-1 pr-2 text-right">
-									<button type="button" id="gotoPronounce" onclick="location.href='/today/todayNews.do'" class="btn btn-info btn-icon ">뉴스 원문 보기 &gt; </button>
-								</div>
 					</div>
 					
+				</div>
+				<div class="card-footer">
+					<button type="button" id="gotoPronounce" onclick="location.href='/today/todayTranslate.do'" class="btn btn-primary btn-icon float-right">번역 연습하기 &gt; </button>
 				</div>
 			</div>
 		</div>

@@ -220,5 +220,17 @@ public class NewsController {
 		log.info(this.getClass().getName() + ".insertNewsRedis end");
 		return "success";
 	}
+	
+	@RequestMapping(value = "today/todayTranslate")
+	public String todayTranslate(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".todayTranslate start");
+
+		NewsDTO nDTO = newsService.getTodayNews();
+		model.addAttribute("nDTO", nDTO);
+		
+		log.info(this.getClass().getName() + ".todayTranslate end");
+		return "today/todayTranslate";
+	}
 
 }
