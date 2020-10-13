@@ -21,6 +21,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
+import poly.dto.NewsDTO;
 import poly.dto.QuizInfoDTO;
 import poly.dto.WordQuizDTO;
 import poly.persistance.redis.IRedisNewsWordMapper;
@@ -416,6 +417,16 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		redisDB.expireAt("todayNewsUrl", getTomorrow());
 		redisDB.expireAt(COL_NM, getTomorrow());
 		
+	}
+
+	@Override
+	public void saveTodayNews(NewsDTO headline) throws Exception {
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		redisDB.setValueSerializer(new Jackson2JsonRedisSerializer<>(NewsDTO.class));
+		
+		final String redisKey = "todayNews";
+		
+		redisDB.opsForValue().set(redisKey, headline);
 	}
 
 }

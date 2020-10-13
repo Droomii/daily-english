@@ -274,6 +274,10 @@
   
   </script>
   <script>
+  window.onload = function(){
+	  navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+  }
+  
 	// 음성 데이터 담는 글로벌 변수
 	var globalAudioData = {};
 	

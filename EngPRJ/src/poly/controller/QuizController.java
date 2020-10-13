@@ -68,14 +68,14 @@ public class QuizController {
 			
 			}catch (IllegalArgumentException e) {
 				
-				NewsDTO news = newsService.getLatestNews();
+				NewsDTO news = newsService.getTodayNews();
 				newsWordService.saveTodayWordToRedis(news);
 				qDTO = newsWordService.getRandomTodayQuiz(user_seq);
 				
 			}
 		
 		if(qDTO.getIdx()==-1) {
-			String url = "/today/todayNews.do";
+			String url = "/today/todayWordCard.do";
 			String msg = "오늘의 퀴즈를 이미 풀었습니다.";
 			model.addAttribute("url", url);
 			model.addAttribute("msg", msg);
@@ -138,7 +138,7 @@ public class QuizController {
 		
 		}catch (IllegalArgumentException e) {
 			
-			NewsDTO news = newsService.getLatestNews();
+			NewsDTO news = newsService.getTodayNews();
 			newsWordService.saveTodayWordToRedis(news);
 			qDTO = newsWordService.getRandomTodayQuiz(user_seq);
 			

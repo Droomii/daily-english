@@ -59,7 +59,7 @@ public class MainController {
 			return "/redirect";
 		}
 		
-		NewsDTO nDTO = newsService.getLatestNews();
+		NewsDTO nDTO = newsService.getTodayNews();
 		String imgUrl = WebCrawler.getImageUrl(nDTO.getNewsUrl());
 		model.addAttribute("imgUrl", imgUrl);
 		model.addAttribute("nDTO", nDTO);

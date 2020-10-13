@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.NewsDTO;
 import poly.dto.WordQuizDTO;
+import poly.persistance.redis.IRedisNewsWordMapper;
 import poly.service.INewsService;
 import poly.service.INewsWordService;
 import poly.util.SessionUtil;
@@ -33,6 +34,10 @@ public class NewsController {
 	@Resource(name = "NewsWordService")
 	INewsWordService newsWordService;
 
+	@Resource(name = "RedisNewsWordMapper")
+	IRedisNewsWordMapper redisNewsWordMapper;
+	
+	
 	@RequestMapping(value = "nlpForm")
 	public String nlpForm(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
@@ -70,7 +75,7 @@ public class NewsController {
 			model.addAttribute("msg", "오늘의 퀴즈를 풀지 않았습니다.");
 			return "/redirect";
 		}
-		NewsDTO news = newsService.getLatestNews();
+		NewsDTO news = newsService.getTodayNews();
 		newsWordService.highlightWords(news);
 		List<NewsDTO> relatedArticles = newsService.getRelatedArticles(news.getNewsUrl());
 		model.addAttribute("news", news);
@@ -90,7 +95,7 @@ public class NewsController {
 			ModelMap model) throws Exception {
 		log.info(this.getClass().getName() + ".translateNews start");
 
-		NewsDTO news = newsService.getLatestNews();
+		NewsDTO news = newsService.getTodayNews();
 		List<String> res = TranslateUtil.translateNews(news);
 
 		log.info(this.getClass().getName() + ".translateNews end");
@@ -202,6 +207,18 @@ public class NewsController {
 		
 		log.info(this.getClass().getName() + ".notIn end");
 		return notIn;
+	}
+	
+	@RequestMapping(value = "insertNewsRedis")
+	@ResponseBody
+	public String insertNewsRedis(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".insertNewsRedis start");
+
+		NewsDTO nDTO = newsService.getTodayNews();
+		redisNewsWordMapper.saveTodayNews(nDTO);
+		log.info(this.getClass().getName() + ".insertNewsRedis end");
+		return "success";
 	}
 
 }

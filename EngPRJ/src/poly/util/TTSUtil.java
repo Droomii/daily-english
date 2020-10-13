@@ -54,7 +54,7 @@ public class TTSUtil {
 					.setName("en-US-Wavenet-D").build();
 
 			// Select the type of audio file you want returned
-			AudioConfig audioConfig = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.LINEAR16).build();
+			AudioConfig audioConfig = AudioConfig.newBuilder().setSpeakingRate(0.8).setAudioEncoding(AudioEncoding.LINEAR16).build();
 
 			// Perform the text-to-speech request on the text input with the selected voice
 			// parameters and

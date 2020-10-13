@@ -92,7 +92,7 @@ public class NewsWordController {
 			throws Exception {
 		log.info(this.getClass().getName() + ".extractWords start");
 
-		NewsDTO pDTO = newsService.getLatestNews();
+		NewsDTO pDTO = newsService.getTodayNews();
 		List<Map<String, Object>> rList = newsWordService.extractWords(pDTO);
 		
 		log.info(this.getClass().getName() + ".extractWords end");
@@ -105,7 +105,7 @@ public class NewsWordController {
 			throws Exception {
 		log.info(this.getClass().getName() + ".saveLatestQuiz start");
 
-		NewsDTO news = newsService.getLatestNews();
+		NewsDTO news = newsService.getTodayNews();
 		newsWordService.saveTodayWordToRedis(news);
 		
 		log.info(this.getClass().getName() + ".saveLatestQuiz end");

@@ -3,6 +3,7 @@ package poly.persistance.redis;
 import java.util.List;
 import java.util.Map;
 
+import poly.dto.NewsDTO;
 import poly.dto.WordQuizDTO;
 
 public interface IRedisNewsWordMapper {
@@ -30,5 +31,7 @@ public interface IRedisNewsWordMapper {
 	String getTodayNewsUrl() throws Exception;
 
 	void saveTodayNewsUrl(String headlineUrl) throws Exception;
+
+	void saveTodayNews(NewsDTO headline) throws Exception;
 
 }

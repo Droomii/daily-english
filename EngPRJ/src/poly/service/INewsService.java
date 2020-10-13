@@ -9,7 +9,7 @@ public interface INewsService {
 
 	NewsDTO nlpAndSaveNews(String newsTitle, String inputText, String newsUrl) throws Exception;
 
-	NewsDTO getLatestNews() throws Exception;
+	NewsDTO getTodayNews() throws Exception;
 	
 	void scheduleCrawl() throws Exception;
 

@@ -59,7 +59,7 @@ public class NewsService implements INewsService{
 	}
 
 	@Override
-	public NewsDTO getLatestNews() throws Exception {
+	public NewsDTO getTodayNews() throws Exception {
 		String todayNewsUrl = redisNewsWordMapper.getTodayNewsUrl();
 		log.info("todayNewsUrl : " + todayNewsUrl);
 		try {
@@ -237,6 +237,7 @@ public class NewsService implements INewsService{
 			headline.translate();
 			mongoNewsMapper.updateNews(headline);
 			newsWordService.saveTodayWordToRedis(headline);
+			redisNewsWordMapper.saveTodayNews(headline);
 		}
 		
 		
