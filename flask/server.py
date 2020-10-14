@@ -4,6 +4,9 @@ from tempfile import TemporaryFile
 from pymongo import MongoClient
 from redis import Redis
 import news_recommender
+from translate import NLP
+
+nlp = NLP()
 
 # test
 db = MongoClient('127.0.0.1',
@@ -44,6 +47,15 @@ def score():
         return 'file is null!!'
     return pitch_score(example, answer, date, pitch_sample=50, time_sample=100)
 
+
+@app.route('/scoreTranslate', methods=['POST'])
+def compare_translate():
+    
+    original = request.form['original']
+    user_answer = request.form['userAnswer']
+    return nlp.compare(original, user_answer)
+
+
 @app.route('/score2', methods=['POST'])
 def score2():
     return str(request.form)
@@ -75,4 +87,4 @@ def save_related_articles():
     return 'success'
 
 if __name__=='__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run()
