@@ -3,6 +3,10 @@ package poly.service;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.json.JSONObject;
+
 import poly.dto.NewsDTO;
 
 public interface INewsService {
@@ -30,5 +34,8 @@ public interface INewsService {
 	List<NewsDTO> getRelatedArticles(String newsUrl) throws Exception;
 
 	void saveHeadlineNews() throws Exception;
+
+	JSONObject scoreTranslate(HttpServletRequest request) throws Exception;
+
 
 }

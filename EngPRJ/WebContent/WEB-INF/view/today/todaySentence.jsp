@@ -133,7 +133,7 @@
 					
 				</div>
 				<div class="card-footer">
-					<button type="button" id="gotoPronounce" onclick="location.href='/today/todayTranslate.do'" class="btn btn-primary btn-icon float-right">번역 연습하기 &gt; </button>
+					<button type="button" onclick="location.href='/today/todayTranslate.do'" class="btn btn-primary btn-icon float-right">번역 연습하기 &gt; </button>
 				</div>
 			</div>
 		</div>

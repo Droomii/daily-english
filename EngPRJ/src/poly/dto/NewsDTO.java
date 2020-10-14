@@ -98,11 +98,12 @@ public class NewsDTO {
 	
 
 	public void translate() throws Exception {
-		this.translation = new ArrayList<>();
-		for(String origSent : this.originalSentences) {
-			this.translation.add(TranslateUtil.translateKakao(origSent));
-		}
-		this.translatedTitle = TranslateUtil.translateKakao(this.newsTitle);
+		this.translation = TranslateUtil.translateNews(this);
+//		this.translation = new ArrayList<>();
+//		for(String origSent : this.originalSentences) {
+//			this.translation.add(TranslateUtil.translateKakao(origSent));
+//		}
+		this.translatedTitle = TranslateUtil.translateTitle(this.newsTitle);
 	}
 
 	@SuppressWarnings("unchecked")

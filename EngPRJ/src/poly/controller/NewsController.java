@@ -1,6 +1,8 @@
 package poly.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -231,6 +234,18 @@ public class NewsController {
 		
 		log.info(this.getClass().getName() + ".todayTranslate end");
 		return "today/todayTranslate";
+	}
+	
+	@RequestMapping(value = "today/scoreTranslate")
+	@ResponseBody
+	public Map<String, Object> scoreTranslate(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".scoreTranslate start");
+		
+		JSONObject res = newsService.scoreTranslate(request);
+		
+		log.info(this.getClass().getName() + ".scoreTranslate end");
+		return res.toMap();
 	}
 
 }

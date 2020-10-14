@@ -1,7 +1,12 @@
 package poly.service.impl;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -10,8 +15,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -243,6 +258,44 @@ public class NewsService implements INewsService{
 		
 		
 		
+	}
+
+	@Override
+	public JSONObject scoreTranslate(HttpServletRequest request) throws Exception {
+		String requestURL = "http://localhost:5000/scoreTranslate";
+		
+		int idx = Integer.parseInt(request.getParameter("idx"));
+		NewsDTO news = getTodayNews();
+		String original = news.getTranslation().get(idx);
+		log.info("userAnswer : " + request.getParameter("userAnswer"));
+		HttpClient httpClient = new DefaultHttpClient();
+		
+		HttpPost httpPost = new HttpPost(requestURL);
+		
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("userAnswer", request.getParameter("userAnswer")));
+		params.add(new BasicNameValuePair("original", original));
+		httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+		
+		HttpResponse response = httpClient.execute(httpPost);
+		HttpEntity resEntity = response.getEntity();
+		System.out.println(response.getStatusLine());
+		StringBuffer sb = new StringBuffer();
+		if(resEntity != null) {
+			try(InputStream instream = resEntity.getContent()){
+				BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
+		        String line = null;
+		        while ((line = reader.readLine()) != null) {
+		        	sb.append(line);
+		        }
+			}
+		}
+		log.info("sb : " + sb);
+		JSONObject res = new JSONObject();
+		res.put("original", original);
+		res.put("score", sb.toString());
+		log.info("res : " + res);
+		return res;
 	}
 
 	

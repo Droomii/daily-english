@@ -30,6 +30,10 @@
   	text-decoration: underline;
   }
   
+  .answer{
+  	color: green;
+  }
+  
   </style>
   </head>
   <body class="vertical-layout vertical-menu 2-columns   menu-expanded fixed-navbar" data-open="click" data-menu="vertical-menu" data-color="bg-chartbg" data-col="2-columns">
@@ -66,20 +70,26 @@
 				<%
 				int i = 0;
 				for(String stc : rDTO.getOriginalSentences().subList(0, rDTO.getOriginalSentences().size()-1)){ %>
+				<hr>
 				<p>
 				<%=stc %>
 				</p>
 				
 				<fieldset class="form-group">
-                    <textarea class="form-control pr-1 pl-1" id="placeTextarea" rows="3" placeholder="위 문장의 번역을 입력해주세요"></textarea>
+					<div class="answer mb-1"></div>
+                    <textarea class="form-control pr-1 pl-1" rows="3" placeholder="위 문장의 번역을 입력해주세요"></textarea>
+                    <div class="progress mb-0 hidden">
+							<div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width:100%"></div>
+						</div>
                     <button type="button" data-idx="<%=i %>" class="submit-btn float-right mt-1 btn btn-sm btn-info">채점하기</button>
+                    <div class="score float-right"></div>
                 </fieldset>
 				<br>
 				<%i++;} %>
 				</div>
 				</div>
 				<div class="card-footer">
-					<button type="button" id="gotoPronounce" onclick="location.href='/today/todayNews.do'" class="btn btn-primary btn-icon float-right">뉴스 원문 보기 &gt; </button>
+					<button type="button" onclick="location.href='/today/todayNews.do'" class="btn btn-primary btn-icon float-right">뉴스 원문 보기 &gt; </button>
 					<button type="button" onclick="location.href='/today/todaySentence.do'" class="btn btn-primary btn-icon float-left">&lt; 발음 연습하기 </button>
 				</div>
 			</div>
@@ -105,5 +115,33 @@
 
     <%@ include file="/WEB-INF/view/footer.jsp" %>
     <!-- END PAGE LEVEL JS-->
+  <script type="text/javascript">
+  $(".submit-btn").on("click", function(){
+	  	parent = this.parentElement;
+	  	this.classList.add("hidden");
+	  	var progressBar = parent.querySelector(".progress");
+	  	progressBar.classList.remove("hidden");
+	  	var userAnswer = parent.querySelector("textarea").value;
+	  	var answer = parent.querySelector(".answer");
+	  	var scoreTag = parent.querySelector(".score");
+		var idx = $(this).attr("data-idx");
+		var query = {userAnswer : userAnswer, idx : idx};
+		
+		$.ajax({
+          type: 'POST',
+          url: 'scoreTranslate.do',
+          data: query,
+          dataType: "JSON",
+          success: function(json){
+        	  answer.innerHTML = "모범 답안) "+ json.original;
+        	  progressBar.classList.add("hidden");
+        	  var score = parseFloat(json.score);
+        	  score *= 10000;
+        	  score = Math.round(score) / 100
+        	  scoreTag.innerHTML = "유사도 : " + score + "%";
+        }});
+  })
+  
+  </script>
   </body>
 </html>
