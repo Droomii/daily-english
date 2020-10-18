@@ -1,14 +1,22 @@
 from konlpy.tag import Kkma
-
+import re
 
 class NLP:
     def __init__(self):
         self.nlp_engine = Kkma()
         self.nlp_engine.pos('시작')
-
+    
+    
+    
     def compare(self, sentence1: str, sentence2: str):
+        symbols = ['SF', 'SP', 'SS', 'SE', 'SO', 'SW']
+        f = lambda x: x[1] not in symbols
+        
         pos1 = self.nlp_engine.pos(sentence1)
+        pos1 = list(filter(f, pos1))
+        
         pos2 = self.nlp_engine.pos(sentence2)
+        pos2 = list(filter(f, pos2))
         
         dic1 = dict()
         dic2 = dict()
