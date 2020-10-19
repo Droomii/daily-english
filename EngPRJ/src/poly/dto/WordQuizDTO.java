@@ -2,6 +2,7 @@ package poly.dto;
 
 public class WordQuizDTO {
 
+	private int lvl;
 	private int idx;
 	private String originalSentence;
 	private String sentence;
@@ -13,7 +14,12 @@ public class WordQuizDTO {
 	private int totalQs;
 	private int answeredQCount;
 	
-	
+	public int getLvl() {
+		return lvl;
+	}
+	public void setLvl(int lvl) {
+		this.lvl = lvl;
+	}
 	public int getCorrectCounter() {
 		return correctCounter;
 	}
