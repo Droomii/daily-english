@@ -12,7 +12,7 @@ public interface IMongoNewsWordMapper {
 	
 	void createCollection(String colNm) throws Exception;
 
-	Map<String, List<String>> getWordPool() throws Exception;
+	Map<String, Integer> getWordPool() throws Exception;
 
 	void saveWordUsage(List<WordQuizDTO> rList) throws Exception;
 

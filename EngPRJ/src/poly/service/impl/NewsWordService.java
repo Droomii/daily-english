@@ -35,7 +35,7 @@ public class NewsWordService implements INewsWordService{
 	@Resource(name = "MongoUserMapper")
 	IMongoUserMapper mongoUserMapper;
 	
-	private Map<String, List<String>> WORD_POOL = new HashMap<>();
+	private Map<String, Integer> WORD_POOL = new HashMap<>();
 	
 	Logger log = Logger.getLogger(this.getClass());
 
@@ -62,7 +62,7 @@ public class NewsWordService implements INewsWordService{
 		
 	}
 
-	/** @return : [{lemma : (String)"단어원형", pool : (List of String)"속한 풀", sntncIdx : (Integer)"문장 인덱스", wordIdx : (Integer)"단어 인덱스"}]
+	/** @return : [{lemma : (String)"단어원형", level : (Integer)단어 중요도, sntncIdx : (Integer)"문장 인덱스", wordIdx : (Integer)"단어 인덱스"}]
 	 *
 	 */
 	@Override
@@ -82,9 +82,9 @@ public class NewsWordService implements INewsWordService{
 					pMap = new HashMap<String, Object>();
 					pMap.put("lemma", lemma);
 					pMap.put("word", pDTO.getTokens().get(sntncIdx).get(wordIdx));
-					pMap.put("pool", WORD_POOL.get(lemma.toLowerCase()));
 					pMap.put("sntncIdx", sntncIdx);
 					pMap.put("wordIdx", wordIdx);
+					pMap.put("level", WORD_POOL.get(lemma.toLowerCase()));
 					rList.add(pMap);
 					pMap = null;
 				}

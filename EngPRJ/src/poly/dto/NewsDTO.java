@@ -265,6 +265,7 @@ public class NewsDTO {
 			// get index of sentence and token
 			int sntncIdx = (Integer)extractedWord.get("sntncIdx");
 			int wordIdx = (Integer)extractedWord.get("wordIdx");
+			int lvl = (Integer)extractedWord.get("level");
 			String lemma = this.lemmas.get(sntncIdx).get(wordIdx).toLowerCase();
 			
 			if(!wordSet.contains(lemma)) {
@@ -280,6 +281,7 @@ public class NewsDTO {
 				pDTO.setAnswerSentence(answerSentence);
 				pDTO.setLemma(lemma);
 				pDTO.setTranslation(translation);
+				pDTO.setLvl(lvl);
 				rList.add(pDTO);
 				wordSet.add(lemma);
 				pDTO = null;

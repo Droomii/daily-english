@@ -7,7 +7,6 @@ public class WordDTO {
 
 	private String word;
 	private Set<String> pool;
-	
 	public WordDTO() {}
 	
 	public WordDTO(String word, String pool) {

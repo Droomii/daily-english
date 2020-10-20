@@ -89,6 +89,9 @@
 				빈 칸에 알맞은 단어를 입력하세요
 				</p>
 				<p>
+				단어 중요도 : <span id="lvl"></span>
+				</p>
+				<p>
 				<span id="no"></span>. <span id="sentence"></span>
 				</p>
 				<p>
@@ -154,6 +157,15 @@
 						$("#total").html(json.totalQs);
 						$("#sentence").html(json.sentence);
 						$("#translation").html(json.translation);
+						var lvl = parseInt(json.lvl)
+						for(var i = 0; i < 3; i++){
+							if(i < lvl){
+								document.getElementById('lvl').innerHTML += "<i class='la la-star warning'></i>"
+							}else{
+								document.getElementById('lvl').innerHTML += "<i class='la la-star muted'></i>"
+							}
+							 
+						}
 						idx = json.idx * 1;
 						$("#wordInput").val(json.answer.substr(0, 2));
 						$("#result").attr("hidden", "hidden");
@@ -243,6 +255,16 @@
 						$("#total").html(json.totalQs);
 						$("#sentence").html(json.sentence);
 						$("#translation").html(json.translation);
+						var lvl = parseInt(json.lvl)
+						document.getElementById('lvl').innerHTML = "";
+						for(var i = 0; i < 3; i++){
+							if(i < lvl){
+								document.getElementById('lvl').innerHTML += "<i class='la la-star warning'></i>"
+							}else{
+								document.getElementById('lvl').innerHTML += "<i class='la la-star muted'></i>"
+							}
+							 
+						}
 						idx = json.idx * 1;
 						$("#wordInput").val(json.answer.substr(0, 2));
 						$("#result").attr("hidden", "hidden");

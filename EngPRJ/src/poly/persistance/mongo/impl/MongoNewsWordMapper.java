@@ -60,19 +60,18 @@ public class MongoNewsWordMapper implements IMongoNewsWordMapper {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, List<String>> getWordPool() throws Exception {
+	public Map<String, Integer> getWordPool() throws Exception {
 		log.info(this.getClass().getName() + ".getWordPool start");
 
 		DBObject query = new BasicDBObject("pool",
 				new BasicDBObject("$in", Arrays.asList("TOEIC", "Academic", "Business")));
 		DBCursor cursor = mongodb.getCollection(WORD_POOL).find(query);
 
-		Map<String, List<String>> rMap = new HashMap<>();
+		Map<String, Integer> rMap = new HashMap<>();
 		while (cursor.hasNext()) {
 			DBObject obj = cursor.next();
-			rMap.put((String) obj.get("word"), (List<String>) obj.get("pool"));
+			rMap.put((String) obj.get("word"), (Integer) obj.get("level"));
 		}
 
 		log.info(this.getClass().getName() + ".getWordPool end");
