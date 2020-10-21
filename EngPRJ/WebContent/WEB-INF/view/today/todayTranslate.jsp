@@ -75,14 +75,15 @@
 				<%=stc %>
 				</p>
 				
-				<fieldset class="form-group">
+				<fieldset class="form-group" data-idx="<%=i %>">
 					<div class="answer mb-1"></div>
                     <textarea class="form-control pr-1 pl-1" rows="3" placeholder="위 문장의 번역을 입력해주세요"></textarea>
                     <div class="progress mb-0 hidden">
 							<div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width:100%"></div>
 						</div>
-                    <button type="button" data-idx="<%=i %>" class="submit-btn float-right mt-1 btn btn-sm btn-info">채점하기</button>
-                    <div class="score float-right"></div>
+					<div class="score text-right danger">유사도 : 0%</div>
+                    <button type="button" data-idx="<%=i %>" class="float-right submit-btn mt-1 btn btn-sm btn-info">정답 보기</button>
+                    
                 </fieldset>
 				<br>
 				<%i++;} %>
@@ -116,6 +117,55 @@
     <%@ include file="/WEB-INF/view/footer.jsp" %>
     <!-- END PAGE LEVEL JS-->
   <script type="text/javascript">
+  var timer;
+  
+  $('textarea').on('input', function(){
+	  
+	  el = this;
+	  
+	  clearTimeout(timer);    
+	  timer = setTimeout(function(){
+		  parent = el.parentElement;
+//		  	this.classList.add("hidden");
+		  	var progressBar = parent.querySelector(".progress");
+//		  	progressBar.classList.remove("hidden");
+		  	var userAnswer = parent.querySelector("textarea").value;
+		  	var answer = parent.querySelector(".answer");
+		  	var scoreTag = parent.querySelector(".score");
+			var idx = $(parent).attr("data-idx");
+			var query = {userAnswer : userAnswer, idx : idx};
+			
+			$.ajax({
+	          type: 'POST',
+	          url: 'scoreTranslate.do',
+	          data: query,
+	          dataType: "JSON",
+	          success: function(json){
+//	        	  answer.innerHTML = "모범 답안) "+ json.original;
+//	        	  progressBar.classList.add("hidden");
+	        	  var score = parseFloat(json.score);
+	        	  score *= 10000;
+	        	  score = Math.round(score) / 100
+	        	  if(score < 50){
+	        		  scoreTag.classList.remove('success');
+	        		  scoreTag.classList.remove('secondary');
+	        		  scoreTag.classList.add('danger');
+	        	  }else if(score < 80){
+	        		  scoreTag.classList.remove('success');
+	        		  scoreTag.classList.add('secondary');
+	        		  scoreTag.classList.remove('danger');
+	        	  }else{
+	        		  scoreTag.classList.add('success');
+	        		  scoreTag.classList.remove('secondary');
+	        		  scoreTag.classList.remove('danger');
+	        	  }
+	        	  scoreTag.innerHTML = "유사도 : " + score + "%";
+	        }});
+		  
+	      }, 500);
+	  })
+  
+  
   $(".submit-btn").on("click", function(){
 	  	parent = this.parentElement;
 	  	this.classList.add("hidden");
@@ -138,7 +188,9 @@
         	  var score = parseFloat(json.score);
         	  score *= 10000;
         	  score = Math.round(score) / 100
+        	  
         	  scoreTag.innerHTML = "유사도 : " + score + "%";
+        	  
         }});
   })
   

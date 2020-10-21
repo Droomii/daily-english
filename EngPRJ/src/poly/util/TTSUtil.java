@@ -54,7 +54,11 @@ public class TTSUtil {
 					.setName("en-US-Wavenet-D").build();
 
 			// Select the type of audio file you want returned
-			AudioConfig audioConfig = AudioConfig.newBuilder().setSpeakingRate(0.8).setAudioEncoding(AudioEncoding.LINEAR16).build();
+			AudioConfig audioConfig = AudioConfig
+					.newBuilder()
+					.setSpeakingRate(0.8)
+					.setAudioEncoding(AudioEncoding.LINEAR16)
+					.build();
 
 			// Perform the text-to-speech request on the text input with the selected voice
 			// parameters and
@@ -86,6 +90,10 @@ public class TTSUtil {
 			}
 			System.out.println(fullLine);
 		}
+	}
+	public static void main(String[] args) throws IOException, UnsupportedAudioFileException {
+		String stc = "SK hynix announced Tuesday that it would acquire Intel’s NAND business for $9 billion, in a deal that will make it the world’s second-largest NAND flash memory provider.";
+		saveTTS(0, stc, "123");
 	}
 
 }
