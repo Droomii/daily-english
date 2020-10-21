@@ -81,7 +81,7 @@
                     <div class="progress mb-0 hidden">
 							<div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width:100%"></div>
 						</div>
-					<div class="score text-right danger">유사도 : 0%</div>
+					<div class="score text-right" style="color:red">유사도 : 0%</div>
                     <button type="button" data-idx="<%=i %>" class="float-right submit-btn mt-1 btn btn-sm btn-info">정답 보기</button>
                     
                 </fieldset>
@@ -147,17 +147,11 @@
 	        	  score *= 10000;
 	        	  score = Math.round(score) / 100
 	        	  if(score < 50){
-	        		  scoreTag.classList.remove('success');
-	        		  scoreTag.classList.remove('secondary');
-	        		  scoreTag.classList.add('danger');
-	        	  }else if(score < 80){
-	        		  scoreTag.classList.remove('success');
-	        		  scoreTag.classList.add('secondary');
-	        		  scoreTag.classList.remove('danger');
+	        		  scoreTag.style.color = 'red';
+	        	  }else if(score < 75){
+	        		  scoreTag.style.color = 'orange';
 	        	  }else{
-	        		  scoreTag.classList.add('success');
-	        		  scoreTag.classList.remove('secondary');
-	        		  scoreTag.classList.remove('danger');
+	        		  scoreTag.style.color = 'green';
 	        	  }
 	        	  scoreTag.innerHTML = "유사도 : " + score + "%";
 	        }});
