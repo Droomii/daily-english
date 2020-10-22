@@ -126,9 +126,7 @@
 	  clearTimeout(timer);    
 	  timer = setTimeout(function(){
 		  parent = el.parentElement;
-//		  	this.classList.add("hidden");
 		  	var progressBar = parent.querySelector(".progress");
-//		  	progressBar.classList.remove("hidden");
 		  	var userAnswer = parent.querySelector("textarea").value;
 		  	var answer = parent.querySelector(".answer");
 		  	var scoreTag = parent.querySelector(".score");
@@ -141,8 +139,6 @@
 	          data: query,
 	          dataType: "JSON",
 	          success: function(json){
-//	        	  answer.innerHTML = "모범 답안) "+ json.original;
-//	        	  progressBar.classList.add("hidden");
 	        	  var score = parseFloat(json.score);
 	        	  score *= 10000;
 	        	  score = Math.round(score) / 100
