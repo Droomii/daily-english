@@ -19,6 +19,11 @@ rd = Redis(host='localhost', password='Data19!@')
 
 app = Flask(__name__)
 
+@app.route('/apiTest',methods=['POST'])
+def api_test():
+    return str(request.form)
+
+
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
