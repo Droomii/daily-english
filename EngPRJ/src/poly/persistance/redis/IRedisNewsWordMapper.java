@@ -34,4 +34,6 @@ public interface IRedisNewsWordMapper {
 
 	void saveTodayNews(NewsDTO headline) throws Exception;
 
+	void resetQuiz(String user_seq) throws Exception;
+
 }

@@ -216,8 +216,10 @@ public class NewsWordService implements INewsWordService{
 		return redisNewsWordMapper.getTodaySentences();
 	}
 
-	
-	
-	
+
+	@Override
+	public void resetQuiz(String user_seq) throws Exception {
+		redisNewsWordMapper.resetQuiz(user_seq);
+	}
 
 }

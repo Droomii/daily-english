@@ -219,6 +219,16 @@ public class QuizController {
 		log.info(this.getClass().getName() + ".getRandomReviewQuiz end");
 		return qDTO;
 	}
-
+	
+	@RequestMapping(value = "resetQuiz")
+	@ResponseBody
+	public String resetQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
+			throws Exception {
+		log.info(this.getClass().getName() + ".resetQuiz start");
+		String user_seq = (String) session.getAttribute("user_seq");
+		newsWordService.resetQuiz(user_seq);
+		log.info(this.getClass().getName() + ".resetQuiz end");
+		return "success";
+	}
 
 }

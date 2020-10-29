@@ -36,6 +36,8 @@ public interface INewsWordService {
 	void saveTodayTTS() throws Exception;
 
 	List<Map<String, Object>> getTodaySentences() throws Exception;
+
+	void resetQuiz(String user_seq) throws Exception;
 	
 
 }

@@ -429,4 +429,12 @@ public class RedisNewsWordMapper implements IRedisNewsWordMapper {
 		redisDB.opsForValue().set(redisKey, headline);
 	}
 
+	@Override
+	public void resetQuiz(String user_seq) throws Exception {
+		redisDB.setKeySerializer(new StringRedisSerializer());
+		String key = QUIZ_INFO_PREFIX + user_seq;
+		redisDB.delete(key);
+		
+	}
+
 }
