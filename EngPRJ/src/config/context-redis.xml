@@ -8,7 +8,7 @@
     <!-- oracle Connection Pool -->
     <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
     	p:usePool="true" p:hostName="localhost" p:port="6379"
-    	p:password="Data19!@">
+    	p:password="">
 	</bean>
     <bean id="redisTemplate"
     	class="org.springframework.data.redis.core.RedisTemplate" p:connectionFactory-ref="jedisConnectionFactory">

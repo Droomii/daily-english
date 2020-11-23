@@ -78,7 +78,7 @@
 <!-- Header footer section start -->
 <section id="header-footer">
 	<div class="row match-height justify-content-center">
-		<div style="max-width:50rem">
+		<div class='col-sm-12' style="max-width:50rem">
 			<div class="card">
 				<div class="card-header pb-0">
 					<h4 class="card-title mb-0" style="font-size:1.5rem">오늘의 퀴즈</h4>

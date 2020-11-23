@@ -75,11 +75,14 @@ public class QuizController {
 			}
 		
 		if(qDTO.getIdx()==-1) {
-			String url = "/today/todayWordCard.do";
-			String msg = "오늘의 퀴즈를 이미 풀었습니다.";
-			model.addAttribute("url", url);
+			String yes = "/resetQuiz.do";
+			
+			String no = "/today/todayWordCard.do";
+			String msg = "오늘의 퀴즈를 이미 풀었습니다. 다시 풀으시겠습니까?";
+			model.addAttribute("yes", yes);
+			model.addAttribute("no", no);
 			model.addAttribute("msg", msg);
-			return "/redirect";
+			return "/redirectChoice";
 		}
 		
 		log.info(this.getClass().getName() + ".todayQuiz end");
@@ -221,14 +224,15 @@ public class QuizController {
 	}
 	
 	@RequestMapping(value = "resetQuiz")
-	@ResponseBody
 	public String resetQuiz(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + ".resetQuiz start");
 		String user_seq = (String) session.getAttribute("user_seq");
 		newsWordService.resetQuiz(user_seq);
+		String url = "/today/todayQuiz.do";
+		model.addAttribute("url", url);
 		log.info(this.getClass().getName() + ".resetQuiz end");
-		return "success";
+		return "/redirectNoMsg";
 	}
 
 }
